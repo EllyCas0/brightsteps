@@ -713,6 +713,24 @@ function loadText(key) {
   }
 }
 
+function resetLocalStateFromUrl() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reset') !== '1') return;
+
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith('brightsteps-')) {
+        localStorage.removeItem(key);
+      }
+    });
+    window.history.replaceState({}, '', window.location.pathname || '/');
+  } catch {
+    // Keep the app usable if storage or history APIs are unavailable.
+  }
+}
+
+resetLocalStateFromUrl();
+
 function asArray(value, fallback = []) {
   return Array.isArray(value) ? value : fallback;
 }
@@ -1075,7 +1093,7 @@ function Onboarding({ onComplete, initialProfile }) {
       content: (
         <>
           <div className="form-grid">
-            <label>Name or nickname<input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder="Sam" /></label>
+            <label>Name or nickname<input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder="Child name" /></label>
             <SelectField label="Age" value={form.age} options={choiceSets.age} onChange={(value) => setForm({ ...form, age: value })} />
           </div>
           <AvatarPicker value={form.avatar} onChange={(avatar) => setForm({ ...form, avatar })} />
