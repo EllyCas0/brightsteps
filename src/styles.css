@@ -67,7 +67,7 @@ select:focus-visible {
 
 .app-shell {
   min-height: 100vh;
-  padding-bottom: 92px;
+  padding-bottom: 112px;
   background:
     radial-gradient(circle at 18% 8%, rgba(239, 116, 100, 0.16), transparent 32%),
     linear-gradient(135deg, #fff8e8 0%, #eef8f5 55%, #f7f0ff 100%);
@@ -191,7 +191,7 @@ select:focus-visible {
 .main-content {
   width: min(1120px, calc(100% - 28px));
   margin: 0 auto;
-  padding: 24px 0 36px;
+  padding: 18px 0 56px;
 }
 
 .welcome-band {
@@ -199,7 +199,7 @@ select:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: clamp(22px, 5vw, 42px) 0;
+  padding: clamp(18px, 3.4vw, 32px) 0;
 }
 
 .welcome-copy {
@@ -233,7 +233,7 @@ p {
 
 h1 {
   margin-bottom: 8px;
-  font-size: clamp(2rem, 8vw, 4.4rem);
+  font-size: clamp(2rem, 6vw, 4rem);
   line-height: 1.02;
   letter-spacing: 0;
 }
@@ -335,7 +335,7 @@ h2 {
 
 .big-card {
   display: grid;
-  min-height: 178px;
+  min-height: 150px;
   min-width: 0;
   place-items: center;
   gap: 14px;
@@ -380,8 +380,8 @@ h2 {
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: 16px;
-  margin-bottom: 16px;
-  padding: 18px;
+  margin-bottom: 14px;
+  padding: 16px 18px;
   border: 2px solid rgba(240, 184, 75, 0.36);
   border-radius: 8px;
   background: rgba(255, 253, 248, 0.9);
@@ -663,24 +663,24 @@ h2 {
   bottom: 14px;
   z-index: 20;
   display: grid;
-  width: min(720px, calc(100% - 24px));
+  width: min(580px, calc(100% - 24px));
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  padding: 10px;
+  padding: 8px;
   transform: translateX(-50%);
   border: 1px solid rgba(222, 216, 202, 0.92);
-  border-radius: 18px;
+  border-radius: 14px;
   background: rgba(255, 253, 248, 0.94);
   box-shadow: var(--shadow);
 }
 
 .nav-button {
   display: grid;
-  min-height: 62px;
+  min-height: 54px;
   place-items: center;
   gap: 3px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 8px;
   color: var(--muted);
   background: transparent;
   font-size: 0.82rem;
