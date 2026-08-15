@@ -926,7 +926,7 @@ function App() {
     persistActiveProfile(normalizedProfile, nextProfiles);
     setProgress(normalizeProgress(loadJson(getProgressStorageKey(normalizedProfile.id), defaultProgress)));
     setProfileDraft(undefined);
-    setScreen('home');
+    setScreen(exists ? 'home' : 'avatar');
   }
 
   function updateProfile(updates) {
@@ -950,6 +950,13 @@ function App() {
 
   if (screen === 'onboarding') {
     return <Onboarding onComplete={handleProfile} initialProfile={profileDraft === undefined ? profile : profileDraft} />;
+  }
+
+  if (screen === 'avatar' && profile) {
+    return <ChildAvatarSetup profile={profile} onChoose={(avatar) => {
+      updateProfile({ avatar });
+      setScreen('home');
+    }} />;
   }
 
   return (
@@ -1090,7 +1097,6 @@ function Onboarding({ onComplete, initialProfile }) {
             <label>Name or nickname<input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder="Child name" /></label>
             <SelectField label="Age" value={form.age} options={choiceSets.age} onChange={(value) => setForm({ ...form, age: value })} />
           </div>
-          <AvatarPicker value={form.avatar} onChange={(avatar) => setForm({ ...form, avatar })} />
         </>
       )
     },
@@ -1220,6 +1226,32 @@ function AvatarPicker({ value, onChange }) {
         ))}
       </div>
     </fieldset>
+  );
+}
+
+function ChildAvatarSetup({ profile, onChoose }) {
+  const [selected, setSelected] = useState(profile.avatar || defaultProfile.avatar);
+
+  return (
+    <main className="onboarding child-avatar-screen">
+      <section className="onboarding-panel child-avatar-panel">
+        <div className="panel-heading">
+          <Avatar avatar={selected} name={profile.name || 'Child'} size="hero" />
+          <div>
+            <p className="eyebrow">Child choice</p>
+            <h1>Choose your buddy</h1>
+            <p>{profile.name || 'Your child'} can pick the picture they want to use in BrightSteps.</p>
+          </div>
+        </div>
+        <AvatarPicker value={selected} onChange={setSelected} />
+        <div className="form-actions avatar-actions">
+          <span />
+          <button className="primary-button" type="button" onClick={() => onChoose(selected)}>
+            <Check size={18} /> Start BrightSteps
+          </button>
+        </div>
+      </section>
+    </main>
   );
 }
 

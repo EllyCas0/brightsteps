@@ -1304,6 +1304,22 @@ legend {
   margin-top: 18px;
 }
 
+.child-avatar-screen {
+  align-items: center;
+}
+
+.child-avatar-panel {
+  width: min(860px, calc(100% - 28px));
+}
+
+.child-avatar-panel .panel-heading {
+  align-items: center;
+}
+
+.child-avatar-panel .avatar-choice-list {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .avatar-choice-list {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1338,6 +1354,10 @@ legend {
   border-color: rgba(46, 157, 145, 0.58);
   color: #17433e;
   background: #dff2ed;
+}
+
+.avatar-actions {
+  justify-content: flex-end;
 }
 
 .profile-avatar-row {
