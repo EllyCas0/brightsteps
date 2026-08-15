@@ -277,9 +277,21 @@ const avatarOptions = [
   { key: 'Happy', label: 'Happy' },
   { key: 'Okay', label: 'Calm' },
   { key: 'Excited', label: 'Excited' },
+  { key: 'Sad', label: 'Sad' },
+  { key: 'Angry', label: 'Mad' },
+  { key: 'Worried', label: 'Worried' },
+  { key: 'Tired', label: 'Tired' },
   { key: 'Cat', label: 'Playful' },
   { key: 'Flower', label: 'Gentle' },
-  { key: 'Bed', label: 'Sleepy' }
+  { key: 'Heart', label: 'Kind' },
+  { key: 'Sun', label: 'Sunny' },
+  { key: 'Water', label: 'Water' },
+  { key: 'Backpack', label: 'Backpack' },
+  { key: 'Brush Teeth', label: 'Brush' },
+  { key: 'Tie Shoes', label: 'Shoes' },
+  { key: 'Bed', label: 'Sleepy' },
+  { key: 'Needs', label: 'Needs' },
+  { key: 'Done', label: 'Done' }
 ];
 
 const moodAvatarMap = {
