@@ -1306,13 +1306,13 @@ legend {
 
 .avatar-choice-list {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
 }
 
 .avatar-choice {
   display: grid;
-  min-height: 142px;
+  min-height: 164px;
   min-width: 0;
   place-items: center;
   gap: 8px;
@@ -1323,6 +1323,11 @@ legend {
   background: white;
   text-align: center;
   font-weight: 900;
+}
+
+.avatar-choice .avatar-large {
+  width: 108px;
+  height: 108px;
 }
 
 .avatar-choice strong {

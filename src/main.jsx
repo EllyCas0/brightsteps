@@ -46,6 +46,10 @@ import tieShoesImage from './assets/images/tie-shoes.png';
 import tiredFaceImage from './assets/images/tired-face.png';
 import waterImage from './assets/images/water.png';
 import worriedFaceImage from './assets/images/worried-face.png';
+import boyAngryAvatar from './assets/avatars/boy-angry.png';
+import boyHappyAvatar from './assets/avatars/boy-happy.png';
+import boySadAvatar from './assets/avatars/boy-sad.png';
+import boyWashingHandsAvatar from './assets/avatars/boy-washing-hands.png';
 import './styles.css';
 
 const STORAGE_KEY = 'brightsteps-child-profile';
@@ -139,7 +143,7 @@ const defaultProgress = {
 const defaultProfile = {
   id: '',
   name: '',
-  avatar: 'Happy',
+  avatar: 'Boy Happy',
   age: choiceSets.age[0],
   grade: choiceSets.grade[0],
   supportLevel: choiceSets.supportLevel[0],
@@ -164,6 +168,10 @@ const categoryLabels = {
 };
 
 const imageAssets = {
+  'Boy Angry': boyAngryAvatar,
+  'Boy Happy': boyHappyAvatar,
+  'Boy Sad': boySadAvatar,
+  'Boy Washing Hands': boyWashingHandsAvatar,
   Angry: angryFaceImage,
   Backpack: backpackImage,
   BAG: backpackImage,
@@ -274,33 +282,19 @@ const imageAssets = {
 };
 
 const avatarOptions = [
-  { key: 'Happy', label: 'Happy' },
-  { key: 'Okay', label: 'Calm' },
-  { key: 'Excited', label: 'Excited' },
-  { key: 'Sad', label: 'Sad' },
-  { key: 'Angry', label: 'Mad' },
-  { key: 'Worried', label: 'Worried' },
-  { key: 'Tired', label: 'Tired' },
-  { key: 'Cat', label: 'Playful' },
-  { key: 'Flower', label: 'Gentle' },
-  { key: 'Heart', label: 'Kind' },
-  { key: 'Sun', label: 'Sunny' },
-  { key: 'Water', label: 'Water' },
-  { key: 'Backpack', label: 'Backpack' },
-  { key: 'Brush Teeth', label: 'Brush' },
-  { key: 'Tie Shoes', label: 'Shoes' },
-  { key: 'Bed', label: 'Sleepy' },
-  { key: 'Needs', label: 'Needs' },
-  { key: 'Done', label: 'Done' }
+  { key: 'Boy Happy', label: 'Happy' },
+  { key: 'Boy Washing Hands', label: 'Wash Hands' },
+  { key: 'Boy Angry', label: 'Mad' },
+  { key: 'Boy Sad', label: 'Sad' }
 ];
 
 const moodAvatarMap = {
-  Angry: 'Angry',
-  Excited: 'Excited',
-  Happy: 'Happy',
-  Mad: 'Angry',
+  Angry: 'Boy Angry',
+  Excited: 'Boy Happy',
+  Happy: 'Boy Happy',
+  Mad: 'Boy Angry',
   Okay: 'Okay',
-  Sad: 'Sad',
+  Sad: 'Boy Sad',
   Sleepy: 'Tired',
   Tired: 'Tired',
   Worried: 'Worried'
