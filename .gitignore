@@ -1,2 +1,7 @@
 .codex-vite-update.*
 .codex-build-check/
+node_modules/
+dist/
+.codex-*.out
+.codex-*.err
+.codex-build-*/

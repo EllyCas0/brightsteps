@@ -3,16 +3,23 @@ import { createRoot } from 'react-dom/client';
 import {
   ArrowLeft,
   Baby,
+  Banana,
+  Bed,
   Bone,
   BookOpen,
   Brain,
   Car,
+  Cat as CatIcon,
   Check,
   ChevronRight,
   Clock,
+  CupSoda,
   Delete,
+  Droplets,
   Flame,
   Flower2,
+  FileText,
+  Hand,
   HeartHandshake,
   Home,
   Info,
@@ -21,9 +28,14 @@ import {
   Leaf,
   ListChecks,
   Lock,
+  LockKeyhole,
+  KeyRound,
   MessageSquare,
+  Minus,
   Moon,
   Palette,
+  Pencil,
+  Plus,
   Puzzle,
   RotateCcw,
   Rocket,
@@ -32,1304 +44,62 @@ import {
   Sparkles,
   Star,
   Trash2,
+  Umbrella,
   Users,
   Video,
   Volume2,
   VolumeX
 } from 'lucide-react';
-import angryFaceImage from './assets/images/angry-face.png';
-import backpackImage from './assets/images/backpack.png';
-import bathroomImage from './assets/images/bathroom.png';
-import bedImage from './assets/images/bed.png';
-import breakImage from './assets/images/break.png';
-import brushStep1Image from './assets/images/brush-step-1-toothpaste.png';
-import brushStep2Image from './assets/images/brush-step-2-brush-top.png';
-import brushStep3Image from './assets/images/brush-step-3-brush-bottom.png';
-import brushStep4Image from './assets/images/brush-step-4-rinse.png';
-import brushStep5Image from './assets/images/brush-step-5-smile.png';
-import brushTeethImage from './assets/images/brush-teeth.png';
-import calmBreakImage from './assets/images/calm-break.png';
-import catImage from './assets/images/cat.png';
-import cupImage from './assets/images/cup.png';
-import doneImage from './assets/images/done.png';
-import eyeImage from './assets/images/eye.png';
-import excitedFaceImage from './assets/images/excited-face.png';
-import flowerImage from './assets/images/flower.png';
-import heartImage from './assets/images/heart.png';
-import happyFaceImage from './assets/images/happy-face.png';
-import needsBoardImage from './assets/images/needs-board.png';
-import okayFaceImage from './assets/images/okay-face.png';
-import sadFaceImage from './assets/images/sad-face.png';
-import shapeSortImage from './assets/images/shape-sort.png';
-import sunImage from './assets/images/sun.png';
-import tieStep1Image from './assets/images/tie-step-1.png';
-import tieStep2Image from './assets/images/tie-step-2.png';
-import tieStep3Image from './assets/images/tie-step-3.png';
-import tieStep4Image from './assets/images/tie-step-4.png';
-import tieStep5Image from './assets/images/tie-step-5.png';
-import tieShoesImage from './assets/images/tie-shoes.png';
-import tiredFaceImage from './assets/images/tired-face.png';
-import toysImage from './assets/images/toys.png';
-import washHandsImage from './assets/images/wash-hands.png';
-import waterImage from './assets/images/water.png';
-import worriedFaceImage from './assets/images/worried-face.png';
-import avatarBoy2 from './assets/avatars/avatar-boy-2.png';
-import avatarGirl1 from './assets/avatars/avatar-girl-1.png';
-import avatarGirl2 from './assets/avatars/avatar-girl-2.png';
-import boyAngryAvatar from './assets/avatars/boy-angry.png';
-import boy2ExcitedAvatar from './assets/avatars/boy-2-excited.png';
-import boy2MadAvatar from './assets/avatars/boy-2-mad.png';
-import boy2OkayAvatar from './assets/avatars/boy-2-okay.png';
-import boy2SadAvatar from './assets/avatars/boy-2-sad.png';
-import boy2WorriedAvatar from './assets/avatars/boy-2-worried.png';
-import boyExcitedAvatar from './assets/avatars/boy-excited.png';
-import boyHappyAvatar from './assets/avatars/boy-happy.png';
-import boyOkayAvatar from './assets/avatars/boy-okay.png';
-import boySadAvatar from './assets/avatars/boy-sad.png';
-import boyWorriedAvatar from './assets/avatars/boy-worried.png';
-import boyWashingHandsAvatar from './assets/avatars/boy-washing-hands.png';
-import girl1ExcitedAvatar from './assets/avatars/girl-1-excited.png';
-import girl1MadAvatar from './assets/avatars/girl-1-mad.png';
-import girl1OkayAvatar from './assets/avatars/girl-1-okay.png';
-import girl1SadAvatar from './assets/avatars/girl-1-sad.png';
-import girl1WorriedAvatar from './assets/avatars/girl-1-worried.png';
-import girl2ExcitedAvatar from './assets/avatars/girl-2-excited.png';
-import girl2MadAvatar from './assets/avatars/girl-2-mad.png';
-import girl2OkayAvatar from './assets/avatars/girl-2-okay.png';
-import girl2SadAvatar from './assets/avatars/girl-2-sad.png';
-import girl2WorriedAvatar from './assets/avatars/girl-2-worried.png';
-import carsBackground from './assets/backgrounds-by-topic/cars.png';
-import dinosBackground from './assets/backgrounds-by-topic/dinos.png';
-import dragonsBackground from './assets/backgrounds-by-topic/dragons.png';
-import flowersBackground from './assets/backgrounds-by-topic/flowers.png';
-import rocketsBackground from './assets/backgrounds-by-topic/rockets.png';
-import unicornsBackground from './assets/backgrounds-by-topic/unicorns.png';
+import {
+  LanguageContext,
+  translateText,
+  useT
+} from './data/translations.js';
+import {
+  ACTIVE_PROFILE_KEY,
+  BACKGROUND_TOPIC_KEY,
+  BREATH_SOUND_IDLE_MS,
+  LANGUAGE_KEY,
+  PROFILES_KEY,
+  PROGRESS_KEY,
+  STORAGE_KEY,
+  getTodayKey,
+  loadJson,
+  loadText,
+  resetLocalStateFromUrl,
+  saveJson,
+  saveText
+} from './lib/storage.js';
+import {
+  Avatar,
+  VisualAsset
+} from './components/VisualAsset.jsx';
+import {
+  activities,
+  activityGames,
+  avatarOptions,
+  backgroundTopics,
+  categoryLabels,
+  choiceSets,
+  createMemoryDeck,
+  defaultProfile,
+  defaultProgress,
+  getBackgroundTopic,
+  getCommunicationOptions,
+  getImageAsset,
+  getMoodAvatar,
+  guidedActivities,
+  learnedSkillActivityMap,
+  learnSections,
+  lessonSteps,
+  normalizeAvatar,
+  normalizeSupportLevel,
+  resources,
+  shoeLessonIntro,
+  shuffleCards,
+  supportLevelDetails
+} from './data/appData.jsx';
 import './styles.css';
-
-const STORAGE_KEY = 'brightsteps-child-profile';
-const PROFILES_KEY = 'brightsteps-child-profiles';
-const ACTIVE_PROFILE_KEY = 'brightsteps-active-child-profile';
-const PROGRESS_KEY = 'brightsteps-progress';
-const BACKGROUND_TOPIC_KEY = 'brightsteps-background-topic';
-const LANGUAGE_KEY = 'brightsteps-language';
-
-const LanguageContext = React.createContext('en');
-
-const translations = {
-  es: {
-    'Adult Area': 'Area de adultos',
-    'For grown-ups. Enter your birth year to continue.': 'Para adultos. Escribe tu ano de nacimiento para continuar.',
-    'Birth year': 'Ano de nacimiento',
-    Enter: 'Entrar',
-    Back: 'Atras',
-    Next: 'Siguiente',
-    Add: 'Agregar',
-    Other: 'Otro',
-    'Save profile': 'Guardar perfil',
-    Home: 'Inicio',
-    Parents: 'Padres',
-    Welcome: 'Bienvenido',
-    'Welcome back': 'Bienvenido de nuevo',
-    Mood: 'Emocion',
-    'Choose a feeling': 'Escoge una emocion',
-    'Pick the face that shows how you feel.': 'Escoge la cara que muestra como te sientes.',
-    Happy: 'Feliz',
-    Excited: 'Emocionado',
-    Okay: 'Bien',
-    Sad: 'Triste',
-    Worried: 'Preocupado',
-    Mad: 'Enojado',
-    Learn: 'Aprender',
-    Communication: 'Comunicacion',
-    Games: 'Juegos',
-    Daily: 'Diario',
-    Social: 'Social',
-    Calm: 'Calma',
-    'Calm Zone': 'Zona de calma',
-    'Daily Skills': 'Habilidades diarias',
-    'Social Skills': 'Habilidades sociales',
-    'Numbers & Letters': 'Numeros y letras',
-    'Learn activities': 'Actividades de aprendizaje',
-    'Calm activities': 'Actividades de calma',
-    'Communication activities': 'Actividades de comunicacion',
-    'Games activities': 'Actividades de juegos',
-    'Daily activities': 'Actividades diarias',
-    'Social activities': 'Actividades sociales',
-    'Show learned skills for practice': 'Mostrar habilidades aprendidas para practicar',
-    Complete: 'Completado',
-    'Practice again': 'Practicar otra vez',
-    Start: 'Comenzar',
-    'Quiet mode': 'Modo silencioso',
-    'Breathe slowly': 'Respira despacio',
-    'In, out, rest.': 'Inhala, exhala, descansa.',
-    Pause: 'Pausar',
-    Reset: 'Reiniciar',
-    Stop: 'Detener',
-    Volume: 'Volumen',
-    'Calm Sounds': 'Sonidos de calma',
-    'Choose a gentle background sound': 'Escoge un sonido suave de fondo',
-    'Sound is muted.': 'El sonido esta silenciado.',
-    'is playing.': 'esta sonando.',
-    Rain: 'Lluvia',
-    Ocean: 'Oceano',
-    Nature: 'Naturaleza',
-    'Soft music': 'Musica suave',
-    'Soft steady rain': 'Lluvia suave y constante',
-    'Slow wave sound': 'Sonido lento de olas',
-    'Gentle outdoor tone': 'Sonido suave de la naturaleza',
-    'Simple calm notes': 'Notas simples y tranquilas',
-    Breathe: 'Respirar',
-    'Yoga Calm': 'Yoga tranquilo',
-    'Sensory Images': 'Imagenes sensoriales',
-    'Slow visual breathing': 'Respiracion visual lenta',
-    'Cartoon-style stretch and breathe': 'Estirarse y respirar con dibujos',
-    'Pick a quiet image during crisis': 'Escoge una imagen tranquila durante una crisis',
-    'Parent setup': 'Configuracion para padres',
-    'Create a child profile': 'Crear perfil del nino',
-    'Answers personalize activity length, choices, sound, and visual support.': 'Las respuestas personalizan la duracion, opciones, sonido y apoyo visual.',
-    Confirmation: 'Confirmacion',
-    'Child profile': 'Perfil del nino',
-    'Autism support level': 'Nivel de apoyo de autismo',
-    'Current Recognition Skills': 'Habilidades actuales de reconocimiento',
-    'Current Daily Skills': 'Habilidades diarias actuales',
-    'Parent goals': 'Metas de los padres',
-    'IMPORTANT NOTICE': 'AVISO IMPORTANTE',
-    'This app is a recreational and educational support tool designed to help children practice communication and daily living skills.': 'Esta app es una herramienta recreativa y educativa para ayudar a los ninos a practicar comunicacion y habilidades de la vida diaria.',
-    "Please consider the child's sensory sensitivities, comfort, and need for breaks when using sounds, visuals, touch, or any activity in the app.": 'Considera las sensibilidades sensoriales, comodidad y necesidad de descansos del nino al usar sonidos, imagenes, tacto o cualquier actividad.',
-    'It does not provide diagnoses, treatment, or medical or psychological advice, and does not replace care from qualified healthcare professionals or therapists.': 'No ofrece diagnosticos, tratamiento ni consejos medicos o psicologicos, y no reemplaza la atencion de profesionales o terapeutas calificados.',
-    'The app should be used under the supervision and responsibility of a parent, legal guardian, or caregiver.': 'La app debe usarse bajo la supervision y responsabilidad de un padre, tutor legal o cuidador.',
-    'Name or nickname': 'Nombre o apodo',
-    'Child name': 'Nombre del nino',
-    Age: 'Edad',
-    Letters: 'Letras',
-    Numbers: 'Numeros',
-    'Communication skills': 'Habilidades de comunicacion',
-    'This information is used only to personalize your child\'s experience. It does not determine or confirm an autism diagnosis or support level.': 'Esta informacion solo se usa para personalizar la experiencia del nino. No determina ni confirma un diagnostico de autismo o nivel de apoyo.',
-    'You can select more than one option.': 'Puedes seleccionar mas de una opcion.',
-    'Skills they already have': 'Habilidades que ya tiene',
-    'Other daily skill': 'Otra habilidad diaria',
-    'Write a skill': 'Escribe una habilidad',
-    'Custom daily skills': 'Habilidades diarias personalizadas',
-    'Goals you want to achieve': 'Metas que quieres lograr',
-    'Other parent goal': 'Otra meta',
-    'Write a goal': 'Escribe una meta',
-    'Custom parent goals': 'Metas personalizadas',
-    'Does not recognize letters': 'No reconoce letras',
-    'Recognizes some letters': 'Reconoce algunas letras',
-    'Recognizes most letters': 'Reconoce la mayoria de las letras',
-    'Can read simple words': 'Puede leer palabras simples',
-    'Can read fluently': 'Puede leer con fluidez',
-    'Does not recognize numbers': 'No reconoce numeros',
-    'Recognizes some numbers': 'Reconoce algunos numeros',
-    'Recognizes numbers 1-10': 'Reconoce numeros del 1 al 10',
-    'Recognizes numbers beyond 10': 'Reconoce numeros mayores de 10',
-    Dressing: 'Vestirse',
-    'Brushing teeth': 'Cepillarse los dientes',
-    'Tying shoes': 'Amarrarse los zapatos',
-    'Washing hands': 'Lavarse las manos',
-    'Using the bathroom': 'Usar el bano',
-    'Eating independently': 'Comer de forma independiente',
-    'Following routines': 'Seguir rutinas',
-    'Social interaction': 'Interaccion social',
-    'Emotional regulation': 'Regulacion emocional',
-    'Daily independence': 'Independencia diaria',
-    'Self-care routines': 'Rutinas de autocuidado',
-    'Attention and following directions': 'Atencion y seguir instrucciones',
-    'Reading and words': 'Lectura y palabras',
-    'Numbers and problem solving': 'Numeros y resolver problemas',
-    'Level 1': 'Nivel 1',
-    'Level 2': 'Nivel 2',
-    'Level 3': 'Nivel 3',
-    'Requires Support': 'Requiere apoyo',
-    'Requires Substantial Support': 'Requiere apoyo sustancial',
-    'Requires Very Substantial Support': 'Requiere apoyo muy sustancial',
-    'Some support may be helpful with communication, routines, or social situations.': 'Algo de apoyo puede ayudar con comunicacion, rutinas o situaciones sociales.',
-    'More consistent support may be needed across daily activities.': 'Puede necesitar apoyo mas constante en actividades diarias.',
-    'Significant and ongoing support may be needed across daily activities.': 'Puede necesitar apoyo significativo y continuo en actividades diarias.',
-    Select: 'Seleccionar',
-    'Back-and-forth conversation support': 'Apoyo para conversar por turnos',
-    'Initiates or responds with reminders': 'Inicia o responde con recordatorios',
-    'Shares interests or emotions with prompts': 'Comparte intereses o emociones con ayudas',
-    'Needs help adjusting to social settings': 'Necesita ayuda para adaptarse a situaciones sociales',
-    'Limited back-and-forth communication': 'Comunicacion limitada por turnos',
-    'Reduced initiation of social interaction': 'Inicia menos interacciones sociales',
-    'Reduced response to social interaction': 'Responde menos a la interaccion social',
-    'Needs verbal and nonverbal support': 'Necesita apoyo verbal y no verbal',
-    'Uses AAC or visual communication': 'Usa AAC o comunicacion visual',
-    'Very limited initiation of interaction': 'Inicio de interaccion muy limitado',
-    'Minimal response to social interaction': 'Respuesta minima a la interaccion social',
-    'Very limited verbal communication': 'Comunicacion verbal muy limitada',
-    'Needs picture cards or AAC': 'Necesita tarjetas visuales o AAC',
-    'Needs facial expression or gesture support': 'Necesita apoyo con expresiones o gestos',
-    '2 years': '2 anos',
-    '3 years': '3 anos',
-    '4 years': '4 anos',
-    '5 years': '5 anos',
-    '6 years': '6 anos',
-    '7 years': '7 anos',
-    '8 years': '8 anos',
-    '9 years': '9 anos',
-    '10+ years': '10+ anos',
-    'Choose your Mini-Me': 'Escoge tu Mini-Me',
-    'Child choice': 'Eleccion del nino',
-    'Start BrightSteps': 'Empezar BrightSteps',
-    Images: 'Imagenes',
-    Videos: 'Videos',
-    Audio: 'Audio',
-    'Great job!': 'Buen trabajo!',
-    'Keep practicing': 'Seguir practicando',
-    'Child Profile': 'Perfil del nino',
-    Support: 'Apoyo',
-    Reading: 'Lectura',
-    'Daily Skills Already Learned': 'Habilidades diarias ya aprendidas',
-    Progress: 'Progreso',
-    'Daily Rewards': 'Recompensas diarias',
-    'Today activities': 'Actividades de hoy',
-    Badges: 'Insignias',
-    'Day streak': 'Racha de dias',
-    'Mood Log': 'Registro de emociones',
-    'Completed Activities': 'Actividades completadas',
-    'Activities Practiced': 'Actividades practicadas',
-    'Suggested Next Activities': 'Siguientes actividades sugeridas',
-    Personalization: 'Personalizacion',
-    'Parent Resources': 'Recursos para padres',
-    'Emergency / Meltdown Support': 'Apoyo en emergencia o crisis',
-    'None selected yet': 'Nada seleccionado todavia',
-    'None yet': 'Ninguna todavia',
-    'No activities today': 'No hay actividades hoy',
-    'No mood check yet': 'Sin registro de emocion todavia',
-    'Add child': 'Agregar nino',
-    'Edit profile': 'Editar perfil',
-    'Parent dashboard': 'Panel de padres',
-    Reset: 'Reiniciar',
-    'Change avatar': 'Cambiar avatar',
-    'Go home': 'Ir al inicio',
-    'Learning companion': 'Companero de aprendizaje',
-    For: 'Para',
-    'Open Calm Zone': 'Abrir zona de calma',
-    'Enable sound': 'Activar sonido',
-    'Disable sound': 'Silenciar sonido',
-    'Choose background': 'Escoger fondo',
-    Default: 'Predeterminado',
-    'Soft colors': 'Colores suaves',
-    'Topic background': 'Fondo por tema',
-    Cars: 'Carros',
-    Dinos: 'Dinosaurios',
-    Dragons: 'Dragones',
-    Flowers: 'Flores',
-    Rockets: 'Cohetes',
-    Unicorns: 'Unicornios',
-    'Tie Shoes': 'Amarrarse los zapatos',
-    'Brush Teeth': 'Cepillarse los dientes',
-    'Wash Hands': 'Lavarse las manos',
-    'Bathroom Routine': 'Rutina del bano',
-    'Get Dressed': 'Vestirse',
-    'Pack Backpack': 'Preparar mochila',
-    'Drink Water Reminder': 'Recordatorio de tomar agua',
-    'Bedtime Routine': 'Rutina de dormir',
-    'Morning Routine': 'Rutina de la manana',
-    'Step-by-step shoe tying': 'Amarrar zapatos paso a paso',
-    'Gentle routine practice': 'Practica suave de rutina',
-    'Clean hands sequence': 'Secuencia para manos limpias',
-    'Independent bathroom steps': 'Pasos independientes para el bano',
-    'Clothes in order': 'Ropa en orden',
-    'School-ready checklist': 'Lista para la escuela',
-    'Remember to drink water': 'Recordar tomar agua',
-    'Calm sequence before sleep': 'Secuencia tranquila antes de dormir',
-    'First, next, then': 'Primero, despues, luego',
-    'Letter Match': 'Emparejar letras',
-    'Simple Words': 'Palabras simples',
-    'Number Garden': 'Jardin de numeros',
-    'Shape Sort': 'Ordenar formas',
-    'Memory Cards': 'Tarjetas de memoria',
-    'Color Match': 'Emparejar colores',
-    'Match the same uppercase letter': 'Empareja la misma letra mayuscula',
-    'Pick the word that matches a picture': 'Escoge la palabra que coincide con la imagen',
-    'Count pictures and choose the number': 'Cuenta imagenes y escoge el numero',
-    'Match shapes into the right group': 'Agrupa las formas correctamente',
-    'Flip cards and find matching pairs': 'Voltea tarjetas y encuentra pares',
-    'Choose the color that matches the card': 'Escoge el color que coincide con la tarjeta'
-  }
-};
-
-function translateText(text, language) {
-  if (language !== 'es' || typeof text !== 'string') return text;
-  return translations.es[text] || text;
-}
-
-function useT() {
-  const language = useContext(LanguageContext);
-  return (text) => translateText(text, language);
-}
-
-function getTodayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-const supportLevelDetails = [
-  {
-    value: 'Level 1: Requires Support',
-    title: 'Level 1',
-    subtitle: 'Requires Support',
-    description: 'Some support may be helpful with communication, routines, or social situations.'
-  },
-  {
-    value: 'Level 2: Requires Substantial Support',
-    title: 'Level 2',
-    subtitle: 'Requires Substantial Support',
-    description: 'More consistent support may be needed across daily activities.'
-  },
-  {
-    value: 'Level 3: Requires Very Substantial Support',
-    title: 'Level 3',
-    subtitle: 'Requires Very Substantial Support',
-    description: 'Significant and ongoing support may be needed across daily activities.'
-  }
-];
-
-const choiceSets = {
-  supportLevel: supportLevelDetails.map((level) => level.value),
-  communicationByLevel: {
-    'Level 1: Requires Support': [
-      'Back-and-forth conversation support',
-      'Initiates or responds with reminders',
-      'Shares interests or emotions with prompts',
-      'Needs help adjusting to social settings'
-    ],
-    'Level 2: Requires Substantial Support': [
-      'Limited back-and-forth communication',
-      'Reduced initiation of social interaction',
-      'Reduced response to social interaction',
-      'Needs verbal and nonverbal support',
-      'Uses AAC or visual communication'
-    ],
-    'Level 3: Requires Very Substantial Support': [
-      'Very limited initiation of interaction',
-      'Minimal response to social interaction',
-      'Very limited verbal communication',
-      'Needs picture cards or AAC',
-      'Needs facial expression or gesture support'
-    ]
-  },
-  age: ['2 years', '3 years', '4 years', '5 years', '6 years', '7 years', '8 years', '9 years', '10+ years'],
-  letters: [
-    'Does not recognize letters',
-    'Recognizes some letters',
-    'Recognizes most letters',
-    'Can read simple words',
-    'Can read fluently'
-  ],
-  numbers: [
-    'Does not recognize numbers',
-    'Recognizes some numbers',
-    'Recognizes numbers 1-10',
-    'Recognizes numbers beyond 10'
-  ],
-  sensory: ['Sounds', 'Lights', 'Textures', 'Food', 'Touch', 'Crowds'],
-  dailySkills: [
-    'Dressing',
-    'Brushing teeth',
-    'Tying shoes',
-    'Washing hands',
-    'Using the bathroom',
-    'Eating independently',
-    'Following routines'
-  ],
-  objectives: [
-    'Communication',
-    'Social interaction',
-    'Emotional regulation',
-    'Daily independence',
-    'Self-care routines',
-    'Attention and following directions',
-    'Reading and words',
-    'Numbers and problem solving'
-  ],
-  interests: ['Animals', 'Cars', 'Music', 'Colors', 'Dinosaurs', 'Space']
-};
-
-const defaultProgress = {
-  completed: [],
-  practiced: [],
-  counts: { learn: 3, daily: 2, speech: 0, social: 1, play: 4, calm: 2 },
-  moodLog: [],
-  rewardStars: 2,
-  todayDone: false,
-  dailyGoal: 3,
-  todayActivities: [],
-  badges: [],
-  streak: 0,
-  hasSeenHome: false,
-  lastActiveDate: getTodayKey()
-};
-
-const defaultProfile = {
-  id: '',
-  name: '',
-  avatar: 'Avatar Boy 1',
-  age: choiceSets.age[0],
-  supportLevel: '',
-  communication: [],
-  letters: choiceSets.letters[0],
-  numbers: choiceSets.numbers[0],
-  sensory: [],
-  dailySkills: [],
-  objectives: [],
-  learningStyle: ['Images'],
-  interests: [],
-  diagnosisConfirmed: false
-};
-
-const categoryLabels = {
-  learn: 'Learn',
-  daily: 'Daily',
-  speech: 'Communication',
-  social: 'Social',
-  play: 'Games',
-  calm: 'Calm'
-};
-
-const backgroundTopics = [
-  { id: 'cars', label: 'Cars', image: carsBackground, icon: Car },
-  { id: 'dinos', label: 'Dinos', image: dinosBackground, icon: Bone },
-  { id: 'dragons', label: 'Dragons', image: dragonsBackground, icon: Flame },
-  { id: 'flowers', label: 'Flowers', image: flowersBackground, icon: Flower2 },
-  { id: 'rockets', label: 'Rockets', image: rocketsBackground, icon: Rocket },
-  { id: 'unicorns', label: 'Unicorns', image: unicornsBackground, icon: Sparkles }
-];
-
-function getBackgroundTopic(topicId) {
-  return backgroundTopics.find((topic) => topic.id === topicId) || null;
-}
-
-const imageAssets = {
-  'Avatar Boy 1': boyHappyAvatar,
-  'Avatar Boy 2': avatarBoy2,
-  'Avatar Girl 1': avatarGirl1,
-  'Avatar Girl 2': avatarGirl2,
-  'Boy Angry': boyAngryAvatar,
-  'Boy 2 Excited': boy2ExcitedAvatar,
-  'Boy 2 Happy': avatarBoy2,
-  'Boy 2 Mad': boy2MadAvatar,
-  'Boy 2 Okay': boy2OkayAvatar,
-  'Boy 2 Sad': boy2SadAvatar,
-  'Boy 2 Worried': boy2WorriedAvatar,
-  'Boy Excited': boyExcitedAvatar,
-  'Boy Happy': boyHappyAvatar,
-  'Boy Okay': boyOkayAvatar,
-  'Boy Sad': boySadAvatar,
-  'Boy Worried': boyWorriedAvatar,
-  'Boy Washing Hands': boyWashingHandsAvatar,
-  'Girl 1 Excited': girl1ExcitedAvatar,
-  'Girl 1 Happy': avatarGirl1,
-  'Girl 1 Mad': girl1MadAvatar,
-  'Girl 1 Okay': girl1OkayAvatar,
-  'Girl 1 Sad': girl1SadAvatar,
-  'Girl 1 Worried': girl1WorriedAvatar,
-  'Girl 2 Excited': girl2ExcitedAvatar,
-  'Girl 2 Happy': avatarGirl2,
-  'Girl 2 Mad': girl2MadAvatar,
-  'Girl 2 Okay': girl2OkayAvatar,
-  'Girl 2 Sad': girl2SadAvatar,
-  'Girl 2 Worried': girl2WorriedAvatar,
-  Angry: angryFaceImage,
-  A: happyFaceImage,
-  Backpack: backpackImage,
-  BAG: backpackImage,
-  Bed: bedImage,
-  bed: bedImage,
-  BELL: doneImage,
-  Blue: waterImage,
-  'Brush Step 1': brushStep1Image,
-  'Brush Step 2': brushStep2Image,
-  'Brush Step 3': brushStep3Image,
-  'Brush Step 4': brushStep4Image,
-  'Brush Step 5': brushStep5Image,
-  'Brush Teeth': brushTeethImage,
-  Breathe: flowerImage,
-  B: backpackImage,
-  Bathroom: bathroomImage,
-  'Bathroom Routine': bathroomImage,
-  'Color Match': flowerImage,
-  COLOR: flowerImage,
-  Cloud: flowerImage,
-  CHECK: doneImage,
-  Circle: flowerImage,
-  TOOTH: brushTeethImage,
-  CAT: catImage,
-  Cat: catImage,
-  cat: catImage,
-  Cup: cupImage,
-  cup: cupImage,
-  Drink: cupImage,
-  'Drink Water Reminder': waterImage,
-  Done: doneImage,
-  Eye: eyeImage,
-  Excited: excitedFaceImage,
-  FEEL: happyFaceImage,
-  FLOWER: flowerImage,
-  Food: cupImage,
-  'Fast food': cupImage,
-  Flower: flowerImage,
-  Green: flowerImage,
-  HAPPY: happyFaceImage,
-  Happy: happyFaceImage,
-  Heart: heartImage,
-  Help: needsBoardImage,
-  HELP: needsBoardImage,
-  HI: happyFaceImage,
-  Mad: angryFaceImage,
-  'Memory Cards': heartImage,
-  More: needsBoardImage,
-  'Morning Routine': sunImage,
-  Moon: bedImage,
-  M: heartImage,
-  Needs: needsBoardImage,
-  Okay: okayFaceImage,
-  Rain: waterImage,
-  Red: flowerImage,
-  SAD: sadFaceImage,
-  Sad: sadFaceImage,
-  Square: backpackImage,
-  Star: doneImage,
-  Simple: catImage,
-  Sleep: bedImage,
-  Sleepy: tiredFaceImage,
-  Surprised: excitedFaceImage,
-  Sun: sunImage,
-  sun: sunImage,
-  S: sunImage,
-  Thirsty: waterImage,
-  TIRED: tiredFaceImage,
-  'Tie Shoes': tieShoesImage,
-  LACE: tieShoesImage,
-  Leaf: flowerImage,
-  Triangle: backpackImage,
-  Tired: tiredFaceImage,
-  TV: needsBoardImage,
-  Water: waterImage,
-  Worried: worriedFaceImage,
-  Yellow: sunImage,
-  'Emotion Cards': happyFaceImage,
-  'Feel Check': happyFaceImage,
-  Feelings: happyFaceImage,
-  Faces: sadFaceImage,
-  'Match Pairs': sunImage,
-  'Number Garden': flowerImage,
-  PAIR: sunImage,
-  RAIN: waterImage,
-  RED: flowerImage,
-  SHARE: heartImage,
-  SHIRT: backpackImage,
-  SOAP: washHandsImage,
-  SOFT: calmBreakImage,
-  SORT: shapeSortImage,
-  SND: waterImage,
-  STAR: doneImage,
-  'Simple Words': catImage,
-  'Say Hello': happyFaceImage,
-  'Speech Table': needsBoardImage,
-  'Speech Board': needsBoardImage,
-  'I Want Board': needsBoardImage,
-  'I Need Help': needsBoardImage,
-  'Yes or No': doneImage,
-  'More or Done': doneImage,
-  'Choice Board': needsBoardImage,
-  'Feeling Words': happyFaceImage,
-  'I want': needsBoardImage,
-  'I need': needsBoardImage,
-  'I feel': happyFaceImage,
-  'More please': needsBoardImage,
-  'All done': doneImage,
-  Eat: cupImage,
-  Drink: waterImage,
-  Play: toysImage,
-  Sleep: bedImage,
-  Yes: doneImage,
-  No: angryFaceImage,
-  Break: breakImage,
-  Toy: toysImage,
-  Again: doneImage,
-  Stop: angryFaceImage,
-  First: sunImage,
-  Then: doneImage,
-  Please: heartImage,
-  'Thank you': heartImage,
-  'Shape Sort': shapeSortImage,
-  'Soft Visuals': calmBreakImage,
-  'Sort It': shapeSortImage,
-  'Bedtime Routine': bedImage,
-  'Copy Movements': happyFaceImage,
-  'Count Sheep': bedImage,
-  'Emotion Picture Board': happyFaceImage,
-  'Joint Attention': eyeImage,
-  'Pack Backpack': backpackImage,
-  'Picture Talk': needsBoardImage,
-  AAC: needsBoardImage,
-  AIR: flowerImage,
-  AM: sunImage,
-  FACE: sadFaceImage,
-  'Get Dressed': backpackImage,
-  'Letter Match': happyFaceImage,
-  'Share Toys': toysImage,
-  'Sensory Images': flowerImage,
-  'Sound + Picture': waterImage,
-  'Star Rewards': doneImage,
-  'Tie Step 1': tieStep1Image,
-  'Tie Step 2': tieStep2Image,
-  'Tie Step 3': tieStep3Image,
-  'Tie Step 4': tieStep4Image,
-  'Tie Step 5': tieStep5Image,
-  'Take Turns': heartImage,
-  TIME: doneImage,
-  Timer: doneImage,
-  TURN: heartImage,
-  'Use Words or AAC': needsBoardImage,
-  'Wash Hands': washHandsImage,
-  'Today check-in': doneImage,
-  'Yoga Calm': flowerImage
-};
-
-const avatarOptions = [
-  { key: 'Avatar Boy 1', label: 'Boy 1' },
-  { key: 'Avatar Girl 1', label: 'Girl 1' },
-  { key: 'Avatar Boy 2', label: 'Boy 2' },
-  { key: 'Avatar Girl 2', label: 'Girl 2' }
-];
-
-function normalizeAvatar(avatar) {
-  if (avatarOptions.some((option) => option.key === avatar)) return avatar;
-  return defaultProfile.avatar;
-}
-
-const moodAvatarMap = {
-  'Avatar Boy 1': {
-    Angry: 'Boy Angry',
-    Excited: 'Boy Excited',
-    Happy: 'Boy Happy',
-    Mad: 'Boy Angry',
-    Okay: 'Boy Okay',
-    Sad: 'Boy Sad',
-    Sleepy: 'Tired',
-    Tired: 'Tired',
-    Worried: 'Boy Worried'
-  },
-  'Avatar Boy 2': {
-    Angry: 'Boy 2 Mad',
-    Excited: 'Boy 2 Excited',
-    Happy: 'Boy 2 Happy',
-    Mad: 'Boy 2 Mad',
-    Okay: 'Boy 2 Okay',
-    Sad: 'Boy 2 Sad',
-    Sleepy: 'Tired',
-    Tired: 'Tired',
-    Worried: 'Boy 2 Worried'
-  },
-  'Avatar Girl 1': {
-    Angry: 'Girl 1 Mad',
-    Excited: 'Girl 1 Excited',
-    Happy: 'Girl 1 Happy',
-    Mad: 'Girl 1 Mad',
-    Okay: 'Girl 1 Okay',
-    Sad: 'Girl 1 Sad',
-    Sleepy: 'Tired',
-    Tired: 'Tired',
-    Worried: 'Girl 1 Worried'
-  },
-  'Avatar Girl 2': {
-    Angry: 'Girl 2 Mad',
-    Excited: 'Girl 2 Excited',
-    Happy: 'Girl 2 Happy',
-    Mad: 'Girl 2 Mad',
-    Okay: 'Girl 2 Okay',
-    Sad: 'Girl 2 Sad',
-    Sleepy: 'Tired',
-    Tired: 'Tired',
-    Worried: 'Girl 2 Worried'
-  }
-};
-
-function getMoodAvatar(mood, avatar = defaultProfile.avatar) {
-  const avatarMoods = moodAvatarMap[avatar] || moodAvatarMap[defaultProfile.avatar];
-  return avatarMoods?.[mood] || avatar;
-}
-
-function getCommunicationOptions(supportLevel) {
-  const normalizedLevel = supportLevelDetails.find((level) => supportLevel?.startsWith(level.title))?.value;
-  return choiceSets.communicationByLevel[normalizedLevel] || [];
-}
-
-function normalizeSupportLevel(supportLevel) {
-  return supportLevelDetails.find((level) => supportLevel?.startsWith(level.title))?.value || supportLevel || '';
-}
-
-function getImageAsset(key) {
-  return key ? imageAssets[key] : null;
-}
-
-function VisualAsset({ label, imageKey, className = 'visual-image', fallback = true }) {
-  const src = getImageAsset(imageKey || label);
-  if (!src) return fallback ? label : null;
-  return <img className={className} src={src} alt="" aria-hidden="true" />;
-}
-
-function Avatar({ avatar = defaultProfile.avatar, name = 'Child', size = 'medium' }) {
-  return (
-    <span className={`avatar avatar-${size}`} aria-label={`${name} avatar`} role="img">
-      <VisualAsset label={avatar} imageKey={avatar} className="avatar-image" fallback={false} />
-    </span>
-  );
-}
-
-const activities = {
-  learn: [
-    { title: 'Letter Match', icon: 'A', level: 'basic', detail: 'Match the same uppercase letter', tags: ['letters', 'images'] },
-    { title: 'Simple Words', icon: 'CAT', level: 'word', detail: 'Pick the word that matches a picture', tags: ['reading'] },
-    { title: 'Number Garden', icon: '1 2', level: 'basic', detail: 'Count pictures and choose the number', tags: ['numbers'] },
-    { title: 'Shape Sort', icon: 'SH', level: 'basic', detail: 'Match shapes into the right group', tags: ['shapes'] },
-    { title: 'Memory Cards', icon: 'M', level: 'basic', detail: 'Flip cards and find matching pairs', tags: ['memory'] },
-    { title: 'Color Match', icon: 'RED', level: 'basic', detail: 'Choose the color that matches the card', tags: ['colors'] }
-  ],
-  daily: [
-    { title: 'Tie Shoes', icon: 'LACE', detail: 'Step-by-step shoe tying' },
-    { title: 'Brush Teeth', icon: 'TOOTH', detail: 'Gentle routine practice' },
-    { title: 'Wash Hands', icon: 'SOAP', detail: 'Clean hands sequence' },
-    { title: 'Bathroom Routine', icon: 'Bathroom', detail: 'Independent bathroom steps' },
-    { title: 'Get Dressed', icon: 'SHIRT', detail: 'Clothes in order' },
-    { title: 'Pack Backpack', icon: 'BAG', detail: 'School-ready checklist' },
-    { title: 'Drink Water Reminder', icon: 'Water', detail: 'Remember to drink water' },
-    { title: 'Bedtime Routine', icon: 'Bedtime Routine', detail: 'Calm sequence before sleep' },
-    { title: 'Morning Routine', icon: 'AM', detail: 'First, next, then' }
-  ],
-  speech: [
-    { title: 'Communication Board', icon: 'Speech Board', detail: 'Tap picture words to speak a clear message' },
-    { title: 'I Want Board', icon: 'I want', detail: 'Practice asking for a favorite item' },
-    { title: 'I Need Help', icon: 'HELP', detail: 'Use help, break, bathroom, or water words' },
-    { title: 'Yes or No', icon: 'Yes', detail: 'Choose yes, no, stop, or again' },
-    { title: 'More or Done', icon: 'More', detail: 'Practice more, finished, please, and thank you' },
-    { title: 'Feeling Words', icon: 'FEEL', detail: 'Say a feeling with a picture cue' }
-  ],
-  social: [
-    { title: 'Say Hello', icon: 'HI', detail: 'Greeting familiar people' },
-    { title: 'Use Words or AAC', icon: 'AAC', detail: 'Choose words, gestures, or AAC to communicate' },
-    { title: 'Picture Talk', icon: 'Picture Talk', detail: 'Express needs with image choices' },
-    { title: 'Take Turns', icon: 'TURN', detail: 'Wait, play, pass' },
-    { title: 'Joint Attention', icon: 'Joint Attention', detail: 'Look, point, and share an object' },
-    { title: 'Ask Help', icon: 'HELP', detail: 'Practice help choices' },
-    { title: 'Share Toys', icon: 'SHARE', detail: 'Simple sharing story' },
-    { title: 'Copy Movements', icon: 'Copy Movements', detail: 'Imitate clap, wave, and use a toy' },
-    { title: 'Feelings', icon: 'FEEL', detail: 'Name emotions' },
-    { title: 'Faces', icon: 'FACE', detail: 'Recognize expressions' }
-  ],
-  play: [
-    { title: 'Match Pairs', icon: 'PAIR', detail: 'Find the same picture' },
-    { title: 'Sort It', icon: 'SORT', detail: 'Put items in groups' },
-    { title: 'Emotion Cards', icon: 'MOOD', detail: 'Pick how they feel' },
-    { title: 'Emotion Picture Board', icon: 'Emotion Picture Board', detail: 'Choose emotion faces with pictures' },
-    { title: 'Sound + Picture', icon: 'SND', detail: 'Quiet mode available' },
-    { title: 'Star Rewards', icon: 'STAR', detail: 'Tiny celebration game' }
-  ],
-  calm: [
-    { title: 'Breathe', icon: 'AIR', detail: 'Slow visual breathing' },
-    { title: 'Yoga Calm', icon: 'Yoga Calm', detail: 'Cartoon-style stretch and breathe' },
-    { title: 'Calm Sounds', icon: 'SND', detail: 'Choose a gentle background sound' },
-    { title: 'Sensory Images', icon: 'Sensory Images', detail: 'Pick a quiet image during crisis' }
-  ]
-};
-
-const learnSections = [
-  {
-    id: 'daily',
-    title: 'Daily Skills',
-    icon: 'Tie Shoes',
-    detail: 'Practice routines like shoes, teeth, hands, bathroom, dressing, water, and bedtime.'
-  },
-  {
-    id: 'social',
-    title: 'Social',
-    icon: 'Take Turns',
-    detail: 'Practice greetings, turns, sharing, attention, feelings, and asking for help.'
-  },
-  {
-    id: 'numbers-letters',
-    title: 'Numbers & Letters',
-    icon: 'A',
-    detail: 'Learn letters, numbers, words, shapes, colors, and memory matching.'
-  }
-];
-
-const learnedSkillActivityMap = {
-  Dressing: ['Get Dressed'],
-  'Brushing teeth': ['Brush Teeth'],
-  'Tying shoes': ['Tie Shoes'],
-  'Washing hands': ['Wash Hands'],
-  'Using the bathroom': ['Bathroom Routine'],
-  'Following routines': ['Morning Routine']
-};
-
-const resources = [
-  'Build routines with the same words and visuals each day.',
-  'Offer choices with pictures, gestures, or AAC-style buttons.',
-  'Reduce sensory load before practicing a hard skill.',
-  'Use short practice sessions and celebrate effort.',
-  'Practice joint attention with one shared object, one point, and one simple direction.',
-  'Use imitation games such as clap, wave, tap, and toy actions before teaching harder skills.',
-  'During a meltdown, lower demands, reduce noise, and prioritize safety.'
-];
-
-const lessonSteps = [
-  { title: 'Cross', visual: 'Tie Step 1', text: 'Cross the laces.' },
-  { title: 'Tunnel', visual: 'Tie Step 2', text: 'Put one lace under the other.' },
-  { title: 'Pull', visual: 'Tie Step 3', text: 'Pull both laces snug.' },
-  { title: 'Loop', visual: 'Tie Step 4', text: 'Make one bunny ear.' },
-  { title: 'Wrap', visual: 'Tie Step 5', text: 'Wrap the other lace around.' },
-  { title: 'Finish', visual: 'Tie Shoes', text: 'Pull the loop through.' }
-];
-
-const shoeLessonIntro = 'Practice slowly. One step at a time.';
-
-const activityGames = {
-  'Color Match': {
-    prompt: 'Pick the color that matches the big card.',
-    target: { label: 'Red', value: '#ef7464' },
-    choices: [
-      { label: 'Red', value: '#ef7464' },
-      { label: 'Blue', value: '#4f8ecb' },
-      { label: 'Green', value: '#78a85f' },
-      { label: 'Yellow', value: '#f0b84b' }
-    ]
-  },
-  'Letter Match': {
-    prompt: 'Find the same letter.',
-    target: { label: 'A', value: 'A' },
-    choices: [
-      { label: 'A', value: 'A' },
-      { label: 'B', value: 'B' },
-      { label: 'M', value: 'M' },
-      { label: 'S', value: 'S' }
-    ]
-  },
-  'Number Garden': {
-    prompt: 'How many flowers are in the garden?',
-    target: { label: '3', value: '3' },
-    choices: [
-      { label: '2', value: '2' },
-      { label: '3', value: '3' },
-      { label: '4', value: '4' },
-      { label: '5', value: '5' }
-    ]
-  },
-  'Shape Sort': {
-    prompt: 'Put the circle with the circles.',
-    target: { label: 'Circle', value: 'Circle' },
-    choices: [
-      { label: 'Circle', value: 'Circle' },
-      { label: 'Square', value: 'Square' },
-      { label: 'Star', value: 'Star' },
-      { label: 'Triangle', value: 'Triangle' }
-    ]
-  },
-  'Match Pairs': {
-    prompt: 'Choose the picture that makes a pair.',
-    target: { label: 'Sun', value: 'Sun' },
-    choices: [
-      { label: 'Moon', value: 'Moon' },
-      { label: 'Sun', value: 'Sun' },
-      { label: 'Rain', value: 'Rain' },
-      { label: 'Cloud', value: 'Cloud' }
-    ]
-  }
-};
-
-const memoryPairLabels = ['Moon', 'Star', 'Leaf', 'Heart'];
-
-function createMemoryDeck(pairCount) {
-  return memoryPairLabels
-    .slice(0, pairCount)
-    .flatMap((label) => [label, label])
-    .map((label, index) => ({ id: `${label}-${index}`, label }));
-}
-
-function shuffleCards(cards) {
-  const deck = [...cards];
-  for (let index = deck.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
-    [deck[index], deck[swapIndex]] = [deck[swapIndex], deck[index]];
-  }
-  return deck;
-}
-
-const guidedActivities = {
-  'Simple Words': {
-    type: 'choices',
-    prompt: 'Pick the word that matches the picture.',
-    visual: 'CAT',
-    correct: 'cat',
-    choices: ['cat', 'sun', 'bed', 'cup']
-  },
-  'Wash Hands': {
-    type: 'steps',
-    prompt: 'Tap each step in order.',
-    steps: ['Turn on water', 'Soap', 'Rub hands', 'Rinse', 'Dry']
-  },
-  'Brush Teeth': {
-    type: 'steps',
-    prompt: 'Tap each step in order.',
-    steps: [
-      { label: 'Toothpaste', image: 'Brush Step 1' },
-      { label: 'Brush top', image: 'Brush Step 2' },
-      { label: 'Brush bottom', image: 'Brush Step 3' },
-      { label: 'Rinse', image: 'Brush Step 4' },
-      { label: 'Smile', image: 'Brush Step 5' }
-    ]
-  },
-  'Get Dressed': {
-    type: 'steps',
-    prompt: 'Tap each clothing step in order.',
-    steps: ['Underwear', 'Shirt', 'Pants', 'Socks', 'Shoes']
-  },
-  'Pack Backpack': {
-    type: 'steps',
-    prompt: 'Pack the school bag checklist.',
-    steps: ['Folder', 'Lunch', 'Water', 'Coat', 'Zip bag']
-  },
-  'Bathroom Routine': {
-    type: 'steps',
-    prompt: 'Tap each bathroom step in order.',
-    steps: ['Go bathroom', 'Pants down', 'Use toilet', 'Wipe', 'Flush', 'Wash hands']
-  },
-  'Drink Water Reminder': {
-    type: 'script',
-    prompt: 'Practice a helpful reminder.',
-    lines: ['Reminder', 'Drink water', 'Take a sip', 'All done']
-  },
-  'Bedtime Routine': {
-    type: 'steps',
-    prompt: 'Tap the bedtime routine.',
-    steps: ['Pajamas', 'Brush teeth', 'Bathroom', 'Story', 'Lights low', 'Sleep']
-  },
-  'Morning Routine': {
-    type: 'steps',
-    prompt: 'Tap each step in order.',
-    steps: ['Wake up', 'Get dressed', 'Eat breakfast', 'Pack bag']
-  },
-  'Say Hello': {
-    type: 'script',
-    prompt: 'Practice a short greeting.',
-    lines: ['Look', 'Wave', 'Say hello', 'Wait']
-  },
-  'Speech Table': {
-    type: 'choices',
-    prompt: 'Tap a picture word to speak it.',
-    visual: 'Speech Board',
-    correct: 'I want',
-    choices: ['I want', 'I need', 'Help', 'Break', 'More please', 'All done'],
-    speak: true
-  },
-  'I Want Board': {
-    type: 'choices',
-    prompt: 'Choose a phrase to ask for something.',
-    visual: 'I want',
-    correct: 'I want',
-    choices: ['I want', 'Water', 'Food', 'Toy'],
-    speak: true
-  },
-  'I Need Help': {
-    type: 'choices',
-    prompt: 'Choose what help you need.',
-    visual: 'HELP',
-    correct: 'Help',
-    choices: ['Help', 'Bathroom', 'Water', 'Break'],
-    speak: true
-  },
-  'Yes or No': {
-    type: 'choices',
-    prompt: 'Choose a clear answer.',
-    visual: 'Yes',
-    correct: 'Yes',
-    choices: ['Yes', 'No', 'Stop', 'Again'],
-    speak: true
-  },
-  'More or Done': {
-    type: 'choices',
-    prompt: 'Choose what comes next.',
-    visual: 'More',
-    correct: 'More please',
-    choices: ['More please', 'All done', 'Please', 'Thank you'],
-    speak: true
-  },
-  'Feeling Words': {
-    type: 'choices',
-    prompt: 'Choose a feeling word to say.',
-    visual: 'FEEL',
-    correct: 'Happy',
-    choices: ['Happy', 'Sad', 'Mad', 'Tired'],
-    speak: true
-  },
-  'Use Words or AAC': {
-    type: 'choices',
-    prompt: 'Choose a picture to say what you need.',
-    visual: 'Needs',
-    correct: 'Water',
-    choices: ['More', 'Water', 'Bathroom', 'Help']
-  },
-  'Picture Talk': {
-    type: 'choices',
-    prompt: 'Choose the picture that says what you need.',
-    visual: 'Picture Talk',
-    correct: 'Bathroom',
-    choices: ['Bathroom', 'Food', 'Water', 'Sleep', 'TV', 'Tired']
-  },
-  'Ask Help': {
-    type: 'choices',
-    prompt: 'Choose a clear way to ask for help.',
-    visual: 'HELP',
-    correct: 'Help please',
-    choices: ['Help please', 'No', 'Run', 'Later']
-  },
-  'Take Turns': {
-    type: 'turns',
-    prompt: 'Practice taking turns.',
-    turns: ['My turn', 'Your turn', 'Wait', 'Play again']
-  },
-  'Joint Attention': {
-    type: 'script',
-    prompt: 'Practice shared attention with one object.',
-    lines: ['Look', 'Point', 'Show me', 'Your turn', 'Good looking']
-  },
-  'Share Toys': {
-    type: 'turns',
-    prompt: 'Practice sharing with a short turn routine.',
-    turns: ['My turn', 'Your turn', 'Wait', 'Thank you']
-  },
-  'Copy Movements': {
-    type: 'script',
-    prompt: 'Copy each simple movement.',
-    lines: ['Clap hands', 'Wave hello', 'Tap table', 'Touch head', 'Use toy']
-  },
-  'Feelings': {
-    type: 'choices',
-    prompt: 'Choose the happy face.',
-    visual: 'HAPPY',
-    correct: 'Happy',
-    choices: ['Happy', 'Sad', 'Mad', 'Tired']
-  },
-  'Emotion Cards': {
-    type: 'choices',
-    prompt: 'What feeling matches this card?',
-    visual: 'SMILE',
-    correct: 'Happy',
-    choices: ['Happy', 'Worried', 'Sleepy', 'Angry']
-  },
-  'Emotion Picture Board': {
-    type: 'choices',
-    prompt: 'Choose the tired face.',
-    visual: 'TIRED',
-    correct: 'Tired',
-    choices: ['Happy', 'Sad', 'Tired', 'Angry']
-  },
-  Faces: {
-    type: 'choices',
-    prompt: 'Choose the face that looks sad.',
-    visual: 'SAD',
-    correct: 'Sad',
-    choices: ['Happy', 'Sad', 'Sleepy', 'Surprised']
-  },
-  'Sort It': {
-    type: 'choices',
-    prompt: 'Which item belongs with colors?',
-    visual: 'COLOR',
-    correct: 'Red',
-    choices: ['Red', 'Cup', 'Shoe', 'Bed']
-  },
-  'Sound + Picture': {
-    type: 'choices',
-    prompt: 'Match the quiet sound card to the picture.',
-    visual: 'RAIN',
-    correct: 'Rain',
-    choices: ['Rain', 'Car', 'Bell', 'Clap']
-  },
-  'Star Rewards': {
-    type: 'script',
-    prompt: 'Practice a small celebration.',
-    lines: ['Try', 'Finish', 'Star', 'All done']
-  },
-  'Soft Visuals': {
-    type: 'breath',
-    prompt: 'Watch the soft visual and count three breaths.',
-    steps: ['Breathe in', 'Breathe out', 'Rest']
-  },
-  'Yoga Calm': {
-    type: 'script',
-    prompt: 'Copy the calm yoga cartoon steps.',
-    lines: ['Reach up', 'Fold down', 'Hands heart', 'Breathe in', 'Breathe out']
-  },
-  'Count Sheep': {
-    type: 'count',
-    prompt: 'Count five bedtime pictures slowly.',
-    items: ['1', '2', '3', '4', '5']
-  },
-  'Sensory Images': {
-    type: 'choices',
-    prompt: 'Choose a calm sensory picture.',
-    visual: 'FLOWER',
-    correct: 'Flower',
-    choices: ['Flower', 'Sun', 'Bed', 'Cup']
-  },
-  'Feel Check': {
-    type: 'choices',
-    prompt: 'Choose how this card feels.',
-    visual: 'OKAY',
-    correct: 'Okay',
-    choices: ['Happy', 'Okay', 'Mad', 'Tired']
-  },
-  Breathe: {
-    type: 'breath',
-    prompt: 'Take three slow breaths.',
-    steps: ['Breathe in', 'Breathe out', 'Rest']
-  },
-  Timer: {
-    type: 'timer',
-    prompt: 'Start a short calm timer.'
-  }
-};
-
-const speechBoards = {
-  'Speech Table': {
-    type: 'communication-board'
-  },
-  'Communication Board': {
-    type: 'communication-board'
-  },
-  'I Want Board': {
-    phraseStarters: ['I want', 'More please'],
-    groups: [
-      {
-        title: 'I want',
-        cards: [
-          { label: 'Water', image: 'Water', speak: 'water' },
-          { label: 'Food', image: 'Food', speak: 'food' },
-          { label: 'Toy', image: 'Toy', speak: 'toy' },
-          { label: 'Play', image: 'Play', speak: 'play' },
-          { label: 'Again', image: 'Again', speak: 'again' },
-          { label: 'All done', image: 'All done', speak: 'all done' }
-        ]
-      }
-    ]
-  },
-  'I Need Help': {
-    phraseStarters: ['I need'],
-    groups: [
-      {
-        title: 'Help',
-        cards: [
-          { label: 'Help', image: 'Help', speak: 'help' },
-          { label: 'Break', image: 'Break', speak: 'break' },
-          { label: 'Bathroom', image: 'Bathroom', speak: 'bathroom' },
-          { label: 'Water', image: 'Water', speak: 'water' },
-          { label: 'Sleep', image: 'Sleep', speak: 'sleep' },
-          { label: 'Stop', image: 'Stop', speak: 'stop' }
-        ]
-      }
-    ]
-  },
-  'Yes or No': {
-    phraseStarters: [],
-    groups: [
-      {
-        title: 'Answers',
-        cards: [
-          { label: 'Yes', image: 'Yes', speak: 'yes' },
-          { label: 'No', image: 'No', speak: 'no' },
-          { label: 'Stop', image: 'Stop', speak: 'stop' },
-          { label: 'Again', image: 'Again', speak: 'again' }
-        ]
-      }
-    ]
-  },
-  'More or Done': {
-    phraseStarters: [],
-    groups: [
-      {
-        title: 'More or done',
-        cards: [
-          { label: 'More please', image: 'More please', speak: 'more please' },
-          { label: 'All done', image: 'All done', speak: 'all done' },
-          { label: 'Please', image: 'Please', speak: 'please' },
-          { label: 'Thank you', image: 'Thank you', speak: 'thank you' }
-        ]
-      }
-    ]
-  },
-  'Feeling Words': {
-    phraseStarters: ['I feel'],
-    groups: [
-      {
-        title: 'Feelings',
-        cards: [
-          { label: 'Happy', image: 'Happy', speak: 'happy' },
-          { label: 'Excited', image: 'Excited', speak: 'excited' },
-          { label: 'Okay', image: 'Okay', speak: 'okay' },
-          { label: 'Sad', image: 'Sad', speak: 'sad' },
-          { label: 'Worried', image: 'Worried', speak: 'worried' },
-          { label: 'Mad', image: 'Mad', speak: 'mad' },
-          { label: 'Tired', image: 'Tired', speak: 'tired' }
-        ]
-      }
-    ]
-  }
-};
-
-function loadJson(key, fallback) {
-  try {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function saveJson(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    // Storage can be unavailable in private or restricted browser contexts.
-  }
-}
-
-function saveText(key, value) {
-  try {
-    localStorage.setItem(key, value);
-  } catch {
-    // Storage can be unavailable in private or restricted browser contexts.
-  }
-}
-
-function loadText(key) {
-  try {
-    return localStorage.getItem(key);
-  } catch {
-    return null;
-  }
-}
-
-function resetLocalStateFromUrl() {
-  try {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('reset') !== '1') return;
-
-    Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith('brightsteps-')) {
-        localStorage.removeItem(key);
-      }
-    });
-    window.history.replaceState({}, '', window.location.pathname || '/');
-  } catch {
-    // Keep the app usable if storage or history APIs are unavailable.
-  }
-}
-
-resetLocalStateFromUrl();
 
 function asArray(value, fallback = []) {
   return Array.isArray(value) ? value : fallback;
@@ -1341,12 +111,13 @@ function asChoiceArray(value, fallback = []) {
 }
 
 function hasChoiceText(values, text) {
-  return asChoiceArray(values).some((value) => value.includes(text));
+  const terms = text === 'AAC' || text === 'CAA' ? ['AAC', 'CAA'] : [text];
+  return asChoiceArray(values).some((value) => terms.some((term) => value.includes(term)));
 }
 
-function formatChoiceList(values) {
+function formatChoiceList(values, translate = (value) => value) {
   const list = asChoiceArray(values);
-  return list.length ? list.join(', ') : 'Not set';
+  return list.length ? list.map((value) => translate(value)).join(', ') : translate('Not set');
 }
 
 function createProfileId() {
@@ -1358,6 +129,9 @@ function createProfileId() {
 
 function normalizeProfile(saved) {
   if (!saved || typeof saved !== 'object') return null;
+  const objectives = asArray(saved.objectives).map((objective) => (
+    objective === 'Numbers and problem solving' ? 'Numbers and logic' : objective
+  ));
   return {
     ...defaultProfile,
     ...saved,
@@ -1367,9 +141,10 @@ function normalizeProfile(saved) {
     communication: asChoiceArray(saved.communication),
     sensory: asArray(saved.sensory),
     dailySkills: asArray(saved.dailySkills),
-    objectives: asArray(saved.objectives),
+    objectives,
     learningStyle: asArray(saved.learningStyle, defaultProfile.learningStyle),
     interests: asArray(saved.interests),
+    myVoice: normalizeMyVoiceSettings(saved.myVoice),
     diagnosisConfirmed: Boolean(saved.diagnosisConfirmed)
   };
 }
@@ -1458,6 +233,10 @@ function App() {
   const personalization = useMemo(() => getPersonalization(profile), [profile]);
   const activeAvatar = getMoodAvatar(progress.moodLog[0]?.mood, profile?.avatar);
   const backgroundTopic = getBackgroundTopic(backgroundTopicId);
+  const activeSocialIndex = activeActivity?.category === 'social'
+    ? activities.social.findIndex((activity) => activity.title === activeActivity.title)
+    : -1;
+  const hasNextSocialStory = activeSocialIndex >= 0 && activeSocialIndex < activities.social.length - 1;
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -1487,7 +266,8 @@ function App() {
     saveJson(getProgressStorageKey(profile?.id), next);
   }
 
-  function completeActivity(name, category) {
+  function completeActivity(name, category, options = {}) {
+    const { showCelebration = true } = options;
     const nextTodayActivities = Array.from(new Set([...progress.todayActivities, name]));
     const earnedBadges = [...progress.badges];
     if (category === 'calm' && !earnedBadges.includes('Calm Helper')) {
@@ -1509,15 +289,29 @@ function App() {
     };
     setProgress(next);
     saveProgress(next);
-    setCelebration({
-      title: 'Great job!',
-      message: `${name} is complete.`,
-      stars: 2,
-      badge: earnedBadges.length > progress.badges.length ? earnedBadges[earnedBadges.length - 1] : null,
-      completeCount: nextTodayActivities.length,
-      goal: progress.dailyGoal
-    });
-    setScreen('celebration');
+    if (showCelebration) {
+      setCelebration({
+        title: 'Great job!',
+        message: `${name} is complete.`,
+        stars: 2,
+        badge: earnedBadges.length > progress.badges.length ? earnedBadges[earnedBadges.length - 1] : null,
+        completeCount: nextTodayActivities.length,
+        goal: progress.dailyGoal
+      });
+      setScreen('celebration');
+    }
+  }
+
+  function openNextSocialStory() {
+    if (!activeActivity || activeActivity.category !== 'social') return;
+    const currentIndex = activities.social.findIndex((activity) => activity.title === activeActivity.title);
+    const nextActivity = activities.social[currentIndex + 1];
+    if (!nextActivity) {
+      setScreen('social');
+      return;
+    }
+    setActiveActivity({ ...nextActivity, category: 'social' });
+    setScreen('activity');
   }
 
   function handleQuickChoice(choice) {
@@ -1578,7 +372,7 @@ function App() {
   }
 
   function openSpeechTable() {
-    const speechTable = activities.speech.find((activity) => activity.title === 'Communication Board');
+    const speechTable = activities.speech.find((activity) => activity.title === 'My Voice');
     if (!speechTable) return;
     setActiveActivity({ ...speechTable, category: 'speech', backScreen: 'home' });
     setScreen('activity');
@@ -1622,12 +416,8 @@ function App() {
       >
         <header className="topbar">
           <div className="brand">
-            <button className="avatar-button" type="button" onClick={() => setScreen('avatar')} aria-label={translateText('Change avatar', language)}>
-              <Avatar avatar={activeAvatar} name={profile?.name || 'Child'} size="small" />
-            </button>
             <button className="brand-copy" type="button" onClick={() => setScreen('home')} aria-label={translateText('Go home', language)}>
               <strong>BrightSteps</strong>
-              <small>{profile?.name ? `${translateText('For', language)} ${profile.name}` : translateText('Learning companion', language)}</small>
             </button>
           </div>
           <div className="topbar-actions">
@@ -1711,8 +501,11 @@ function App() {
             soundOff={soundOff}
             onBack={() => setScreen(activeActivity.backScreen || activeActivity.category)}
             onComplete={() => {
-              completeActivity(activeActivity.title, activeActivity.category);
+              completeActivity(activeActivity.title, activeActivity.category, {
+                showCelebration: !['play', 'social'].includes(activeActivity.category)
+              });
             }}
+            onNextStory={hasNextSocialStory ? openNextSocialStory : undefined}
           />
         )}
         {screen === 'celebration' && celebration && (
@@ -1776,29 +569,19 @@ function App() {
 
 function LanguageSwitcher({ value, onChange }) {
   const languages = [
-    { id: 'en', label: 'English', shortLabel: 'EN' },
-    { id: 'es', label: 'Español', shortLabel: 'ES' }
+    { id: 'en', label: 'English' },
+    { id: 'es', label: 'Español' }
   ];
 
   return (
-    <div className="language-switcher" aria-label="Choose language">
+    <label className="language-switcher" aria-label="Choose language">
       <Languages size={18} aria-hidden="true" />
-      <div className="language-options">
+      <select value={value} onChange={(event) => onChange(event.target.value)}>
         {languages.map((language) => (
-          <button
-            key={language.id}
-            type="button"
-            className={value === language.id ? 'language-option active' : 'language-option'}
-            aria-pressed={value === language.id}
-            title={language.label}
-            onClick={() => onChange(language.id)}
-          >
-            <span className="language-short">{language.shortLabel}</span>
-            <span className="language-full">{language.label}</span>
-          </button>
+          <option key={language.id} value={language.id}>{language.label}</option>
         ))}
-      </div>
-    </div>
+      </select>
+    </label>
   );
 }
 
@@ -2203,7 +986,7 @@ function ChildAvatarSetup({ profile, onChoose }) {
           <div>
             <p className="eyebrow">{t('Child choice')}</p>
             <h1>{t('Choose your Mini-Me')}</h1>
-            <p>{profile.name || (language === 'es' ? 'Tu nino' : 'Your child')} {language === 'es' ? 'puede escoger la imagen que quiere usar en BrightSteps.' : 'can pick the picture they want to use in BrightSteps.'}</p>
+            <p>{profile.name || (language === 'es' ? 'Tu niño' : 'Your child')} {language === 'es' ? 'puede escoger la imagen que quiere usar en BrightSteps.' : 'can pick the picture they want to use in BrightSteps.'}</p>
           </div>
         </div>
         <AvatarPicker value={selected} onChange={setSelected} />
@@ -2278,7 +1061,10 @@ function ChildHome({ profile, activeAvatar, progress, isFirstHomeVisit, soundOff
       <section className="welcome-band">
         <div className="welcome-copy">
           <p className="eyebrow">{t(isFirstHomeVisit ? 'Welcome' : 'Welcome back')}</p>
-          <h1>{language === 'es' ? `Hola ${profile?.name || 'amigo'}, vamos a divertirnos hoy!` : `Hi ${profile?.name || 'friend'}, let's have fun today!`}</h1>
+          <h1 className="welcome-heading">
+            <Hand className="welcome-hand-icon" aria-hidden="true" />
+            <span>{language === 'es' ? `¡Hola ${profile?.name || 'amigo'}, vamos a divertirnos hoy!` : `Hi ${profile?.name || 'friend'}, let's have fun today!`}</span>
+          </h1>
         </div>
         <button className="home-avatar-card avatar-edit-button" type="button" onClick={onChangeAvatar} aria-label={t('Change avatar')}>
           <Avatar avatar={activeAvatar} name={profile?.name || 'Child'} size="hero" />
@@ -2397,7 +1183,6 @@ function CategoryPage({ category, profile, progress, soundOff, learnSection, onB
                   <h2>{t(section.title)}</h2>
                   <ChevronRight size={22} />
                 </div>
-                <p>{t(section.detail)}</p>
               </div>
             </button>
           ))}
@@ -2416,7 +1201,6 @@ function CategoryPage({ category, profile, progress, soundOff, learnSection, onB
           <h1>{t(pageTitle[0])}</h1>
         </div>
       </div>
-      {category === 'calm' && <CalmTools />}
       {canReviewLearnedSkills && (
         <div className="activity-toolbar">
           <label className="toggle-row">
@@ -2432,8 +1216,13 @@ function CategoryPage({ category, profile, progress, soundOff, learnSection, onB
       <div className="activity-grid">
         {list.map((activity) => {
           const completed = completedSet.has(activity.title);
+          const isSocialActivity = activityCategory === 'social';
           return (
-            <article className={completed ? 'activity-card completed' : 'activity-card'} key={activity.title}>
+            <article className={[
+              'activity-card',
+              isSocialActivity ? 'social-story-card' : '',
+              completed ? 'completed' : ''
+            ].filter(Boolean).join(' ')} key={activity.title}>
               <div className="activity-visual" aria-hidden="true">
                 <VisualAsset label={activity.icon} imageKey={activity.title === 'Calm Sounds' ? activity.icon : activity.title} />
               </div>
@@ -2442,11 +1231,12 @@ function CategoryPage({ category, profile, progress, soundOff, learnSection, onB
                   <h2>{t(activity.title)}</h2>
                   {completed && <span className="done-badge"><Check size={15} /> {t('Complete')}</span>}
                 </div>
+                {isSocialActivity && activity.storyTitle && <strong className="activity-story-title">{t(activity.storyTitle)}</strong>}
                 <p>{t(activity.detail) || activity.tags?.join(' / ')}</p>
-                {(activity.title === 'Sound + Picture' || activity.title === 'Calm Sounds') && soundOff && <span className="pill">{t('Quiet mode')}</span>}
+                {activity.title === 'Calm Sounds' && soundOff && <span className="pill">{t('Quiet mode')}</span>}
               </div>
               <button className="primary-button" onClick={activity.title === 'Tie Shoes' ? () => onLesson(activity) : () => onStart(activity)}>
-                {t(completed ? 'Practice again' : 'Start')}
+                {t(completed ? 'Practice again' : isSocialActivity ? 'Start story' : 'Start')}
               </button>
             </article>
           );
@@ -2456,18 +1246,24 @@ function CategoryPage({ category, profile, progress, soundOff, learnSection, onB
   );
 }
 
-function ActivityPlayer({ activity, profile, soundOff, onBack, onComplete }) {
+function ActivityPlayer({ activity, profile, soundOff, onBack, onComplete, onNextStory }) {
   if (activity.title === 'Calm Sounds') {
     return <CalmSoundActivity activity={activity} soundOff={soundOff} onBack={onBack} />;
   }
+  if (activity.title === 'Sensory Play') {
+    return <SensoryPlayActivity activity={activity} onBack={onBack} onComplete={onComplete} />;
+  }
   if (activity.category === 'speech' && speechBoards[activity.title]) {
-    return <SpeechBoard activity={activity} board={speechBoards[activity.title]} soundOff={soundOff} onBack={onBack} onComplete={onComplete} />;
+    return <SpeechBoard activity={activity} board={speechBoards[activity.title]} profile={profile} soundOff={soundOff} onBack={onBack} onComplete={onComplete} />;
+  }
+  if (activity.category === 'social' && guidedActivities[activity.title]?.type === 'social-story') {
+    return <SocialStory activity={activity} config={guidedActivities[activity.title]} soundOff={soundOff} onBack={onBack} onComplete={onComplete} onNextStory={onNextStory} />;
   }
   if (activity.title === 'Memory Cards') {
     return <MemoryGame activity={activity} profile={profile} onBack={onBack} onComplete={onComplete} />;
   }
   if (guidedActivities[activity.title]) {
-    return <GuidedActivity activity={activity} config={guidedActivities[activity.title]} soundOff={soundOff} onBack={onBack} onComplete={onComplete} />;
+    return <GuidedActivity activity={activity} config={guidedActivities[activity.title]} soundOff={soundOff} onBack={onBack} onComplete={onComplete} onNextStory={onNextStory} />;
   }
   return <MatchGame activity={activity} soundOff={soundOff} onBack={onBack} onComplete={onComplete} />;
 }
@@ -2508,9 +1304,53 @@ function ShapeIcon({ shape, size = 'small' }) {
   return <span className={`shape-icon shape-${shape.toLowerCase()} shape-${size}`} aria-hidden="true" />;
 }
 
+function SizeSortIcon({ size = 'medium', target = false }) {
+  return <span className={`size-sort-icon size-sort-${size}${target ? ' size-sort-target' : ''}`} aria-hidden="true" />;
+}
+
+function SizeSortObjectVisual({ piece }) {
+  const object = piece.object || 'Ball';
+  if (object === 'Ball') {
+    return <span className={`size-sort-object size-sort-object-${piece.size} size-sort-ball`} aria-hidden="true" />;
+  }
+  if (object === 'Car') {
+    return <Car className={`size-sort-object size-sort-object-${piece.size} size-sort-line-object`} aria-hidden="true" />;
+  }
+  return (
+    <VisualAsset
+      label={object}
+      className={`size-sort-object size-sort-object-${piece.size} size-sort-image-object`}
+      fallback={false}
+    />
+  );
+}
+
+const pairObjectIcons = {
+  banana: Banana,
+  bed: Bed,
+  cat: CatIcon,
+  cup: CupSoda,
+  key: KeyRound,
+  lock: LockKeyhole,
+  paper: FileText,
+  pencil: Pencil,
+  rain: Droplets,
+  umbrella: Umbrella,
+  water: Droplets
+};
+
+function PairObjectVisual({ item, className = 'pair-object-icon' }) {
+  const Icon = pairObjectIcons[item.icon] || pairObjectIcons[item.id];
+  if (!Icon) return <VisualAsset label={item.label} className={className} fallback={false} />;
+  return <Icon className={className} aria-hidden="true" />;
+}
+
 function GameTargetVisual({ activityTitle, target }) {
   if (activityTitle === 'Color Match') {
     return <span className="sr-only">{target.label}</span>;
+  }
+  if (activityTitle === 'Sound Match') {
+    return <Volume2 className="sound-target-icon" aria-hidden="true" />;
   }
   if (activityTitle === 'Letter Match') {
     return <span className="game-letter game-letter-large">{target.label}</span>;
@@ -2518,12 +1358,20 @@ function GameTargetVisual({ activityTitle, target }) {
   if (activityTitle === 'Shape Sort') {
     return <ShapeIcon shape={target.label} size="large" />;
   }
+  if (activityTitle === 'Sort by Size') {
+    return <SizeSortIcon size={target.size} target />;
+  }
+  if (activityTitle === 'Match Pairs') {
+    return <PairObjectVisual item={target} className="pair-object-icon pair-target-icon" />;
+  }
   if (activityTitle === 'Number Garden') {
+    const flowerCount = Number.isFinite(target.count) ? target.count : Number(target.label) || 3;
+    const countItem = target.item || 'Flower';
     return (
       <div className="flower-count" aria-hidden="true">
-        <VisualAsset label="Flower" className="count-image" />
-        <VisualAsset label="Flower" className="count-image" />
-        <VisualAsset label="Flower" className="count-image" />
+        {Array.from({ length: flowerCount }).map((_, index) => (
+          <VisualAsset key={index} label={countItem} className="count-image" />
+        ))}
       </div>
     );
   }
@@ -2540,13 +1388,60 @@ function GameChoiceVisual({ activityTitle, choice }) {
   if (activityTitle === 'Shape Sort') {
     return <ShapeIcon shape={choice.label} />;
   }
+  if (activityTitle === 'Sort by Size') {
+    return <SizeSortIcon size={choice.size} />;
+  }
+  if (activityTitle === 'Match Pairs') {
+    return <PairObjectVisual item={choice} className="pair-object-icon pair-choice-icon" />;
+  }
   return <VisualAsset label={choice.label} className="choice-image" fallback={false} />;
 }
 
+function GameCompleteActions({ onRepeat, onGames, onNext, backLabel = 'Back to Games', nextLabel = 'Next story' }) {
+  const t = useT();
+  return (
+    <div className="game-complete-card" aria-live="polite">
+      <div className="celebration-star game-complete-star"><Star /></div>
+      <strong>{t('Good job!')}</strong>
+      <div className="form-actions">
+        <button className="secondary-button" type="button" onClick={onRepeat}>
+          <RotateCcw size={18} /> {t('Repeat')}
+        </button>
+        <button className={onNext ? 'secondary-button' : 'primary-button'} type="button" onClick={onGames}>
+          <Puzzle size={18} /> {t(backLabel)}
+        </button>
+        {onNext && (
+          <button className="primary-button" type="button" onClick={onNext}>
+            {t(nextLabel)} <ChevronRight size={18} />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function getGameRounds(activityTitle, activityIcon) {
+  const game = activityGames[activityTitle];
+  if (game?.rounds) return game.rounds;
+  if (game) return [game];
+  return [
+    {
+      prompt: 'Choose the best match.',
+      target: { label: activityIcon, value: activityTitle },
+      choices: [
+        { label: activityTitle, value: activityTitle },
+        { label: 'Try later', value: 'later' },
+        { label: 'Wait', value: 'wait' },
+        { label: 'Help', value: 'help' }
+      ]
+    }
+  ];
+}
+
 const quickCommunicationCards = [
-  { label: 'Help', image: 'Help', sentence: 'I need help.' },
   { label: 'Yes', image: 'Yes', sentence: 'Yes.' },
   { label: 'No', image: 'No', sentence: 'No.' },
+  { label: 'Help', image: 'Help', sentence: 'I need help.' },
   { label: 'Stop', image: 'Stop', sentence: 'Stop please.' },
   { label: 'Break', image: 'Break', sentence: 'I need a break.', followUp: 'break' },
   { label: 'Bathroom', image: 'Bathroom', sentence: 'I need the bathroom.' },
@@ -2557,20 +1452,24 @@ const communicationCategories = [
   {
     id: 'want',
     label: 'I Want',
+    description: 'food, drink, toys',
+    image: 'Drink',
     cards: [
-      { label: 'Eat', image: 'Eat', sentence: 'I want to eat.' },
-      { label: 'Drink', image: 'Drink', sentence: 'I want a drink.' },
       { label: 'Water', image: 'Water', sentence: 'I want water.' },
-      { label: 'Play', image: 'Play', sentence: 'I want to play.' },
+      { label: 'Eat', image: 'Eat', sentence: 'I want to eat.' },
       { label: 'Toy', image: 'Toy', sentence: 'I want a toy.' },
       { label: 'Music', image: 'Sound + Picture', sentence: 'I want music.' },
       { label: 'Outside', image: 'Sun', sentence: 'I want to go outside.' },
+      { label: 'Play', image: 'Play', sentence: 'I want to play.' },
+      { label: 'Drink', image: 'Drink', sentence: 'I want a drink.' },
       { label: 'More', image: 'More please', sentence: 'I want more.' }
     ]
   },
   {
     id: 'need',
     label: 'I Need',
+    description: 'help, bathroom, break',
+    image: 'Bathroom',
     cards: [
       { label: 'Help', image: 'Help', sentence: 'I need help.' },
       { label: 'Break', image: 'Break', sentence: 'I need a break.', followUp: 'break' },
@@ -2583,8 +1482,26 @@ const communicationCategories = [
     ]
   },
   {
+    id: 'sensory',
+    label: 'Sensory Needs',
+    description: 'loud, bright, crowded',
+    image: 'Sensory Needs',
+    cards: [
+      { label: 'Too loud', image: 'Sensory Needs', sentence: 'It is too loud.' },
+      { label: 'Too bright', image: 'Sensory Needs', sentence: 'It is too bright.' },
+      { label: 'Too crowded', image: 'Sensory Needs', sentence: 'It is too crowded.' },
+      { label: 'Too close', image: 'Sensory Needs', sentence: 'Too close.' },
+      { label: 'Uncomfortable', image: 'Sensory Needs', sentence: 'I am uncomfortable.' },
+      { label: 'Headphones', image: 'Headphones', sentence: 'I need headphones.' },
+      { label: 'Quiet', image: 'Calm Break', sentence: 'I need quiet.' },
+      { label: 'Dim lights', image: 'Calm Break', sentence: 'I need dim lights.' }
+    ]
+  },
+  {
     id: 'feel',
     label: 'I Feel',
+    description: 'happy, sad, mad',
+    image: 'Happy',
     cards: [
       { group: 'Feelings', label: 'Happy', image: 'Happy', sentence: 'I feel happy.' },
       { group: 'Feelings', label: 'Sad', image: 'Sad', sentence: 'I feel sad.' },
@@ -2592,7 +1509,7 @@ const communicationCategories = [
       { group: 'Feelings', label: 'Scared', image: 'Worried', sentence: 'I feel scared.' },
       { group: 'Feelings', label: 'Tired', image: 'Tired', sentence: 'I feel tired.' },
       { group: 'Feelings', label: 'Excited', image: 'Excited', sentence: 'I feel excited.' },
-      { group: 'Feelings', label: 'Calm', image: 'Calm Break', sentence: 'I feel calm.' },
+      { group: 'Feelings', label: 'Calm', image: 'Calm', sentence: 'I feel calm.' },
       { group: 'Feelings', label: 'Frustrated', image: 'Mad', sentence: 'I feel frustrated.' },
       { group: 'Feelings', label: 'Overwhelmed', image: 'Worried', sentence: 'I feel overwhelmed.' },
       { group: 'Feelings', label: 'Sick', image: 'Tired', sentence: 'I feel sick.' },
@@ -2608,6 +1525,8 @@ const communicationCategories = [
   {
     id: 'like',
     label: "Like / Don't Like",
+    description: 'favorite or no',
+    image: 'Heart',
     cards: [
       { label: 'I Like', image: 'Thank you', sentence: 'I like this.' },
       { label: "I Don't Like", image: 'Stop', sentence: "I don't like this." },
@@ -2616,12 +1535,14 @@ const communicationCategories = [
       { label: 'This', image: 'Choice Board', sentence: "I don't like this." },
       { label: 'Outside', image: 'Sun', sentence: 'I like outside.' },
       { label: 'Play', image: 'Play', sentence: 'I like playing.' },
-      { label: 'Quiet', image: 'Calm Break', sentence: 'I like quiet.' }
+      { label: 'Quiet', image: 'Calm', sentence: 'I like quiet.' }
     ]
   },
   {
     id: 'yes-no',
     label: 'Yes / No',
+    description: 'answer clearly',
+    image: 'Yes',
     large: true,
     cards: [
       { label: 'Yes', image: 'Yes', sentence: 'Yes.' },
@@ -2632,6 +1553,8 @@ const communicationCategories = [
   {
     id: 'help',
     label: 'Help Me',
+    description: 'open, show, come',
+    image: 'Help',
     cards: [
       { label: 'Help me', image: 'Help', sentence: 'Help me.' },
       { label: 'Open it', image: 'Toy', sentence: 'Open it please.' },
@@ -2644,6 +1567,8 @@ const communicationCategories = [
   {
     id: 'more',
     label: 'More / All Done',
+    description: 'again, wait, finished',
+    image: 'All done',
     cards: [
       { label: 'More', image: 'More please', sentence: 'More please.' },
       { label: 'Again', image: 'Again', sentence: 'Again please.' },
@@ -2653,8 +1578,26 @@ const communicationCategories = [
     ]
   },
   {
+    id: 'questions',
+    label: 'Questions',
+    description: 'what, where, who',
+    image: 'Eye',
+    cards: [
+      { label: 'What?', image: 'Choice Board', sentence: 'What?' },
+      { label: 'Where?', image: 'Eye', sentence: 'Where?' },
+      { label: 'Who?', image: 'Thank you', sentence: 'Who?' },
+      { label: 'When?', image: 'Timer', sentence: 'When?' },
+      { label: 'Why?', image: 'Worried', sentence: 'Why?' },
+      { label: 'Can I?', image: 'Help', sentence: 'Can I?' },
+      { label: 'Where is Mom?', image: 'Heart', sentence: 'Where is Mom?' },
+      { label: 'What is that?', image: 'Eye', sentence: 'What is that?' }
+    ]
+  },
+  {
     id: 'play',
     label: 'Games',
+    description: 'my turn, play with me',
+    image: 'Toy',
     cards: [
       { label: "Let's play", image: 'Play', sentence: "Let's play." },
       { label: 'Play with me', image: 'Play', sentence: 'Play with me.' },
@@ -2668,6 +1611,8 @@ const communicationCategories = [
   {
     id: 'love-space',
     label: 'Love & Space',
+    description: 'hug, I love you, space',
+    image: 'Love & Space',
     cards: [
       { group: 'Affection', label: 'Hug me', image: 'Thank you', sentence: 'I want a hug.' },
       { group: 'Affection', label: 'Hug you', image: 'Thank you', sentence: 'I want to hug you.' },
@@ -2682,7 +1627,7 @@ const communicationCategories = [
       { group: 'Affection', label: 'I miss you', image: 'Sad', sentence: 'I miss you.' },
       { group: 'Affection', label: 'Cuddle', image: 'Heart', sentence: 'I want to cuddle.' },
       { group: 'Affection', label: 'High five', image: 'Take Turns', sentence: 'High five.' },
-      { group: 'Personal Space', label: 'I need space', image: 'Calm Break', sentence: 'I need space.' },
+      { group: 'Personal Space', label: 'I need space', image: 'Calm', sentence: 'I need space.' },
       { group: 'Personal Space', label: 'No hug', image: 'Stop', sentence: 'No hug right now.' },
       { group: 'Personal Space', label: 'Not now', image: 'Timer', sentence: 'Not now.' },
       { group: 'Personal Space', label: "Don't touch me", image: 'Stop', sentence: "Don't touch me." },
@@ -2690,34 +1635,40 @@ const communicationCategories = [
       { group: 'Personal Space', label: 'Stop', image: 'Stop', sentence: 'Stop please.' },
       { group: 'Personal Space', label: 'Wait', image: 'Timer', sentence: 'Wait please.' },
       { group: 'Personal Space', label: 'Gentle hands', image: 'Heart', sentence: 'Gentle hands please.' },
-      { group: 'Personal Space', label: 'Alone', image: 'Calm Break', sentence: 'I want to be alone.' },
+      { group: 'Personal Space', label: 'Alone', image: 'Calm', sentence: 'I want to be alone.' },
       { group: 'Personal Space', label: 'Break', image: 'Break', sentence: 'I need a break.', followUp: 'break' }
     ]
   },
   {
     id: 'break',
     label: 'I Need a Break',
+    description: 'quiet, alone, breathe',
+    image: 'Calm Break',
     cards: [
-      { label: 'I need a break', image: 'Break', sentence: 'I need a break.', followUp: 'break', prominent: true },
+      { label: 'I need a break', image: 'Calm Break', sentence: 'I need a break.', followUp: 'break', prominent: true },
       { label: 'Quiet', image: 'Calm Break', sentence: 'I need a break. I want quiet.' },
-      { label: 'Headphones', image: 'Calm Break', sentence: 'I need a break. I want headphones.' },
+      { label: 'Headphones', image: 'Headphones', sentence: 'I need a break. I want headphones.' },
       { label: 'Sit down', image: 'Bed', sentence: 'I need a break. I want to sit down.' },
-      { label: 'Dim lights', image: 'Moon', sentence: 'I need a break. I want dim lights.' },
-      { label: 'Alone time', image: 'Calm Break', sentence: 'I need a break. I want alone time.' },
-      { label: 'Breathe', image: 'Yoga Calm', sentence: 'I need a break. I want to breathe.' },
+      { label: 'Dim lights', image: 'Calm Break', sentence: 'I need a break. I want dim lights.' },
+      { label: 'Alone time', image: 'Calm', sentence: 'I need a break. I want alone time.' },
+      { label: 'Breathe', image: 'Breathe', sentence: 'I need a break. I want to breathe.' },
       { label: 'Favorite item', image: 'Toy', sentence: 'I need a break. I want my favorite item.' }
     ]
   },
   {
     id: 'hurt',
     label: 'Something Hurts',
+    description: 'head, stomach, ear',
+    image: 'Something Hurts',
     cards: [
-      { label: 'Something hurts', image: 'Worried', sentence: 'Something hurts.', followUp: 'hurt', prominent: true }
+      { label: 'Something hurts', image: 'Something Hurts', sentence: 'Something hurts.', followUp: 'hurt', prominent: true }
     ]
   },
   {
     id: 'choice',
     label: 'My Choice',
+    description: 'choose right now',
+    image: 'Choice Board',
     cards: [
       { label: 'I choose this', image: 'Choice Board', sentence: 'I choose this.' },
       { label: 'Blue one', image: 'Water', sentence: 'I choose the blue one.' },
@@ -2729,9 +1680,49 @@ const communicationCategories = [
   }
 ];
 
+const defaultMyVoiceSettings = {
+  enabledQuick: quickCommunicationCards.map((card) => card.label),
+  enabledCategories: communicationCategories.map((category) => category.id),
+  customCards: []
+};
+
+function normalizeMyVoiceSettings(settings) {
+  const hasSettings = settings && typeof settings === 'object';
+  const enabledQuick = asArray(settings?.enabledQuick, hasSettings ? [] : defaultMyVoiceSettings.enabledQuick)
+    .filter((label) => quickCommunicationCards.some((card) => card.label === label));
+  const enabledCategories = asArray(settings?.enabledCategories, hasSettings ? [] : defaultMyVoiceSettings.enabledCategories)
+    .filter((id) => communicationCategories.some((category) => category.id === id));
+  const customCards = asArray(settings?.customCards)
+    .map((card, index) => ({
+      id: card?.id || `custom-${Date.now()}-${index}`,
+      label: String(card?.label || '').trim(),
+      sentence: String(card?.sentence || card?.label || '').trim(),
+      image: card?.image || 'Choice Board',
+      custom: true
+    }))
+    .filter((card) => card.label && card.sentence)
+    .slice(0, 12);
+
+  return {
+    enabledQuick,
+    enabledCategories: enabledCategories.length ? enabledCategories : defaultMyVoiceSettings.enabledCategories,
+    customCards
+  };
+}
+
+function createCustomCommunicationCategory(customCards) {
+  return {
+    id: 'custom',
+    label: 'Custom messages',
+    description: 'parent choices',
+    image: 'Choice Board',
+    cards: customCards
+  };
+}
+
 const breakSupportCards = [
   { label: 'Quiet', image: 'Calm Break', sentence: 'I need a break. I want quiet.' },
-  { label: 'Headphones', image: 'Calm Break', sentence: 'I need a break. I want headphones.' },
+  { label: 'Headphones', image: 'Headphones', sentence: 'I need a break. I want headphones.' },
   { label: 'Sit down', image: 'Bed', sentence: 'I need a break. I want to sit down.' },
   { label: 'Dim lights', image: 'Moon', sentence: 'I need a break. I want dim lights.' },
   { label: 'Alone time', image: 'Calm Break', sentence: 'I need a break. I want alone time.' },
@@ -2751,9 +1742,9 @@ const hurtIntensityCards = [
   { label: 'A lot', image: 'Worried', sentence: 'It hurts a lot.' }
 ];
 
-function SpeechBoard({ activity, board, soundOff, onBack, onComplete }) {
+function SpeechBoard({ activity, board, profile, soundOff, onBack, onComplete }) {
   if (board.type === 'communication-board') {
-    return <CommunicationBoard activity={activity} soundOff={soundOff} onBack={onBack} onComplete={onComplete} />;
+    return <CommunicationBoard activity={activity} profile={profile} soundOff={soundOff} onBack={onBack} onComplete={onComplete} />;
   }
   return <SimpleSpeechBoard activity={activity} board={board} soundOff={soundOff} onBack={onBack} onComplete={onComplete} />;
 }
@@ -2864,27 +1855,47 @@ function SimpleSpeechBoard({ activity, board, soundOff, onBack, onComplete }) {
   );
 }
 
-function CommunicationBoard({ activity, soundOff, onBack, onComplete }) {
-  const [activeTab, setActiveTab] = useState(communicationCategories[0].id);
+function CommunicationBoard({ activity, profile, soundOff, onBack, onComplete }) {
+  const language = useContext(LanguageContext);
+  const t = useT();
+  const myVoiceSettings = useMemo(() => normalizeMyVoiceSettings(profile?.myVoice), [profile?.myVoice]);
+  const configuredQuickCards = useMemo(
+    () => quickCommunicationCards.filter((card) => myVoiceSettings.enabledQuick.includes(card.label)),
+    [myVoiceSettings]
+  );
+  const fallbackCategories = useMemo(() => {
+    const configuredCategories = communicationCategories.filter((category) => myVoiceSettings.enabledCategories.includes(category.id));
+    const customCategory = myVoiceSettings.customCards.length ? createCustomCommunicationCategory(myVoiceSettings.customCards) : null;
+    const availableCategories = customCategory ? [...configuredCategories, customCategory] : configuredCategories;
+    return availableCategories.length ? availableCategories : communicationCategories;
+  }, [myVoiceSettings]);
+  const [activeTab, setActiveTab] = useState(fallbackCategories[0].id);
   const [sentenceParts, setSentenceParts] = useState([]);
   const [lastSpoken, setLastSpoken] = useState('');
   const [followUp, setFollowUp] = useState(null);
   const sentence = sentenceParts.join(' ');
-  const activeCategory = communicationCategories.find((category) => category.id === activeTab) || communicationCategories[0];
+  const activeCategory = fallbackCategories.find((category) => category.id === activeTab) || fallbackCategories[0];
+
+  useEffect(() => {
+    if (!fallbackCategories.some((category) => category.id === activeTab)) {
+      setActiveTab(fallbackCategories[0].id);
+      setFollowUp(null);
+    }
+  }, [activeTab, fallbackCategories]);
 
   function speakText(text) {
     setLastSpoken(text);
     if (soundOff || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
+    utterance.lang = language === 'es' ? 'es-US' : 'en-US';
     utterance.rate = 0.82;
     utterance.pitch = 1.08;
     window.speechSynthesis.speak(utterance);
   }
 
   function chooseCard(card) {
-    const text = card.sentence || card.label;
+    const text = card.custom ? (card.sentence || card.label) : t(card.sentence || card.label);
     setSentenceParts((current) => [...current, text].slice(-2));
     setFollowUp(card.followUp || null);
     speakText(text);
@@ -2913,100 +1924,395 @@ function CommunicationBoard({ activity, soundOff, onBack, onComplete }) {
 
   return (
     <section className="speech-page communication-page">
-      <div className="page-title">
-        <button className="icon-button" onClick={onBack} aria-label="Go back"><ArrowLeft /></button>
-        <span className="round-icon"><MessageSquare /></span>
-        <div>
-          <p className="eyebrow">Communication</p>
-          <h1>{activity.title}</h1>
+      <header className="communication-header">
+        <button className="icon-button communication-back-button" onClick={onBack} aria-label={t('Go back')}><ArrowLeft /></button>
+        <div className="communication-title">
+          <div className="communication-title-heading">
+            <h1>{t('My Voice')}</h1>
+            <span className="communication-title-icon" aria-hidden="true"><MessageSquare size={26} /></span>
+          </div>
+          <p>{t('Tap pictures to tell us what you want to say')}</p>
         </div>
-      </div>
+        <button className="icon-button communication-finish-button" type="button" disabled={!lastSpoken} onClick={onComplete} aria-label={t('Finish')}>
+          <Check />
+        </button>
+      </header>
 
       <div className="speech-builder communication-builder" aria-live="polite">
-        <div className="speech-phrase communication-phrase" aria-label="Sentence builder">
-          {sentenceParts.length ? sentenceParts.map((part, index) => (
-            <span key={`${part}-${index}`}>{part}</span>
-          )) : (
-            <span>Tap a picture</span>
-          )}
+        <div className="communication-message">
+          <p>{t('Your message')}</p>
+          <div className="speech-phrase communication-phrase" aria-label={t('Sentence builder')}>
+            {sentenceParts.length ? sentenceParts.map((part, index) => (
+              <span key={`${part}-${index}`}>{part}</span>
+            )) : (
+              <span>{t('Tap a picture')}</span>
+            )}
+          </div>
         </div>
         <div className="speech-actions">
           <button className="primary-button" type="button" disabled={!sentence} onClick={repeatSentence}>
-            <Volume2 size={18} /> Speak
+            <Volume2 size={18} /> {t('Speak')}
           </button>
           <button className="secondary-button" type="button" disabled={!sentenceParts.length} onClick={() => setSentenceParts((current) => current.slice(0, -1))}>
-            <Delete size={18} /> Backspace
+            <Delete size={18} /> {t('Back')}
           </button>
           <button className="secondary-button" type="button" disabled={!sentenceParts.length} onClick={() => { setSentenceParts([]); setFollowUp(null); }}>
-            <Trash2 size={18} /> Clear
-          </button>
-          <button className="secondary-button" type="button" disabled={!lastSpoken} onClick={() => speakText(lastSpoken)}>
-            <RotateCcw size={18} /> Repeat
+            <Trash2 size={18} /> {t('Clear')}
           </button>
         </div>
       </div>
 
-      <div className="quick-communication-bar" aria-label="Quick communication">
-        {quickCommunicationCards.map((card) => (
-          <button key={card.label} type="button" onClick={() => chooseCard(card)}>
-            <VisualAsset label={card.label} imageKey={card.image} className="quick-card-image" fallback={false} />
-            <span>{card.label}</span>
-          </button>
-        ))}
-      </div>
+      {!!configuredQuickCards.length && (
+        <div className="quick-communication-bar" aria-label={t('Quick communication')}>
+          {configuredQuickCards.map((card) => (
+            <button key={card.label} type="button" onClick={() => chooseCard(card)}>
+              <VisualAsset label={card.label} imageKey={card.image} className="quick-card-image" fallback={false} />
+              <span>{card.custom ? card.label : t(card.label)}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
-      <div className="communication-tabs" aria-label="Communication categories">
-        {communicationCategories.map((category) => (
-          <button
-            key={category.id}
-            type="button"
-            className={activeTab === category.id ? 'active' : ''}
-            onClick={() => { setActiveTab(category.id); setFollowUp(null); }}
-          >
-            {category.label}
-          </button>
-        ))}
-      </div>
+      <div className="communication-workspace">
+        <nav className="communication-tabs" aria-label={t('Communication categories')}>
+          {fallbackCategories.map((category) => (
+            <button
+              key={category.id}
+              type="button"
+              className={activeTab === category.id ? 'active' : ''}
+              onClick={() => { setActiveTab(category.id); setFollowUp(null); }}
+            >
+              <VisualAsset label={category.label} imageKey={category.image} className="communication-tab-image" fallback={false} />
+              <span>
+                <strong>{t(category.label)}</strong>
+                <small>{t(category.description)}</small>
+              </span>
+              {activeTab === category.id && <Check size={18} aria-hidden="true" />}
+            </button>
+          ))}
+        </nav>
 
-      <section className="speech-group communication-group">
-        <h2>{followUpTitle || activeCategory.label}</h2>
-        {activeCategory.id === 'choice' && (
-          <p className="caregiver-note">Caregivers can swap these choices for the real options available right now.</p>
-        )}
-        {activeCategory.id === 'hurt' && (
-          <p className="caregiver-note">Caregiver note: this app does not provide medical assessment or diagnosis.</p>
-        )}
-        {cardGroups.map(([groupName, cards]) => (
-          <div className="communication-card-section" key={groupName || activeCategory.id}>
-            {groupName && <h3>{groupName}</h3>}
-            <div className={activeCategory.large ? 'speech-card-grid communication-card-grid large-cards' : 'speech-card-grid communication-card-grid'}>
-              {cards.map((card) => (
-                <button
-                  key={card.label}
-                  type="button"
-                  className={card.prominent ? 'speech-card communication-card prominent' : 'speech-card communication-card'}
-                  onClick={() => chooseCard(card)}
-                >
-                  <VisualAsset label={card.label} imageKey={card.image} className="speech-card-image communication-card-image" fallback={false} />
-                  <strong>{card.label}</strong>
-                </button>
-              ))}
+        <section className="speech-group communication-group">
+          <h2>{t(followUpTitle || activeCategory.label)}</h2>
+          {activeCategory.id === 'choice' && (
+            <p className="caregiver-note">{t('Caregivers can swap these choices for the real options available right now.')}</p>
+          )}
+          {activeCategory.id === 'hurt' && (
+            <p className="caregiver-note">{t('Caregiver note: this app does not provide medical assessment or diagnosis.')}</p>
+          )}
+          {activeCategory.id === 'questions' && (
+            <p className="caregiver-note">{t('For children who are ready for this level.')}</p>
+          )}
+          {cardGroups.map(([groupName, cards]) => (
+            <div className="communication-card-section" key={groupName || activeCategory.id}>
+              {groupName && <h3>{t(groupName)}</h3>}
+              <div className={activeCategory.large ? 'speech-card-grid communication-card-grid large-cards' : 'speech-card-grid communication-card-grid'}>
+                {cards.map((card) => (
+                  <button
+                    key={card.label}
+                    type="button"
+                    className={card.prominent ? 'speech-card communication-card prominent' : 'speech-card communication-card'}
+                    onClick={() => chooseCard(card)}
+                  >
+                    <VisualAsset label={card.label} imageKey={card.image} className="speech-card-image communication-card-image" fallback={false} />
+                    <strong>{card.custom ? card.label : t(card.label)}</strong>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </section>
+          ))}
+        </section>
+      </div>
 
       <div className="speech-footer">
         <span>{soundOff ? 'Voice muted' : (lastSpoken ? `Heard: ${lastSpoken}` : 'Ready to communicate')}</span>
-        <button className="primary-button" type="button" disabled={!lastSpoken} onClick={onComplete}>
-          <Star size={18} /> Finish
+        <button className="secondary-button" type="button" disabled={!lastSpoken} onClick={() => speakText(lastSpoken)}>
+          <RotateCcw size={18} /> Repeat
         </button>
       </div>
     </section>
   );
 }
 
-function GuidedActivity({ activity, config, soundOff, onBack, onComplete }) {
+function SocialStory({ activity, config, soundOff, onBack, onComplete, onNextStory }) {
+  const t = useT();
+  const language = useContext(LanguageContext);
+  const [sceneIndex, setSceneIndex] = useState(0);
+  const [completed, setCompleted] = useState(false);
+  const [practiceDone, setPracticeDone] = useState(false);
+  const [selectedChoice, setSelectedChoice] = useState(null);
+  const [caregiverOpen, setCaregiverOpen] = useState(false);
+  const scenes = config.scenes || [];
+  const scene = scenes[sceneIndex] || scenes[0];
+  const isLastScene = sceneIndex >= scenes.length - 1;
+  const scenePracticeComplete = scene?.type !== 'practice'
+    || practiceDone
+    || (scene.practice === 'choice' && selectedChoice === scene.correct);
+
+  useEffect(() => {
+    setSceneIndex(0);
+    setCompleted(false);
+    setPracticeDone(false);
+    setSelectedChoice(null);
+    setCaregiverOpen(false);
+  }, [activity.title]);
+
+  useEffect(() => {
+    setPracticeDone(false);
+    setSelectedChoice(null);
+    setCaregiverOpen(false);
+  }, [sceneIndex]);
+
+  function speakText(text) {
+    if (soundOff || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = language === 'es' ? 'es-ES' : 'en-US';
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function completeStory() {
+    if (!completed) {
+      setCompleted(true);
+      onComplete();
+    }
+  }
+
+  function goNext() {
+    if (isLastScene) {
+      completeStory();
+      return;
+    }
+    setSceneIndex((index) => Math.min(index + 1, scenes.length - 1));
+  }
+
+  function resetStory() {
+    setSceneIndex(0);
+    setCompleted(false);
+    setPracticeDone(false);
+    setSelectedChoice(null);
+    setCaregiverOpen(false);
+  }
+
+  return (
+    <section className="game-page social-story-page">
+      <div className="page-title social-story-title">
+        <button className="icon-button" onClick={onBack} aria-label="Go back"><ArrowLeft /></button>
+        <span className="round-icon"><Users /></span>
+        <div>
+          <p className="eyebrow">{t(activity.title)}</p>
+          <h1>{t(config.storyTitle)}</h1>
+        </div>
+      </div>
+
+      <article className="social-story-panel">
+        <div className="social-story-status">
+          <span>{t('Story')} {sceneIndex + 1} {t('of')} {scenes.length}</span>
+          <StoryProgress current={sceneIndex} total={scenes.length} />
+        </div>
+
+        <StorySceneVisual scene={scene} practiced={practiceDone || completed} selectedChoice={selectedChoice} />
+
+        <div className="social-story-copy">
+          {scene.type === 'practice' && <p className="eyebrow">{t('Your turn')}</p>}
+          {scene.type === 'model' && <p className="eyebrow">{t('Watch')}</p>}
+          <h2>{t(scene.text)}</h2>
+          {scene.supportingText && <p>{t(scene.supportingText)}</p>}
+        </div>
+
+        {scene.type === 'practice' && scene.practice !== 'choice' && (
+          <PracticeScene
+            scene={scene}
+            practiced={practiceDone}
+            onPractice={() => setPracticeDone(true)}
+            onSpeak={() => speakText(t(scene.listenText || scene.text))}
+          />
+        )}
+
+        {scene.type === 'practice' && scene.practice === 'choice' && (
+          <div className="social-choice-grid">
+            {scene.choices.map((choice) => {
+              const isSelected = selectedChoice === choice;
+              const isCorrect = selectedChoice === scene.correct && choice === scene.correct;
+              return (
+                <button
+                  key={choice}
+                  type="button"
+                  className={[
+                    'social-choice-card',
+                    isSelected ? 'selected' : '',
+                    isCorrect ? 'correct' : ''
+                  ].filter(Boolean).join(' ')}
+                  onClick={() => setSelectedChoice(choice)}
+                >
+                  <VisualAsset label={choice} className="choice-image" fallback={false} />
+                  <span>{t(choice)}</span>
+                  {isCorrect && <Check className="choice-state-icon" size={20} aria-label={t('Great job!')} />}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {scene.type === 'ending' && (
+          <div className="social-story-ending" aria-live="polite">
+            <Star className="social-story-star" aria-hidden="true" />
+            <strong>{t('Nice practicing!')}</strong>
+            <span>{t(scene.practicedText)}</span>
+          </div>
+        )}
+
+        <div className="social-story-actions">
+          <button className="secondary-button" type="button" onClick={() => speakText(t(scene.listenText || scene.text))} disabled={soundOff}>
+            <Volume2 size={18} /> {t('Listen')}
+          </button>
+          {config.caregiverTip && (
+            <button className="secondary-button" type="button" onClick={() => setCaregiverOpen((value) => !value)} aria-expanded={caregiverOpen}>
+              <Info size={18} /> {t('Caregiver tip')}
+            </button>
+          )}
+          {scene.type === 'ending' ? (
+            <button className="primary-button" type="button" onClick={completeStory}>
+              <Check size={18} /> {t('Finish')}
+            </button>
+          ) : (
+            <button className="primary-button" type="button" onClick={goNext} disabled={!scenePracticeComplete}>
+              {t(scene.action || 'Next')} <ChevronRight size={18} />
+            </button>
+          )}
+        </div>
+
+        {caregiverOpen && (
+          <aside className="social-caregiver-tip">
+            <strong>{t('Caregiver tip')}</strong>
+            <p>{t(config.caregiverTip)}</p>
+          </aside>
+        )}
+
+        {completed && (
+          <div className="social-story-complete">
+            <button className="secondary-button" type="button" onClick={resetStory}>
+              <RotateCcw size={18} /> {t('Practice again')}
+            </button>
+            <button className="secondary-button" type="button" onClick={onBack}>
+              <Users size={18} /> {t('Back to Social')}
+            </button>
+            {onNextStory && (
+              <button className="primary-button" type="button" onClick={onNextStory}>
+                {t('Another story')} <ChevronRight size={18} />
+              </button>
+            )}
+          </div>
+        )}
+      </article>
+    </section>
+  );
+}
+
+function StoryProgress({ current, total }) {
+  return (
+    <div className="story-progress-dots" aria-hidden="true">
+      {Array.from({ length: total }).map((_, index) => (
+        <span key={index} className={index <= current ? 'active' : ''} />
+      ))}
+    </div>
+  );
+}
+
+function StorySceneVisual({ scene, practiced, selectedChoice }) {
+  return (
+    <div className={`social-scene-visual scene-${scene.mood || 'play'}`}>
+      <div className="story-floor" aria-hidden="true" />
+      <StoryCharacter name="Mia" pose={scene.type === 'practice' || practiced ? 'wave' : 'stand'} />
+      {scene.leo && <StoryCharacter name="Leo" pose={scene.mood === 'sad' ? 'sad' : scene.mood === 'happy' ? 'happy' : scene.type === 'response' ? 'wave' : 'stand'} />}
+      {scene.tower && <StoryTower blocks={scene.tower} />}
+      {scene.mood === 'cars' && <StoryCars shared={scene.type === 'response' || practiced} />}
+      {scene.mood === 'snack' && <StorySnack />}
+      {scene.type === 'practice' && scene.practice === 'hello' && (
+        <div className="story-communication-options" aria-hidden="true">
+          <span><Hand size={24} /> Wave</span>
+          <span><MessageSquare size={24} /> Hello</span>
+          <span><ImageIcon size={24} /> AAC</span>
+        </div>
+      )}
+      {selectedChoice && <span className="story-choice-bubble">{selectedChoice}</span>}
+    </div>
+  );
+}
+
+function StoryCharacter({ name, pose }) {
+  const initial = name === 'Mia' ? 'M' : 'L';
+  return (
+    <div className={`story-character story-character-${name.toLowerCase()} pose-${pose}`} aria-label={name}>
+      <span className="story-character-head">
+        <span className="story-character-hair" />
+        <span className="story-character-face">{pose === 'sad' ? '•︵•' : '•‿•'}</span>
+      </span>
+      <span className="story-character-body">{initial}</span>
+      <span className="story-character-arm left" />
+      <span className="story-character-arm right" />
+      <strong>{name}</strong>
+    </div>
+  );
+}
+
+function StoryTower({ blocks }) {
+  return (
+    <div className="story-tower" aria-hidden="true">
+      {Array.from({ length: blocks }).map((_, index) => <span key={index} />)}
+    </div>
+  );
+}
+
+function StoryCars({ shared }) {
+  return (
+    <div className={shared ? 'story-cars shared' : 'story-cars'} aria-hidden="true">
+      <Car />
+      <Car />
+    </div>
+  );
+}
+
+function StorySnack() {
+  return <div className="story-snack" aria-hidden="true"><CupSoda /></div>;
+}
+
+function PracticeScene({ scene, practiced, onPractice, onSpeak }) {
+  const t = useT();
+  if (scene.practice === 'block') {
+    return (
+      <button className={practiced ? 'practice-action-card done' : 'practice-action-card'} type="button" onClick={onPractice}>
+        <span className="practice-block" aria-hidden="true" />
+        <strong>{t(practiced ? 'Block added' : 'Add the block')}</strong>
+      </button>
+    );
+  }
+  if (scene.practice === 'share-car') {
+    return (
+      <button className={practiced ? 'practice-action-card done' : 'practice-action-card'} type="button" onClick={onPractice}>
+        <Car aria-hidden="true" />
+        <strong>{t(practiced ? 'Car shared' : 'Share the car')}</strong>
+      </button>
+    );
+  }
+  return (
+    <div className="practice-confirm-card">
+      {scene.listenText && (
+        <button className="secondary-button" type="button" onClick={onSpeak}>
+          <Volume2 size={18} /> {t('Hear “Hello!”')}
+        </button>
+      )}
+      <button className="primary-button" type="button" onClick={onPractice}>
+        <Check size={18} /> {t(practiced ? 'I did it' : 'I did it')}
+      </button>
+    </div>
+  );
+}
+
+function GuidedActivity({ activity, config, soundOff, onBack, onComplete, onNextStory }) {
+  const t = useT();
+  const language = useContext(LanguageContext);
   const [mediaMode, setMediaMode] = useState('images');
   const [selected, setSelected] = useState(null);
   const [stepIndex, setStepIndex] = useState(0);
@@ -3015,12 +2321,67 @@ function GuidedActivity({ activity, config, soundOff, onBack, onComplete }) {
   const [timerStarted, setTimerStarted] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(30);
   const [completed, setCompleted] = useState(false);
+  const [storyVolume, setStoryVolume] = useState(0.9);
+  const [yogaHumPlaying, setYogaHumPlaying] = useState(false);
+  const [breathSoundPlaying, setBreathSoundPlaying] = useState(false);
+  const [breathPhaseIndex, setBreathPhaseIndex] = useState(0);
+  const yogaHumRef = useRef({ context: null, gain: null, nodes: [] });
+  const breathAudioRef = useRef({ context: null, gain: null, nodes: [], intervals: [] });
+  const breathIdleTimerRef = useRef(null);
+  const isYogaCalm = activity.category === 'calm' && activity.title === 'Yoga Calm';
+  const isBreathActivity = activity.category === 'calm' && config.type === 'breath';
+  const isSocialStory = activity.category === 'social';
+  const breathPhases = [
+    { key: 'Breathe in', label: 'Big breath in' },
+    { key: 'Breathe out', label: 'Slow breath out' },
+    { key: 'Rest', label: 'Rest softly' }
+  ];
+  const currentBreathPhase = breathPhases[breathPhaseIndex % breathPhases.length];
+
+  useEffect(() => {
+    setSelected(null);
+    setStepIndex(0);
+    setBreaths(0);
+    setCountIndex(0);
+    setTimerStarted(false);
+    setSecondsLeft(30);
+    setCompleted(false);
+  }, [activity.title]);
 
   useEffect(() => {
     if (!timerStarted || secondsLeft === 0) return undefined;
     const timerId = window.setInterval(() => setSecondsLeft((value) => Math.max(0, value - 1)), 1000);
     return () => window.clearInterval(timerId);
   }, [timerStarted, secondsLeft]);
+
+  useEffect(() => {
+    if (soundOff && yogaHumPlaying) stopYogaHum();
+  }, [soundOff, yogaHumPlaying]);
+
+  useEffect(() => {
+    if (!isBreathActivity) return undefined;
+    const phaseTimerId = window.setInterval(() => {
+      setBreathPhaseIndex((value) => (value + 1) % breathPhases.length);
+    }, 2800);
+    return () => window.clearInterval(phaseTimerId);
+  }, [isBreathActivity]);
+
+  useEffect(() => {
+    if (!isBreathActivity) return undefined;
+    if (soundOff) {
+      stopBreathSound();
+      return undefined;
+    }
+    const timerId = window.setTimeout(startBreathSound, 120);
+    return () => window.clearTimeout(timerId);
+  }, [isBreathActivity, soundOff]);
+
+  useEffect(() => {
+    if (soundOff && breathSoundPlaying) stopBreathSound();
+  }, [soundOff, breathSoundPlaying]);
+
+  useEffect(() => () => stopYogaHum(), []);
+  useEffect(() => () => stopBreathSound(), []);
 
   const choicesDone = config.type === 'choices' && selected === config.correct;
   const stepsDone = ['steps', 'script', 'turns'].includes(config.type) && stepIndex >= (config.steps || config.lines || config.turns).length;
@@ -3029,17 +2390,29 @@ function GuidedActivity({ activity, config, soundOff, onBack, onComplete }) {
   const timerDone = config.type === 'timer' && secondsLeft === 0;
   const done = choicesDone || stepsDone || breathDone || countDone || timerDone;
   const sequence = config.steps || config.lines || config.turns || [];
-  const shouldShowListen = (activity.category === 'daily' && mediaMode === 'audio') || activity.category === 'calm';
-  const shouldSpeakActions = config.speak || mediaMode === 'audio' || activity.category === 'calm';
+  const shouldShowListen = isSocialStory || (activity.category === 'daily' && mediaMode === 'audio') || activity.category === 'calm';
+  const shouldSpeakActions = isSocialStory || config.speak || mediaMode === 'audio';
 
   function getSequenceLabel(item) {
     return typeof item === 'string' ? item : item.label;
+  }
+
+  function getSequenceStory(item) {
+    return typeof item === 'string' ? '' : item.story;
+  }
+
+  function getSequenceCaregiverInstruction(item) {
+    return typeof item === 'string' ? '' : item.caregiverInstruction;
   }
 
   useEffect(() => {
     if (!done || completed) return;
     setCompleted(true);
     if (activity.category === 'calm' && config.type === 'breath') return;
+    if (activity.category === 'play') {
+      onComplete();
+      return;
+    }
     const timerId = window.setTimeout(onComplete, 700);
     return () => window.clearTimeout(timerId);
   }, [done]);
@@ -3048,9 +2421,196 @@ function GuidedActivity({ activity, config, soundOff, onBack, onComplete }) {
     if (soundOff || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
+    utterance.lang = language === 'es' ? 'es-ES' : 'en-US';
     utterance.rate = 0.9;
+    utterance.volume = storyVolume;
     window.speechSynthesis.speak(utterance);
+  }
+
+  function ensureYogaHumContext() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return null;
+    if (!yogaHumRef.current.context || yogaHumRef.current.context.state === 'closed') {
+      yogaHumRef.current.context = new AudioContext();
+    }
+    if (yogaHumRef.current.context.state === 'suspended') {
+      yogaHumRef.current.context.resume();
+    }
+    return yogaHumRef.current.context;
+  }
+
+  function trackYogaHumNode(node) {
+    yogaHumRef.current.nodes.push(node);
+    return node;
+  }
+
+  function stopYogaHum() {
+    yogaHumRef.current.nodes.forEach((node) => {
+      try {
+        node.stop?.();
+      } catch {
+        // Some audio nodes may already be stopped.
+      }
+      node.disconnect?.();
+    });
+    yogaHumRef.current.gain?.disconnect();
+    yogaHumRef.current = { ...yogaHumRef.current, gain: null, nodes: [] };
+    setYogaHumPlaying(false);
+  }
+
+  function ensureBreathContext() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return null;
+    if (!breathAudioRef.current.context || breathAudioRef.current.context.state === 'closed') {
+      breathAudioRef.current.context = new AudioContext();
+    }
+    if (breathAudioRef.current.context.state === 'suspended') {
+      breathAudioRef.current.context.resume();
+    }
+    return breathAudioRef.current.context;
+  }
+
+  function trackBreathNode(node) {
+    breathAudioRef.current.nodes.push(node);
+    return node;
+  }
+
+  function makeBreathNoise(context) {
+    const buffer = context.createBuffer(1, context.sampleRate * 2, context.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let index = 0; index < data.length; index += 1) {
+      data[index] = Math.random() * 2 - 1;
+    }
+    const source = trackBreathNode(context.createBufferSource());
+    source.buffer = buffer;
+    source.loop = true;
+    return source;
+  }
+
+  function playBreathPulse(context, masterGain, startTime, direction = 'in') {
+    const noise = makeBreathNoise(context);
+    const filter = context.createBiquadFilter();
+    const gain = context.createGain();
+    const lowFreq = direction === 'in' ? 520 : 420;
+    const highFreq = direction === 'in' ? 1180 : 820;
+
+    filter.type = 'bandpass';
+    filter.Q.value = 0.6;
+    filter.frequency.setValueAtTime(lowFreq, startTime);
+    filter.frequency.linearRampToValueAtTime(highFreq, startTime + 1.7);
+    gain.gain.setValueAtTime(0.0001, startTime);
+    gain.gain.linearRampToValueAtTime(0.18, startTime + 0.35);
+    gain.gain.linearRampToValueAtTime(0.09, startTime + 1.65);
+    gain.gain.linearRampToValueAtTime(0.0001, startTime + 2.25);
+
+    noise.connect(filter).connect(gain).connect(masterGain);
+    noise.start(startTime);
+    noise.stop(startTime + 2.35);
+  }
+
+  function scheduleBreathCycle(context, masterGain) {
+    const now = context.currentTime + 0.05;
+    playBreathPulse(context, masterGain, now, 'in');
+    playBreathPulse(context, masterGain, now + 2.8, 'out');
+  }
+
+  function stopBreathSound() {
+    if (breathIdleTimerRef.current) {
+      window.clearTimeout(breathIdleTimerRef.current);
+      breathIdleTimerRef.current = null;
+    }
+    breathAudioRef.current.intervals.forEach((intervalId) => window.clearInterval(intervalId));
+    breathAudioRef.current.nodes.forEach((node) => {
+      try {
+        node.stop?.();
+      } catch {
+        // Timed breath nodes may already have stopped.
+      }
+      node.disconnect?.();
+    });
+    breathAudioRef.current.gain?.disconnect();
+    breathAudioRef.current = { ...breathAudioRef.current, gain: null, nodes: [], intervals: [] };
+    setBreathSoundPlaying(false);
+  }
+
+  function scheduleBreathIdleStop() {
+    if (breathIdleTimerRef.current) window.clearTimeout(breathIdleTimerRef.current);
+    breathIdleTimerRef.current = window.setTimeout(stopBreathSound, BREATH_SOUND_IDLE_MS);
+  }
+
+  function markBreathUsed() {
+    if (breathSoundPlaying) scheduleBreathIdleStop();
+  }
+
+  function startBreathSound() {
+    stopBreathSound();
+    if (soundOff || !isBreathActivity) return;
+    const context = ensureBreathContext();
+    if (!context) return;
+
+    const masterGain = context.createGain();
+    masterGain.gain.setValueAtTime(0.28, context.currentTime);
+    masterGain.connect(context.destination);
+    breathAudioRef.current.gain = masterGain;
+
+    scheduleBreathCycle(context, masterGain);
+    const intervalId = window.setInterval(() => {
+      if (breathAudioRef.current.context && breathAudioRef.current.gain) {
+        scheduleBreathCycle(breathAudioRef.current.context, breathAudioRef.current.gain);
+      }
+    }, 8400);
+    breathAudioRef.current.intervals.push(intervalId);
+    scheduleBreathIdleStop();
+    setBreathSoundPlaying(true);
+  }
+
+  function toggleBreathSound() {
+    if (breathSoundPlaying) {
+      stopBreathSound();
+    } else {
+      startBreathSound();
+    }
+  }
+
+  function startYogaHum() {
+    stopYogaHum();
+    if (soundOff) return;
+    const context = ensureYogaHumContext();
+    if (!context) return;
+
+    const masterGain = context.createGain();
+    const humGain = context.createGain();
+    const pulse = trackYogaHumNode(context.createOscillator());
+    const pulseGain = context.createGain();
+    const base = trackYogaHumNode(context.createOscillator());
+    const warmth = trackYogaHumNode(context.createOscillator());
+
+    masterGain.gain.setValueAtTime(0.18, context.currentTime);
+    humGain.gain.setValueAtTime(0.16, context.currentTime);
+    pulse.type = 'sine';
+    pulse.frequency.value = 0.18;
+    pulseGain.gain.value = 0.05;
+    base.type = 'sine';
+    base.frequency.value = 136.1;
+    warmth.type = 'triangle';
+    warmth.frequency.value = 204.2;
+
+    pulse.connect(pulseGain).connect(humGain.gain);
+    base.connect(humGain);
+    warmth.connect(humGain);
+    humGain.connect(masterGain).connect(context.destination);
+
+    [pulse, base, warmth].forEach((node) => node.start());
+    yogaHumRef.current.gain = masterGain;
+    setYogaHumPlaying(true);
+  }
+
+  function toggleYogaHum() {
+    if (yogaHumPlaying) {
+      stopYogaHum();
+    } else {
+      startYogaHum();
+    }
   }
 
   return (
@@ -3059,18 +2619,37 @@ function GuidedActivity({ activity, config, soundOff, onBack, onComplete }) {
         <button className="icon-button" onClick={onBack} aria-label="Go back"><ArrowLeft /></button>
         <span className="round-icon"><Puzzle /></span>
         <div>
-          <p className="eyebrow">Activity</p>
-          <h1>{activity.title}</h1>
+          <p className="eyebrow">{t('Activity')}</p>
+          <h1>{t(activity.title)}</h1>
         </div>
         {activity.category === 'daily' && <MediaToggle value={mediaMode} onChange={setMediaMode} />}
       </div>
       <div className="game-panel">
         <div className="game-prompt">
-          <p className="eyebrow">Easy practice</p>
-          <h2>{config.prompt}</h2>
+          <p className="eyebrow">{t('Easy practice')}</p>
+          <h2>{t(config.prompt)}</h2>
           {shouldShowListen && (
-            <button className="secondary-button audio-prompt-button" type="button" onClick={() => speakText(config.prompt)}>
-              <Volume2 size={18} /> Listen
+            <button className="secondary-button audio-prompt-button" type="button" onClick={() => speakText(t(config.prompt))}>
+              <Volume2 size={18} /> {t('Listen')}
+            </button>
+          )}
+          {isSocialStory && (
+            <label className="story-volume-control">
+              <span>{t('Story sound')}</span>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={storyVolume}
+                disabled={soundOff}
+                onChange={(event) => setStoryVolume(Number(event.target.value))}
+              />
+            </label>
+          )}
+          {isYogaCalm && (
+            <button className="secondary-button audio-prompt-button" type="button" onClick={toggleYogaHum} disabled={soundOff}>
+              <Volume2 size={18} /> {t(yogaHumPlaying ? 'Stop gentle hum' : 'Start gentle hum')}
             </button>
           )}
         </div>
@@ -3088,11 +2667,11 @@ function GuidedActivity({ activity, config, soundOff, onBack, onComplete }) {
                   className={selected === choice ? 'game-choice selected' : 'game-choice'}
                   onClick={() => {
                     setSelected(choice);
-                    if (shouldSpeakActions) speakText(choice);
+                    if (shouldSpeakActions) speakText(t(choice));
                   }}
                 >
                   <VisualAsset label={choice} className="choice-image" fallback={false} />
-                  {choice}
+                  {t(choice)}
                 </button>
               ))}
             </div>
@@ -3109,31 +2688,55 @@ function GuidedActivity({ activity, config, soundOff, onBack, onComplete }) {
                 disabled={index !== stepIndex}
                 onClick={() => {
                   setStepIndex((value) => value + 1);
-                  if (shouldSpeakActions) speakText(getSequenceLabel(item));
+                  if (shouldSpeakActions) speakText(t(getSequenceLabel(item)));
                 }}
               >
                 <span>{index + 1}</span>
                 {item.image && <VisualAsset label={item.image} className="sequence-step-image" />}
-                <strong>{getSequenceLabel(item)}</strong>
+                <div className="sequence-step-copy">
+                  <strong>{t(getSequenceLabel(item))}</strong>
+                  {getSequenceStory(item) && <small>{t(getSequenceStory(item))}</small>}
+                  {index === stepIndex && getSequenceCaregiverInstruction(item) && (
+                    <em>
+                      <b>{t('Caregiver prompt')}</b>
+                      {t(getSequenceCaregiverInstruction(item))}
+                    </em>
+                  )}
+                </div>
               </button>
             ))}
           </div>
         )}
 
         {config.type === 'breath' && (
-          <div className="breath-practice">
-            <div className="breathing-orb" aria-hidden="true" />
-            <strong>{breaths} of 3 breaths</strong>
+          <div className="breath-practice guided-breath-practice">
+            <div className="breath-stage" aria-label={t('Breath guide')}>
+              <div className="breath-ring" aria-hidden="true">
+                <div className="breath-ring-inner" />
+              </div>
+              <div className="breath-phase">
+                <span>{t(currentBreathPhase.key)}</span>
+                <strong>{t(currentBreathPhase.label)}</strong>
+              </div>
+            </div>
+            <p className="breath-sound-status">
+              <Volume2 size={18} /> {soundOff ? t('Sound is muted.') : (breathSoundPlaying ? t('Breathing sound is on.') : t('Breathing sound'))}
+            </p>
+            <strong>{breaths} {t('of')} 3 {t('breaths')}</strong>
             <div className="breath-actions">
               <button className="primary-button" type="button" onClick={() => {
                 const instruction = sequence[breaths % sequence.length];
+                markBreathUsed();
                 setBreaths((value) => Math.min(3, value + 1));
-                if (shouldSpeakActions && instruction) speakText(getSequenceLabel(instruction));
+                if (shouldSpeakActions && instruction) speakText(t(getSequenceLabel(instruction)));
               }}>
-                I breathed
+                {t('I breathed')}
+              </button>
+              <button className="secondary-button" type="button" onClick={toggleBreathSound} disabled={soundOff}>
+                <Volume2 size={18} /> {t(breathSoundPlaying ? 'Stop breathing sound' : 'Start breathing sound')}
               </button>
               <button className="secondary-button" type="button" onClick={() => { setBreaths(0); setCompleted(false); }}>
-                <RotateCcw size={18} /> Repeat
+                <RotateCcw size={18} /> {t('Repeat')}
               </button>
             </div>
           </div>
@@ -3170,9 +2773,26 @@ function GuidedActivity({ activity, config, soundOff, onBack, onComplete }) {
 
         {(selected || done) && (
           <div className={done ? 'game-feedback success' : 'game-feedback'}>
-            <strong>{done ? 'Nice work!' : 'Keep trying.'}</strong>
-            <span>{done ? 'Activity complete.' : 'Try the matching answer or next step.'}</span>
+            <strong>{t(done ? 'Nice work!' : 'Keep trying.')}</strong>
+            <span>{t(done ? 'Activity complete.' : 'Try the matching answer or next step.')}</span>
           </div>
+        )}
+
+        {['play', 'social'].includes(activity.category) && completed && (
+          <GameCompleteActions
+            onRepeat={() => {
+              setSelected(null);
+              setStepIndex(0);
+              setBreaths(0);
+              setCountIndex(0);
+              setTimerStarted(false);
+              setSecondsLeft(30);
+              setCompleted(false);
+            }}
+            onGames={onBack}
+            onNext={activity.category === 'social' ? onNextStory : undefined}
+            backLabel={activity.category === 'social' ? 'Back to Social' : 'Back to Games'}
+          />
         )}
 
         <div className="form-actions">
@@ -3193,20 +2813,212 @@ function GuidedActivity({ activity, config, soundOff, onBack, onComplete }) {
   );
 }
 
+const sensoryBubbleSeeds = [
+  { id: 1, x: 12, y: 18, size: 74, color: '#84d9ff' },
+  { id: 2, x: 32, y: 34, size: 92, color: '#c9f27c' },
+  { id: 3, x: 58, y: 18, size: 68, color: '#ffcf70' },
+  { id: 4, x: 78, y: 40, size: 104, color: '#f6a6ff' },
+  { id: 5, x: 20, y: 68, size: 98, color: '#8ef0d1' },
+  { id: 6, x: 48, y: 64, size: 78, color: '#9fb9ff' },
+  { id: 7, x: 72, y: 72, size: 86, color: '#ff9aa2' }
+];
+
+const sensoryWaveColors = ['#74d6ff', '#a7f070', '#ffd166', '#f8a5ff', '#8ef0d1', '#b5a7ff'];
+
+function SensoryPlayActivity({ activity, onBack, onComplete }) {
+  const t = useT();
+  const [mode, setMode] = useState('bubbles');
+  const [bubbles, setBubbles] = useState(sensoryBubbleSeeds);
+  const [waves, setWaves] = useState([]);
+  const [waveSize, setWaveSize] = useState(190);
+  const [waveDuration, setWaveDuration] = useState(1.2);
+  const [waveAmount, setWaveAmount] = useState(1);
+  const pendingWaveRef = useRef(null);
+  const waveFrameRef = useRef(null);
+
+  useEffect(() => () => {
+    if (waveFrameRef.current) window.cancelAnimationFrame(waveFrameRef.current);
+  }, []);
+
+  function resetBubbles() {
+    setBubbles(sensoryBubbleSeeds);
+  }
+
+  function popBubble(id) {
+    setBubbles((current) => current.filter((bubble) => bubble.id !== id));
+  }
+
+  function commitPendingWave() {
+    const wavePoint = pendingWaveRef.current;
+    pendingWaveRef.current = null;
+    waveFrameRef.current = null;
+    if (!wavePoint) return;
+
+    const newWaves = Array.from({ length: waveAmount }, (_, index) => {
+      const spread = waveAmount === 1 ? 0 : 24;
+      return {
+        id: `${Date.now()}-${index}-${Math.random()}`,
+        x: wavePoint.x + (Math.random() - 0.5) * spread,
+        y: wavePoint.y + (Math.random() - 0.5) * spread,
+        size: waveSize + Math.random() * 18,
+        duration: waveDuration,
+        color: sensoryWaveColors[Math.floor(Math.random() * sensoryWaveColors.length)]
+      };
+    });
+    setWaves((current) => [...current.slice(-(22 - waveAmount)), ...newWaves]);
+  }
+
+  function addWave(event) {
+    if (mode !== 'waves') return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    pendingWaveRef.current = {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
+    };
+    if (!waveFrameRef.current) {
+      waveFrameRef.current = window.requestAnimationFrame(commitPendingWave);
+    }
+  }
+
+  function clearWaves() {
+    setWaves([]);
+  }
+
+  return (
+    <section className="game-page calm-zone-page sensory-play-page">
+      <div className="page-title">
+        <button className="icon-button" onClick={onBack} aria-label="Go back"><ArrowLeft /></button>
+        <span className="round-icon"><Sparkles /></span>
+        <div>
+          <p className="eyebrow">{t('Calm activities')}</p>
+          <h1>{t(activity.title)}</h1>
+        </div>
+      </div>
+
+      <div className="sensory-mode-bar" aria-label={t('Sensory play modes')}>
+        <button type="button" className={mode === 'bubbles' ? 'active' : ''} onClick={() => setMode('bubbles')}>
+          {t('Pop bubbles')}
+        </button>
+        <button type="button" className={mode === 'waves' ? 'active' : ''} onClick={() => setMode('waves')}>
+          {t('Color waves')}
+        </button>
+      </div>
+
+      {mode === 'waves' && (
+        <div className="sensory-wave-controls" aria-label={t('Color waves')}>
+          <label>
+            <span>{t('Wave size')}</span>
+            <input type="range" min="120" max="300" step="10" value={waveSize} onChange={(event) => setWaveSize(Number(event.target.value))} />
+          </label>
+          <label>
+            <span>{t('Wave speed')}</span>
+            <input type="range" min="0.65" max="2.2" step="0.05" value={waveDuration} onChange={(event) => setWaveDuration(Number(event.target.value))} />
+          </label>
+          <label>
+            <span>{t('Wave amount')}</span>
+            <input type="range" min="1" max="4" step="1" value={waveAmount} onChange={(event) => setWaveAmount(Number(event.target.value))} />
+          </label>
+        </div>
+      )}
+
+      <div
+        className={mode === 'bubbles' ? 'sensory-play-surface bubbles-mode' : 'sensory-play-surface waves-mode'}
+        onPointerMove={addWave}
+      >
+        {mode === 'bubbles' ? (
+          bubbles.length ? bubbles.map((bubble) => (
+            <button
+              key={bubble.id}
+              type="button"
+              className="sensory-bubble"
+              style={{ left: `${bubble.x}%`, top: `${bubble.y}%`, width: bubble.size, height: bubble.size, '--bubble-color': bubble.color }}
+              aria-label={t('Pop bubble')}
+              onClick={() => popBubble(bubble.id)}
+            />
+          )) : (
+            <button type="button" className="sensory-reset-card" onClick={resetBubbles}>
+              {t('More bubbles')}
+            </button>
+          )
+        ) : (
+          waves.map((wave) => (
+            <span
+              key={wave.id}
+              className="sensory-wave"
+              style={{ left: wave.x, top: wave.y, '--wave-color': wave.color, '--wave-size': `${wave.size}px`, '--wave-duration': `${wave.duration}s` }}
+              aria-hidden="true"
+            />
+          ))
+        )}
+      </div>
+
+      <div className="form-actions">
+        <button className="secondary-button" type="button" onClick={mode === 'bubbles' ? resetBubbles : clearWaves}>
+          <RotateCcw size={18} /> {t('Reset')}
+        </button>
+        <button className="primary-button" type="button" onClick={onComplete}>
+          <Star size={18} /> {t('Finish')}
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function MatchGame({ activity, soundOff, onBack, onComplete }) {
-  const game = activityGames[activity.title] || {
-    prompt: 'Choose the best match.',
-    target: { label: activity.icon, value: activity.title },
-    choices: [
-      { label: activity.title, value: activity.title },
-      { label: 'Try later', value: 'later' },
-      { label: 'Wait', value: 'wait' },
-      { label: 'Help', value: 'help' }
-    ]
-  };
+  const t = useT();
+  const soundGameAudioRef = useRef({ context: null, nodes: [] });
+  const soundHighlightTimerRef = useRef(null);
+  const shapeDraggingRef = useRef(false);
+  const isSoundMatch = activity.title === 'Sound Match';
+  const isEmotionMatch = activity.title === 'Emotion Match';
+  const isShapeSort = activity.title === 'Shape Sort';
+  const isMatchPairs = activity.title === 'Match Pairs';
+  const isSizeSort = activity.title === 'Sort by Size';
+  const rounds = useMemo(() => getGameRounds(activity.title, activity.icon), [activity.title, activity.icon]);
+  const [roundIndex, setRoundIndex] = useState(0);
+  const game = rounds[roundIndex] || rounds[0];
+  const [choiceOrder, setChoiceOrder] = useState(() => shuffleCards(game.choices));
   const [selected, setSelected] = useState(null);
   const [completed, setCompleted] = useState(false);
-  const isCorrect = selected?.value === game.target.value;
+  const [score, setScore] = useState(0);
+  const [soundHighlighted, setSoundHighlighted] = useState(false);
+  const [shapeDragging, setShapeDragging] = useState(false);
+  const [dragOverChoice, setDragOverChoice] = useState(null);
+  const [sizeSlots, setSizeSlots] = useState([null, null, null]);
+  const [activeSizePieceId, setActiveSizePieceId] = useState(null);
+  const [sizeSortChecked, setSizeSortChecked] = useState(false);
+  const [sizeSortAttempts, setSizeSortAttempts] = useState(0);
+  const [dragOverSizeSlot, setDragOverSizeSlot] = useState(null);
+  const sizeSortFilled = sizeSlots.every(Boolean);
+  const sizeSortIsCorrect = isSizeSort
+    && sizeSortChecked
+    && sizeSlots.every((piece, index) => piece?.value === game.target.order[index]);
+  const isCorrect = isSizeSort ? sizeSortIsCorrect : selected?.value === game.target.value;
+  const isLastRound = roundIndex >= rounds.length - 1;
+  const successDetail = isMatchPairs ? (game.explanation || 'These two go together.') : 'You found the right answer.';
+  const retryDetail = isMatchPairs
+    ? 'Look at the big card and pick what goes with it.'
+    : 'Look at the big card and pick the same one.';
+
+  useEffect(() => () => {
+    stopSoundGameAudio();
+    window.clearTimeout(soundHighlightTimerRef.current);
+  }, []);
+
+  useEffect(() => {
+    setSelected(null);
+    setSoundHighlighted(false);
+    shapeDraggingRef.current = false;
+    setShapeDragging(false);
+    setDragOverChoice(null);
+    setSizeSlots([null, null, null]);
+    setActiveSizePieceId(null);
+    setSizeSortChecked(false);
+    setSizeSortAttempts(0);
+    setDragOverSizeSlot(null);
+    window.clearTimeout(soundHighlightTimerRef.current);
+    setChoiceOrder(shuffleCards(game.choices));
+  }, [game]);
 
   function speakText(text) {
     if (soundOff || !('speechSynthesis' in window)) return;
@@ -3218,13 +3030,264 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
     window.speechSynthesis.speak(utterance);
   }
 
+  function ensureSoundGameContext() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return null;
+    if (!soundGameAudioRef.current.context || soundGameAudioRef.current.context.state === 'closed') {
+      soundGameAudioRef.current.context = new AudioContext();
+    }
+    if (soundGameAudioRef.current.context.state === 'suspended') {
+      soundGameAudioRef.current.context.resume();
+    }
+    return soundGameAudioRef.current.context;
+  }
+
+  function trackSoundGameNode(node) {
+    soundGameAudioRef.current.nodes.push(node);
+    return node;
+  }
+
+  function stopSoundGameAudio() {
+    soundGameAudioRef.current.nodes.forEach((node) => {
+      try {
+        node.stop?.();
+      } catch {
+        // Sound clue nodes may already be stopped.
+      }
+      node.disconnect?.();
+    });
+    soundGameAudioRef.current = { ...soundGameAudioRef.current, nodes: [] };
+  }
+
+  function showSoundHighlight() {
+    setSoundHighlighted(true);
+    window.clearTimeout(soundHighlightTimerRef.current);
+    soundHighlightTimerRef.current = window.setTimeout(() => setSoundHighlighted(false), 700);
+  }
+
+  function createSoundGameNoise(context) {
+    const buffer = context.createBuffer(1, context.sampleRate * 1.2, context.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let index = 0; index < data.length; index += 1) {
+      data[index] = Math.random() * 2 - 1;
+    }
+    const source = trackSoundGameNode(context.createBufferSource());
+    source.buffer = buffer;
+    return source;
+  }
+
+  function playSoundGameTone(context, output, frequency, startAt, duration = 0.2) {
+    const oscillator = trackSoundGameNode(context.createOscillator());
+    const gain = context.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(frequency, startAt);
+    gain.gain.setValueAtTime(0.0001, startAt);
+    gain.gain.exponentialRampToValueAtTime(0.12, startAt + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+    oscillator.connect(gain).connect(output);
+    oscillator.start(startAt);
+    oscillator.stop(startAt + duration + 0.04);
+  }
+
+  function playSoundClue(label = game.target.label) {
+    if (soundOff) return;
+    showSoundHighlight();
+    stopSoundGameAudio();
+    const context = ensureSoundGameContext();
+    if (!context) return;
+    const output = context.createGain();
+    output.gain.setValueAtTime(0.32, context.currentTime);
+    output.connect(context.destination);
+
+    if (label === 'Rain') {
+      const rain = createSoundGameNoise(context);
+      const filter = context.createBiquadFilter();
+      const gain = context.createGain();
+      filter.type = 'bandpass';
+      filter.frequency.value = 1450;
+      filter.Q.value = 0.7;
+      gain.gain.setValueAtTime(0.0001, context.currentTime);
+      gain.gain.linearRampToValueAtTime(0.28, context.currentTime + 0.18);
+      gain.gain.linearRampToValueAtTime(0.0001, context.currentTime + 1.35);
+      rain.connect(filter).connect(gain).connect(output);
+      rain.start();
+      rain.stop(context.currentTime + 1.45);
+    } else if (label === 'Cat') {
+      const startAt = context.currentTime + 0.04;
+      playSoundGameTone(context, output, 520, startAt, 0.28);
+      playSoundGameTone(context, output, 780, startAt + 0.18, 0.22);
+    } else if (label === 'Toy') {
+      [784, 1046.5, 1318.5].forEach((frequency, index) => {
+        playSoundGameTone(context, output, frequency, context.currentTime + index * 0.14, 0.16);
+      });
+    } else if (label === 'Bed') {
+      [392, 329.63, 261.63].forEach((frequency, index) => {
+        playSoundGameTone(context, output, frequency, context.currentTime + index * 0.28, 0.34);
+      });
+    }
+
+    trackSoundGameNode(output);
+  }
+
+  useEffect(() => {
+    if (!isSoundMatch || !selected || isCorrect) return;
+    showSoundHighlight();
+  }, [isSoundMatch, selected, isCorrect]);
+
+  function startShapeDrag() {
+    if (!isShapeSort || isCorrect) return;
+    shapeDraggingRef.current = true;
+    setShapeDragging(true);
+  }
+
+  function finishShapeDrag(clientX, clientY) {
+    if (!shapeDraggingRef.current) return;
+    const dropTarget = document.elementFromPoint(clientX, clientY)?.closest?.('[data-shape-choice]');
+    const droppedChoice = choiceOrder.find((choice) => choice.value === dropTarget?.getAttribute('data-shape-choice'));
+    shapeDraggingRef.current = false;
+    setShapeDragging(false);
+    setDragOverChoice(null);
+    if (droppedChoice) chooseMatch(droppedChoice);
+  }
+
+  useEffect(() => {
+    if (!isShapeSort) return undefined;
+
+    function handlePointerUp(event) {
+      finishShapeDrag(event.clientX, event.clientY);
+    }
+
+    function handleTouchEnd(event) {
+      const touch = event.changedTouches?.[0];
+      if (touch) finishShapeDrag(touch.clientX, touch.clientY);
+    }
+
+    document.addEventListener('pointerup', handlePointerUp, true);
+    document.addEventListener('mouseup', handlePointerUp, true);
+    document.addEventListener('touchend', handleTouchEnd, true);
+    return () => {
+      document.removeEventListener('pointerup', handlePointerUp, true);
+      document.removeEventListener('mouseup', handlePointerUp, true);
+      document.removeEventListener('touchend', handleTouchEnd, true);
+    };
+  }, [isShapeSort, choiceOrder, isCorrect]);
+
   useEffect(() => {
     if (!isCorrect || completed) return;
-    setCompleted(true);
-    speakText('Great match!');
-    const timerId = window.setTimeout(onComplete, 700);
-    return () => window.clearTimeout(timerId);
+    speakText(t(isSizeSort ? 'Great job!' : 'Great match!'));
+    setScore((value) => value + 1);
+    if (isLastRound) {
+      setCompleted(true);
+      if (activity.category === 'play') {
+        onComplete();
+        return;
+      }
+      const timerId = window.setTimeout(onComplete, 700);
+      return () => window.clearTimeout(timerId);
+    }
+    return undefined;
   }, [isCorrect]);
+
+  function goToNextRound() {
+    stopSoundGameAudio();
+    window.clearTimeout(soundHighlightTimerRef.current);
+    shapeDraggingRef.current = false;
+    setRoundIndex((index) => Math.min(index + 1, rounds.length - 1));
+  }
+
+  function resetGame() {
+    stopSoundGameAudio();
+    window.clearTimeout(soundHighlightTimerRef.current);
+    setRoundIndex(0);
+    setSelected(null);
+    setCompleted(false);
+    setScore(0);
+    setSoundHighlighted(false);
+    shapeDraggingRef.current = false;
+    setShapeDragging(false);
+    setDragOverChoice(null);
+    setSizeSlots([null, null, null]);
+    setActiveSizePieceId(null);
+    setSizeSortChecked(false);
+    setSizeSortAttempts(0);
+    setDragOverSizeSlot(null);
+    setChoiceOrder(shuffleCards(rounds[0].choices));
+  }
+
+  function chooseMatch(choice) {
+    setSelected(choice);
+    speakText(t(choice.label));
+  }
+
+  function findSizePiece(pieceId) {
+    return choiceOrder.find((piece) => piece.id === pieceId) || sizeSlots.find((piece) => piece?.id === pieceId) || null;
+  }
+
+  function placeSizePiece(piece, slotIndex) {
+    if (!piece || isCorrect) return;
+    setSizeSlots((slots) => {
+      const previousSlotIndex = slots.findIndex((slot) => slot?.id === piece.id);
+      const displacedPiece = slots[slotIndex];
+      const nextSlots = slots.map((slot) => slot?.id === piece.id ? null : slot);
+      nextSlots[slotIndex] = piece;
+      if (displacedPiece && previousSlotIndex >= 0 && previousSlotIndex !== slotIndex) {
+        nextSlots[previousSlotIndex] = displacedPiece;
+      }
+      return nextSlots;
+    });
+    setActiveSizePieceId(null);
+    setSizeSortChecked(false);
+    setDragOverSizeSlot(null);
+  }
+
+  function chooseSizePiece(piece) {
+    if (isCorrect) return;
+    if (activeSizePieceId === piece.id) {
+      const emptySlotIndex = sizeSlots.findIndex((slot) => !slot);
+      if (emptySlotIndex >= 0) {
+        placeSizePiece(piece, emptySlotIndex);
+        return;
+      }
+    }
+    setActiveSizePieceId(piece.id);
+    setSizeSortChecked(false);
+  }
+
+  function chooseSizeSlot(slotIndex) {
+    if (isCorrect) return;
+    const activePiece = findSizePiece(activeSizePieceId);
+    if (activePiece) {
+      placeSizePiece(activePiece, slotIndex);
+      return;
+    }
+    if (sizeSlots[slotIndex]) {
+      setActiveSizePieceId(sizeSlots[slotIndex].id);
+      setSizeSortChecked(false);
+    }
+  }
+
+  function checkSizeOrder() {
+    if (!sizeSortFilled || isCorrect) return;
+    setSizeSortChecked(true);
+    setSizeSortAttempts((attempts) => attempts + 1);
+  }
+
+  function getShapeHint(shape) {
+    if (shape === 'Circle') return 'Round. No corners.';
+    if (shape === 'Square') return '4 equal sides.';
+    if (shape === 'Triangle') return '3 sides.';
+    if (shape === 'Star') return 'Look at the points.';
+    return 'Look at its sides.';
+  }
+
+  function getSizeSortHint() {
+    if (sizeSortAttempts <= 1) return 'Find the smallest one first.';
+    if (sizeSortAttempts === 2) return 'Which one is the smallest?';
+    return 'Now find the biggest one.';
+  }
+
+  const sizeSortPlacedIds = new Set(sizeSlots.filter(Boolean).map((piece) => piece.id));
+  const sizeSortSourcePieces = choiceOrder.filter((piece) => !sizeSortPlacedIds.has(piece.id));
 
   return (
     <section className="game-page">
@@ -3232,46 +3295,291 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
         <button className="icon-button" onClick={onBack} aria-label="Go back"><ArrowLeft /></button>
         <span className="round-icon"><Puzzle /></span>
         <div>
-          <p className="eyebrow">Activity</p>
-          <h1>{activity.title}</h1>
+          <p className="eyebrow">{t('Activity')}</p>
+          <h1>{t(activity.title)}</h1>
         </div>
       </div>
       <div className="game-panel">
-        <div className="game-prompt">
-          <p className="eyebrow">Your turn</p>
-          <h2>{game.prompt}</h2>
+        <div className="game-progress" aria-live="polite">
+          <span>{t('Round')} {roundIndex + 1} {t('of')} {rounds.length}</span>
+          <span>{t('Score')}: {score}</span>
         </div>
-        <div
-          className={activity.title === 'Color Match' ? 'target-card color-target' : 'target-card'}
-          aria-label={activity.title === 'Color Match' ? `Color card: ${game.target.label}` : undefined}
-          style={activity.title === 'Color Match' ? { '--target-color': game.target.value } : undefined}
-        >
-          <GameTargetVisual activityTitle={activity.title} target={game.target} />
+        <div className={isSoundMatch ? 'game-prompt sound-game-prompt' : isEmotionMatch ? 'game-prompt emotion-game-prompt' : isShapeSort ? 'game-prompt shape-sort-prompt' : isMatchPairs ? 'game-prompt pair-game-prompt' : isSizeSort ? 'game-prompt size-sort-prompt' : 'game-prompt'}>
+          <p className="eyebrow">{t('Your turn')}</p>
+          <h2>{t(isSoundMatch ? 'Listen, then pick what made the sound.' : isEmotionMatch ? 'What feeling is this?' : isShapeSort ? 'Where does this shape go?' : isMatchPairs ? 'What goes with this?' : isSizeSort ? 'Put them in order.' : game.prompt)}</h2>
+          {isShapeSort && <p>{t('Pick the matching group.')}</p>}
+          {isMatchPairs && <p>{t('Find its match.')}</p>}
+          {isSizeSort && (
+            <div className="size-order-cue" aria-label={t('Small → Medium → Big')}>
+              <SizeSortIcon size="small" />
+              <span aria-hidden="true">→</span>
+              <SizeSortIcon size="medium" />
+              <span aria-hidden="true">→</span>
+              <SizeSortIcon size="big" />
+              <strong>{t('Small → Medium → Big')}</strong>
+            </div>
+          )}
         </div>
-        <div className="game-choices">
-          {game.choices.map((choice) => (
-            <button
-              key={choice.label}
-              type="button"
-              className={selected?.label === choice.label ? 'game-choice selected' : 'game-choice'}
-              onClick={() => {
-                setSelected(choice);
-                speakText(choice.label);
-              }}
-            >
-              <GameChoiceVisual activityTitle={activity.title} choice={choice} />
-              {activity.title !== 'Letter Match' && choice.label}
+        {isSizeSort ? (
+          <div className="size-sort-workspace">
+            <div className="size-sort-pieces-area">
+              <p className="eyebrow">{t('Pieces to sort')}</p>
+              <div className="size-sort-pieces" aria-label={t('Pieces to sort')}>
+                {sizeSortSourcePieces.map((piece) => (
+                  <button
+                    key={piece.id}
+                    type="button"
+                    className={activeSizePieceId === piece.id ? 'size-sort-piece selected' : 'size-sort-piece'}
+                    draggable={!isCorrect}
+                    disabled={isCorrect}
+                    aria-label={`${t(game.target.object)} ${t(piece.label)}${activeSizePieceId === piece.id ? `. ${t('Selected')}` : ''}`}
+                    onClick={() => chooseSizePiece(piece)}
+                    onDragStart={(event) => {
+                      event.dataTransfer.effectAllowed = 'move';
+                      event.dataTransfer.setData('text/plain', piece.id);
+                      setActiveSizePieceId(piece.id);
+                    }}
+                  >
+                    <SizeSortObjectVisual piece={piece} />
+                    {activeSizePieceId === piece.id && <Check className="size-sort-selected-icon" size={18} aria-hidden="true" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="size-sort-tray-area">
+              <p className="eyebrow">{t('Put them in order.')}</p>
+              <div className="size-sort-slots" aria-label={t('Small → Medium → Big')}>
+                {game.target.order.map((size, index) => {
+                  const piece = sizeSlots[index];
+                  const slotLabel = index === 0 ? 'Spot 1' : index === 1 ? 'Spot 2' : 'Spot 3';
+                  const shouldHint = !isCorrect && sizeSortChecked && sizeSortAttempts >= 2 && index === 0;
+                  return (
+                    <button
+                      key={size}
+                      type="button"
+                      className={[
+                        'size-sort-slot',
+                        piece ? 'filled' : '',
+                        activeSizePieceId === piece?.id ? 'selected' : '',
+                        dragOverSizeSlot === index ? 'drag-over' : '',
+                        shouldHint ? 'hinted' : '',
+                        isCorrect ? 'correct' : ''
+                      ].filter(Boolean).join(' ')}
+                      disabled={isCorrect}
+                      aria-label={`${t(slotLabel)}: ${piece ? `${t(game.target.object)} ${t(piece.label)}` : t('Empty spot')}`}
+                      onClick={() => chooseSizeSlot(index)}
+                      onDragOver={(event) => {
+                        if (isCorrect) return;
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = 'move';
+                        setDragOverSizeSlot(index);
+                      }}
+                      onDragEnter={() => {
+                        if (!isCorrect) setDragOverSizeSlot(index);
+                      }}
+                      onDragLeave={() => setDragOverSizeSlot((value) => value === index ? null : value)}
+                      onDrop={(event) => {
+                        if (isCorrect) return;
+                        event.preventDefault();
+                        const pieceId = event.dataTransfer.getData('text/plain') || activeSizePieceId;
+                        placeSizePiece(findSizePiece(pieceId), index);
+                      }}
+                    >
+                      <span className="size-sort-slot-label">{t(size === 'small' ? 'Small' : size === 'medium' ? 'Medium' : 'Big')}</span>
+                      <span className="size-sort-slot-box">
+                        {piece ? (
+                          <>
+                            <SizeSortObjectVisual piece={piece} />
+                            {isCorrect && <Check className="size-sort-slot-check" size={18} aria-hidden="true" />}
+                          </>
+                        ) : (
+                          <span className="size-sort-slot-number" aria-hidden="true">{index + 1}</span>
+                        )}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <button className="primary-button size-sort-check-button" type="button" onClick={checkSizeOrder} disabled={!sizeSortFilled || isCorrect}>
+              <Check size={18} /> {t('Check my order')}
             </button>
-          ))}
-        </div>
-        {selected && (
-          <div className={isCorrect ? 'game-feedback success' : 'game-feedback'}>
-            <strong>{isCorrect ? 'Great match!' : 'Try one more time.'}</strong>
-            <span>{isCorrect ? 'You found the right answer.' : 'Look at the big card and pick the same one.'}</span>
+          </div>
+        ) : isSoundMatch ? (
+          <button
+            className={soundHighlighted ? 'sound-listen-card listening' : 'sound-listen-card'}
+            type="button"
+            onClick={() => playSoundClue()}
+            disabled={soundOff}
+            aria-label={t('Listen to sound')}
+          >
+            <span className="sound-wave sound-wave-left" aria-hidden="true" />
+            <span className="sound-listen-button" aria-hidden="true">
+              <Volume2 size={44} />
+            </span>
+            <span className="sound-wave sound-wave-right" aria-hidden="true" />
+            <strong>{t('Tap to listen')}</strong>
+          </button>
+        ) : (
+          <div
+            className={[
+              activity.title === 'Color Match'
+                ? 'target-card color-target'
+                : isEmotionMatch
+                  ? 'target-card emotion-target-card'
+                  : isShapeSort
+                    ? 'target-card shape-sort-target-card'
+                    : isMatchPairs
+                      ? 'target-card pair-target-card'
+                      : 'target-card',
+              isMatchPairs && isCorrect ? 'matched' : ''
+            ].filter(Boolean).join(' ')}
+            aria-label={activity.title === 'Color Match' ? `Color card: ${game.target.label}` : isEmotionMatch ? `${t('What feeling is this?')} ${t(game.target.label)}` : isShapeSort ? `${t('Shape to sort')}: ${t(game.target.label)}` : isMatchPairs ? `${t('What goes with this?')} ${t(game.target.label)}` : undefined}
+            style={activity.title === 'Color Match' ? { '--target-color': game.target.value } : undefined}
+            draggable={isShapeSort && !isCorrect}
+            onDragStart={(event) => {
+              if (!isShapeSort) return;
+              startShapeDrag();
+              event.dataTransfer.effectAllowed = 'move';
+              event.dataTransfer.setData('text/plain', game.target.value);
+            }}
+            onDragEnd={() => {
+              shapeDraggingRef.current = false;
+              setShapeDragging(false);
+              setDragOverChoice(null);
+            }}
+            onPointerDown={(event) => {
+              if (!isShapeSort || isCorrect) return;
+              startShapeDrag();
+              event.currentTarget.setPointerCapture?.(event.pointerId);
+            }}
+            onPointerUp={(event) => {
+              if (!isShapeSort || isCorrect) return;
+              finishShapeDrag(event.clientX, event.clientY);
+            }}
+            onMouseDown={startShapeDrag}
+            onPointerCancel={() => {
+              shapeDraggingRef.current = false;
+              setShapeDragging(false);
+              setDragOverChoice(null);
+            }}
+          >
+            {isShapeSort && <span className="eyebrow">{t('This shape')}</span>}
+            <GameTargetVisual activityTitle={activity.title} target={game.target} />
+            {isMatchPairs && <strong className="pair-object-label">{t(game.target.label)}</strong>}
           </div>
         )}
+        {!isSizeSort && (
+        <div className={isSoundMatch ? 'game-choices sound-choice-grid' : isEmotionMatch ? 'game-choices emotion-choice-grid' : isShapeSort ? 'game-choices shape-sort-bin-grid' : isMatchPairs ? 'game-choices pair-choice-grid' : 'game-choices'}>
+          {choiceOrder.map((choice) => {
+            const isSelectedChoice = selected?.label === choice.label;
+            const isCorrectChoice = isSoundMatch && isCorrect && choice.value === game.target.value;
+            const isEmotionCorrectChoice = isEmotionMatch && isCorrect && choice.value === game.target.value;
+            const isShapeCorrectChoice = isShapeSort && isCorrect && choice.value === game.target.value;
+            const isPairCorrectChoice = isMatchPairs && isCorrect && choice.value === game.target.value;
+            const choiceClassName = [
+              'game-choice',
+              isSoundMatch ? 'sound-choice-card' : '',
+              isEmotionMatch ? 'emotion-choice-card' : '',
+              isShapeSort ? 'shape-sort-bin' : '',
+              isMatchPairs ? 'pair-choice-card' : '',
+              isSelectedChoice ? 'selected' : '',
+              (isCorrectChoice || isEmotionCorrectChoice || isShapeCorrectChoice || isPairCorrectChoice) ? 'correct' : '',
+              (isSoundMatch || isEmotionMatch || isShapeSort || isMatchPairs) && isSelectedChoice && !isCorrect ? 'needs-retry' : '',
+              isShapeSort && shapeDragging ? 'drag-ready' : '',
+              isShapeSort && dragOverChoice === choice.value ? 'drag-over' : ''
+            ].filter(Boolean).join(' ');
+
+            return (
+              <button
+                key={choice.label}
+                type="button"
+                className={choiceClassName}
+                disabled={isCorrect}
+                data-shape-choice={isShapeSort ? choice.value : undefined}
+                aria-label={isShapeSort ? t(choice.label) : undefined}
+                onDragOver={(event) => {
+                  if (!isShapeSort || isCorrect) return;
+                  event.preventDefault();
+                  event.dataTransfer.dropEffect = 'move';
+                  setDragOverChoice(choice.value);
+                }}
+                onDragEnter={() => {
+                  if (isShapeSort && !isCorrect) setDragOverChoice(choice.value);
+                }}
+                onDragLeave={() => {
+                  if (isShapeSort) setDragOverChoice((value) => value === choice.value ? null : value);
+                }}
+                onDrop={(event) => {
+                  if (!isShapeSort || isCorrect) return;
+                  event.preventDefault();
+                  setShapeDragging(false);
+                  setDragOverChoice(null);
+                  chooseMatch(choice);
+                }}
+                onClick={() => {
+                  chooseMatch(choice);
+                }}
+              >
+                {!isEmotionMatch && <GameChoiceVisual activityTitle={activity.title} choice={choice} />}
+                {activity.title !== 'Letter Match' && <span>{t(choice.label)}</span>}
+                {(isCorrectChoice || isEmotionCorrectChoice || isShapeCorrectChoice || isPairCorrectChoice) && <Check className="choice-state-icon" size={22} aria-label={t('Great job!')} />}
+                {(isEmotionMatch || isShapeSort || isMatchPairs) && isSelectedChoice && !isCorrect && <span className="choice-state-icon selection-dot" aria-hidden="true" />}
+              </button>
+            );
+          })}
+        </div>
+        )}
+        {(selected || sizeSortChecked) && (
+          <div className={isCorrect ? 'game-feedback success' : 'game-feedback'} role="status" aria-live="polite">
+            {isMatchPairs && isCorrect && (
+              <div className="pair-success-link" aria-hidden="true">
+                <span>
+                  <PairObjectVisual item={game.target} className="pair-success-icon" />
+                  <small>{t(game.target.label)}</small>
+                </span>
+                <span className="pair-connector" />
+                <span>
+                  <PairObjectVisual item={selected} className="pair-success-icon" />
+                  <small>{t(selected.label)}</small>
+                </span>
+              </div>
+            )}
+            {(isSoundMatch || isEmotionMatch || isShapeSort || isMatchPairs || isSizeSort) && (
+              <span className="feedback-icon" aria-hidden="true">
+                {isCorrect ? <Check size={20} /> : isSoundMatch ? <Volume2 size={20} /> : <Info size={20} />}
+              </span>
+            )}
+            <strong>{t(isSizeSort ? (isCorrect ? 'Great job!' : 'Almost! Try again.') : isMatchPairs ? (isCorrect ? 'Great match!' : 'Try again.') : isSoundMatch || isEmotionMatch || isShapeSort ? (isCorrect ? 'Great job!' : 'Try again.') : (isCorrect ? 'Great match!' : 'Try one more time.'))}</strong>
+            <span>
+              {isSizeSort
+                ? t(isCorrect ? 'Small → Medium → Big' : getSizeSortHint())
+                : isEmotionMatch
+                ? (isCorrect ? `${t('That face is')} ${t(game.target.label).toLowerCase()}.` : t('Look at the face one more time.'))
+                : isShapeSort
+                  ? t(isCorrect ? `${game.target.label} goes with ${game.target.label}.` : 'Look at the shape.')
+                  : isMatchPairs
+                    ? t(isCorrect ? successDetail : (game.hint || retryDetail))
+                    : t(isSoundMatch ? (isCorrect ? successDetail : 'Listen one more time and choose again.') : (isCorrect ? successDetail : retryDetail))}
+            </span>
+            {isEmotionMatch && !isCorrect && <small>{t('Look at the mouth and eyes.')}</small>}
+            {isShapeSort && !isCorrect && <small>{t(getShapeHint(game.target.label))}</small>}
+          </div>
+        )}
+        {completed && (
+          <GameCompleteActions onRepeat={resetGame} onGames={onBack} />
+        )}
         <div className="form-actions">
-          <button className="secondary-button" type="button" onClick={() => { setSelected(null); setCompleted(false); }}>Reset</button>
+          <button className="secondary-button game-reset-button" type="button" onClick={resetGame}>
+            <RotateCcw size={18} /> {t('Reset')}
+          </button>
+          {isCorrect && !isLastRound && (
+            <button className="primary-button" type="button" onClick={goToNextRound}>
+              {t('Next round')} <ChevronRight size={18} />
+            </button>
+          )}
         </div>
       </div>
     </section>
@@ -3279,6 +3587,7 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
 }
 
 function MemoryGame({ activity, profile, onBack, onComplete }) {
+  const t = useT();
   const startsWithImages = profile?.letters === 'Does not recognize letters';
   const [mode, setMode] = useState(startsWithImages ? 'images' : 'words');
   const [pairCount, setPairCount] = useState(2);
@@ -3288,6 +3597,7 @@ function MemoryGame({ activity, profile, onBack, onComplete }) {
   const [completed, setCompleted] = useState(false);
   const complete = matched.length === deck.length;
   const matchedPairs = matched.length / 2;
+  const memoryColumns = pairCount <= 2 ? 2 : pairCount <= 3 ? 3 : pairCount <= 8 ? 4 : 5;
 
   function resetGame(nextMode = mode, nextPairCount = pairCount) {
     setMode(nextMode);
@@ -3298,9 +3608,18 @@ function MemoryGame({ activity, profile, onBack, onComplete }) {
     setCompleted(false);
   }
 
+  function changePairCount(delta) {
+    const nextPairCount = Math.min(10, Math.max(2, pairCount + delta));
+    if (nextPairCount !== pairCount) resetGame(mode, nextPairCount);
+  }
+
   useEffect(() => {
     if (!complete || completed) return;
     setCompleted(true);
+    if (activity.category === 'play') {
+      onComplete();
+      return;
+    }
     const timerId = window.setTimeout(onComplete, 700);
     return () => window.clearTimeout(timerId);
   }, [complete]);
@@ -3334,8 +3653,8 @@ function MemoryGame({ activity, profile, onBack, onComplete }) {
       </div>
       <div className="game-panel">
         <div className="game-prompt">
-          <p className="eyebrow">Find pairs</p>
-          <h2>Turn over two cards. Match the same {mode === 'images' ? 'pictures' : 'words'}.</h2>
+          <p className="eyebrow">{t('Find pairs')}</p>
+          <h2>{t(mode === 'images' ? 'Turn over two cards. Match the same pictures.' : 'Turn over two cards. Match the same words.')}</h2>
         </div>
         <div className="mode-toggle" aria-label="Memory card mode">
           <button
@@ -3344,7 +3663,7 @@ function MemoryGame({ activity, profile, onBack, onComplete }) {
             aria-pressed={mode === 'images'}
             onClick={() => resetGame('images')}
           >
-            Images
+            {t('Images')}
           </button>
           <button
             type="button"
@@ -3352,23 +3671,31 @@ function MemoryGame({ activity, profile, onBack, onComplete }) {
             aria-pressed={mode === 'words'}
             onClick={() => resetGame('words')}
           >
-            Words
+            {t('Words')}
           </button>
         </div>
-        <div className="mode-toggle pair-toggle" aria-label="Number of pairs">
-          {[2, 3, 4].map((count) => (
-            <button
-              key={count}
-              type="button"
-              className={pairCount === count ? 'mode-option active' : 'mode-option'}
-              aria-pressed={pairCount === count}
-              onClick={() => resetGame(mode, count)}
-            >
-              {count} pairs
-            </button>
-          ))}
+        <div className="pair-stepper" aria-label="Number of pairs">
+          <button
+            type="button"
+            className="icon-button"
+            disabled={pairCount <= 2}
+            onClick={() => changePairCount(-1)}
+            aria-label={t('Fewer pairs')}
+          >
+            <Minus />
+          </button>
+          <strong>{pairCount} {t('Pairs')}</strong>
+          <button
+            type="button"
+            className="icon-button"
+            disabled={pairCount >= 10}
+            onClick={() => changePairCount(1)}
+            aria-label={t('More pairs')}
+          >
+            <Plus />
+          </button>
         </div>
-        <div className="memory-grid" style={{ '--memory-columns': pairCount === 2 ? 2 : 4 }}>
+        <div className="memory-grid" style={{ '--memory-columns': memoryColumns }}>
           {deck.map((card) => {
             const visible = flipped.includes(card.id) || matched.includes(card.id);
             return (
@@ -3377,13 +3704,13 @@ function MemoryGame({ activity, profile, onBack, onComplete }) {
                 type="button"
                 className={visible ? 'memory-card visible' : 'memory-card'}
                 onClick={() => chooseCard(card)}
-                aria-label={visible ? card.label : 'Hidden card'}
+                aria-label={visible ? t(card.label) : t('Hidden card')}
               >
                 {visible ? (
                   mode === 'images' ? (
                     <VisualAsset label={card.label} className="memory-image" />
                   ) : (
-                    card.label
+                    t(card.label)
                   )
                 ) : '?'}
               </button>
@@ -3391,12 +3718,15 @@ function MemoryGame({ activity, profile, onBack, onComplete }) {
           })}
         </div>
         <div className={complete ? 'game-feedback success' : 'game-feedback'}>
-          <strong>{complete ? 'All pairs found!' : `${matchedPairs} of ${pairCount} pairs`}</strong>
-          <span>{complete ? 'Memory activity is complete.' : 'Keep looking for matching cards.'}</span>
+          <strong>{complete ? t('All pairs found!') : `${matchedPairs} ${t('of')} ${pairCount} ${t('Pairs')}`}</strong>
+          <span>{t(complete ? 'Memory activity is complete.' : 'Keep looking for matching cards.')}</span>
         </div>
+        {completed && (
+          <GameCompleteActions onRepeat={() => resetGame()} onGames={onBack} />
+        )}
         <div className="form-actions">
           <button className="secondary-button" type="button" onClick={() => resetGame()}>
-            Reset
+            {t('Reset')}
           </button>
         </div>
       </div>
@@ -3534,51 +3864,9 @@ const calmSoundOptions = [
   { id: 'rain', label: 'Rain', description: 'Soft steady rain' },
   { id: 'ocean', label: 'Ocean', description: 'Slow wave sound' },
   { id: 'nature', label: 'Nature', description: 'Gentle outdoor tone' },
-  { id: 'music', label: 'Soft music', description: 'Simple calm notes' }
+  { id: 'music', label: 'Soft music', description: 'Simple calm notes' },
+  { id: 'hum', label: 'Mmmm hum', description: 'Gentle yoga hum' }
 ];
-
-function CalmTools() {
-  const t = useT();
-  const [secondsLeft, setSecondsLeft] = useState(120);
-  const [running, setRunning] = useState(false);
-
-  useEffect(() => {
-    if (!running || secondsLeft === 0) return undefined;
-    const timerId = window.setInterval(() => setSecondsLeft((value) => Math.max(0, value - 1)), 1000);
-    return () => window.clearInterval(timerId);
-  }, [running, secondsLeft]);
-
-  useEffect(() => {
-    if (secondsLeft === 0) setRunning(false);
-  }, [secondsLeft]);
-
-  const minutes = Math.floor(secondsLeft / 60);
-  const seconds = String(secondsLeft % 60).padStart(2, '0');
-
-  return (
-    <div className="calm-tools">
-      <div className="calm-panel">
-        <div className="breathing-orb" aria-hidden="true" />
-        <div>
-          <h2>{t('Breathe slowly')}</h2>
-          <p>{t('In, out, rest.')}</p>
-        </div>
-        <div className="timer" aria-live="polite"><Clock /> {minutes}:{seconds}</div>
-        <div className="calm-actions">
-          <button className="secondary-button" type="button" onClick={() => setRunning((value) => !value)}>
-            {t(running ? 'Pause' : 'Start')}
-          </button>
-          <button className="secondary-button" type="button" onClick={() => {
-            setRunning(false);
-            setSecondsLeft(120);
-          }}>
-            {t('Reset')}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function CalmSoundActivity({ activity, soundOff, onBack }) {
   const t = useT();
@@ -3592,7 +3880,6 @@ function CalmSoundActivity({ activity, soundOff, onBack }) {
           <h1>{t(activity.title)}</h1>
         </div>
       </div>
-      <p className="caregiver-note">{t(activity.detail)}</p>
       {soundOff && <span className="pill">{t('Quiet mode')}</span>}
       <CalmSoundPanel soundOff={soundOff} />
     </section>
@@ -3678,6 +3965,30 @@ function CalmSoundPanel({ soundOff }) {
     oscillator.stop(startAt + duration + 0.04);
   }
 
+  function playBirdChirp(context, output, delay = 0) {
+    const chirpCount = 2 + Math.floor(Math.random() * 2);
+    const baseFrequency = 1250 + Math.random() * 950;
+
+    for (let index = 0; index < chirpCount; index += 1) {
+      const oscillator = trackNode(context.createOscillator());
+      const chirpGain = context.createGain();
+      const startAt = context.currentTime + delay + index * (0.11 + Math.random() * 0.05);
+      const duration = 0.09 + Math.random() * 0.05;
+      const startFrequency = baseFrequency + Math.random() * 320;
+      const endFrequency = startFrequency + 420 + Math.random() * 520;
+
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(startFrequency, startAt);
+      oscillator.frequency.exponentialRampToValueAtTime(endFrequency, startAt + duration);
+      chirpGain.gain.setValueAtTime(0.0001, startAt);
+      chirpGain.gain.exponentialRampToValueAtTime(0.045, startAt + 0.02);
+      chirpGain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+      oscillator.connect(chirpGain).connect(output);
+      oscillator.start(startAt);
+      oscillator.stop(startAt + duration + 0.03);
+    }
+  }
+
   function startCalmSound(soundId) {
     stopCalmSound();
     if (soundOff) return;
@@ -3719,16 +4030,23 @@ function CalmSoundPanel({ soundOff }) {
     if (soundId === 'nature') {
       const base = trackNode(createNoiseSource(context));
       const filter = context.createBiquadFilter();
+      const baseGain = context.createGain();
       filter.type = 'lowpass';
-      filter.frequency.value = 760;
-      base.connect(filter).connect(masterGain);
+      filter.frequency.value = 620;
+      baseGain.gain.value = 0.34;
+      base.connect(filter).connect(baseGain).connect(masterGain);
       base.start();
-      [523.25, 659.25, 783.99].forEach((frequency, index) => playTone(context, masterGain, frequency, 0.18, index * 0.18));
-      const intervalId = window.setInterval(() => {
-        const notes = [493.88, 587.33, 698.46, 880];
-        playTone(context, masterGain, notes[Math.floor(Math.random() * notes.length)], 0.16);
+      playBirdChirp(context, masterGain, 0.18);
+      playBirdChirp(context, masterGain, 0.72);
+      const birdIntervalId = window.setInterval(() => {
+        playBirdChirp(context, masterGain);
+        if (Math.random() > 0.48) playBirdChirp(context, masterGain, 0.44);
+      }, 2100);
+      const softToneIntervalId = window.setInterval(() => {
+        const notes = [523.25, 659.25, 783.99, 987.77];
+        playTone(context, masterGain, notes[Math.floor(Math.random() * notes.length)], 0.14);
       }, 2400);
-      soundRef.current.intervals.push(intervalId);
+      soundRef.current.intervals.push(birdIntervalId, softToneIntervalId);
     }
 
     if (soundId === 'music') {
@@ -3744,6 +4062,29 @@ function CalmSoundPanel({ soundOff }) {
       });
     }
 
+    if (soundId === 'hum') {
+      const humGain = context.createGain();
+      const pulse = trackNode(context.createOscillator());
+      const pulseGain = context.createGain();
+      const base = trackNode(context.createOscillator());
+      const warmth = trackNode(context.createOscillator());
+
+      humGain.gain.setValueAtTime(0.15, context.currentTime);
+      pulse.type = 'sine';
+      pulse.frequency.value = 0.18;
+      pulseGain.gain.value = 0.045;
+      base.type = 'sine';
+      base.frequency.value = 136.1;
+      warmth.type = 'triangle';
+      warmth.frequency.value = 204.2;
+
+      pulse.connect(pulseGain).connect(humGain.gain);
+      base.connect(humGain);
+      warmth.connect(humGain);
+      humGain.connect(masterGain);
+      [pulse, base, warmth].forEach((node) => node.start());
+    }
+
     setActiveSound(soundId);
   }
 
@@ -3756,7 +4097,7 @@ function CalmSoundPanel({ soundOff }) {
     <div className="calm-sound-panel">
       <div className="calm-sound-heading">
         <div>
-          <p>{soundOff ? t('Sound is muted.') : (activeSound ? `${t(calmSoundOptions.find((option) => option.id === activeSound)?.label)} ${t('is playing.')}` : t('Choose a gentle background sound'))}</p>
+          <p>{soundOff ? t('Sound is muted.') : (activeSound ? `${t(calmSoundOptions.find((option) => option.id === activeSound)?.label)} ${t('is playing.')}` : t('Pick a sound'))}</p>
         </div>
         <button className="secondary-button" type="button" onClick={stopSoundButton} disabled={!activeSound}>
           {t('Stop')}
@@ -3823,6 +4164,123 @@ function ParentGate({ onUnlock, onBack }) {
   );
 }
 
+function MyVoiceSettingsEditor({ settings, onChange }) {
+  const t = useT();
+  const [customLabel, setCustomLabel] = useState('');
+  const [customSentence, setCustomSentence] = useState('');
+  const normalizedSettings = normalizeMyVoiceSettings(settings);
+
+  function updateSettings(updates) {
+    onChange(normalizeMyVoiceSettings({ ...normalizedSettings, ...updates }));
+  }
+
+  function toggleQuick(label) {
+    const enabledQuick = normalizedSettings.enabledQuick.includes(label)
+      ? normalizedSettings.enabledQuick.filter((item) => item !== label)
+      : [...normalizedSettings.enabledQuick, label];
+    updateSettings({ enabledQuick });
+  }
+
+  function toggleCategory(id) {
+    const isEnabled = normalizedSettings.enabledCategories.includes(id);
+    if (isEnabled && normalizedSettings.enabledCategories.length === 1) return;
+    const enabledCategories = isEnabled
+      ? normalizedSettings.enabledCategories.filter((item) => item !== id)
+      : [...normalizedSettings.enabledCategories, id];
+    updateSettings({ enabledCategories });
+  }
+
+  function addCustomMessage() {
+    const label = customLabel.trim();
+    const sentence = customSentence.trim() || label;
+    if (!label) return;
+    updateSettings({
+      customCards: [
+        ...normalizedSettings.customCards,
+        { id: createProfileId(), label, sentence, image: 'Choice Board' }
+      ].slice(-12)
+    });
+    setCustomLabel('');
+    setCustomSentence('');
+  }
+
+  function removeCustomMessage(id) {
+    updateSettings({
+      customCards: normalizedSettings.customCards.filter((card) => card.id !== id)
+    });
+  }
+
+  return (
+    <div className="my-voice-settings">
+      <p>{t('Choose what appears in My Voice.')}</p>
+
+      <div className="my-voice-setting-group">
+        <strong>{t('Quick buttons')}</strong>
+        <div className="my-voice-toggle-grid">
+          {quickCommunicationCards.map((card) => (
+            <button
+              key={card.label}
+              type="button"
+              className={normalizedSettings.enabledQuick.includes(card.label) ? 'choice selected' : 'choice'}
+              onClick={() => toggleQuick(card.label)}
+          >
+            {normalizedSettings.enabledQuick.includes(card.label) && <Check size={16} />}
+              {t(card.label)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="my-voice-setting-group">
+        <strong>{t('Categories')}</strong>
+        <div className="my-voice-toggle-grid">
+          {communicationCategories.map((category) => (
+            <button
+              key={category.id}
+              type="button"
+              className={normalizedSettings.enabledCategories.includes(category.id) ? 'choice selected' : 'choice'}
+              onClick={() => toggleCategory(category.id)}
+          >
+            {normalizedSettings.enabledCategories.includes(category.id) && <Check size={16} />}
+              {t(category.label)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="my-voice-setting-group">
+        <strong>{t('Custom messages')}</strong>
+        <div className="custom-message-form">
+          <label>
+            {t('Button label')}
+            <input value={customLabel} onChange={(event) => setCustomLabel(event.target.value)} placeholder={t('Snack')} />
+          </label>
+          <label>
+            {t('Spoken message')}
+            <input value={customSentence} onChange={(event) => setCustomSentence(event.target.value)} placeholder={t('I want a snack.')} />
+          </label>
+          <button className="primary-button" type="button" onClick={addCustomMessage} disabled={!customLabel.trim()}>
+            <Plus size={18} /> {t('Add message')}
+          </button>
+        </div>
+        <div className="custom-message-list">
+          {normalizedSettings.customCards.length ? normalizedSettings.customCards.map((card) => (
+            <span key={card.id}>
+              <strong>{card.label}</strong>
+              <small>{card.sentence}</small>
+              <button type="button" onClick={() => removeCustomMessage(card.id)} aria-label={`${t('Remove')} ${card.label}`}>
+                <Trash2 size={16} />
+              </button>
+            </span>
+          )) : (
+            <em>{t('No custom messages yet')}</em>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ParentDashboard({ profile, profiles, progress, personalization, onProfileChange, onSwitchProfile, onAddChild, onEdit, onReset }) {
   const t = useT();
   const language = useContext(LanguageContext);
@@ -3872,7 +4330,7 @@ function ParentDashboard({ profile, profiles, progress, personalization, onProfi
           </div>
           <InfoRow label="Age" value={profile?.age} />
           <InfoRow label="Support" value={profile?.supportLevel} />
-          <InfoRow label="Communication skills" value={formatChoiceList(profile?.communication)} />
+          <InfoRow label="Communication skills" value={formatChoiceList(profile?.communication, t)} />
           <InfoRow label="Reading" value={profile?.letters} />
         </DashboardPanel>
         <DashboardPanel title="Parent Goals" icon={<Star />}>
@@ -3882,6 +4340,12 @@ function ParentDashboard({ profile, profiles, progress, personalization, onProfi
             dashboard
           />
           <TagList items={objectives} />
+        </DashboardPanel>
+        <DashboardPanel title="My Voice Setup" icon={<MessageSquare />} className="my-voice-dashboard-panel">
+          <MyVoiceSettingsEditor
+            settings={profile?.myVoice}
+            onChange={(myVoice) => onProfileChange({ myVoice })}
+          />
         </DashboardPanel>
         <DashboardPanel title="Daily Skills Already Learned" icon={<HeartHandshake />}>
           <TagList items={profile?.dailySkills?.length ? profile.dailySkills : ['None selected yet']} />
@@ -3913,23 +4377,23 @@ function ParentDashboard({ profile, profiles, progress, personalization, onProfi
           <TagList items={personalization} />
         </DashboardPanel>
         <DashboardPanel title="Parent Resources" icon={<Info />}>
-          <ul className="resource-list">{resources.map((item) => <li key={item}>{item}</li>)}</ul>
+          <ul className="resource-list">{resources.map((item) => <li key={item}>{t(item)}</li>)}</ul>
         </DashboardPanel>
         <DashboardPanel title="Emergency / Meltdown Support" icon={<Shield />}>
-          <p>{language === 'es' ? 'Mantenga al nino seguro, use menos palabras, baje luces y sonido cuando sea posible, ofrezca un descanso y espere antes de ensenar o corregir.' : 'Keep the child safe, use fewer words, lower lights and sound where possible, offer a break, and wait before teaching or correcting.'}</p>
+          <p>{language === 'es' ? 'Mantenga al niño seguro, use menos palabras, baje luces y sonido cuando sea posible, ofrezca un descanso y espere antes de enseñar o corregir.' : 'Keep the child safe, use fewer words, lower lights and sound where possible, offer a break, and wait before teaching or correcting.'}</p>
         </DashboardPanel>
       </div>
       <aside className="disclaimer">
-        {language === 'es' ? 'Esta app es educativa y de apoyo para ninos que ya tienen un diagnostico y se usa bajo responsabilidad del padre, madre o cuidador. No diagnostica autismo, no ofrece consejo medico y no reemplaza terapia, atencion clinica ni orientacion profesional.' : 'This app is educational and supportive for children who already have a diagnosis and is used under parent or caregiver responsibility. It does not diagnose autism, provide medical advice, or replace therapy, clinical care, or guidance from qualified professionals.'}
+        {language === 'es' ? 'Esta app es educativa y de apoyo para niños que ya tienen un diagnóstico y se usa bajo responsabilidad del padre, madre o cuidador. No diagnostica autismo, no ofrece consejo médico y no reemplaza terapia, atención clínica ni orientación profesional.' : 'This app is educational and supportive for children who already have a diagnosis and is used under parent or caregiver responsibility. It does not diagnose autism, provide medical advice, or replace therapy, clinical care, or guidance from qualified professionals.'}
       </aside>
     </section>
   );
 }
 
-function DashboardPanel({ title, icon, children }) {
+function DashboardPanel({ title, icon, children, className = '' }) {
   const t = useT();
   return (
-    <article className="dashboard-panel">
+    <article className={className ? `dashboard-panel ${className}` : 'dashboard-panel'}>
       <h2>{icon}{t(title)}</h2>
       {children}
     </article>
@@ -3957,3 +4421,5 @@ function NavButton({ icon, label, active, onClick }) {
 }
 
 createRoot(document.getElementById('root')).render(<App />);
+
+
