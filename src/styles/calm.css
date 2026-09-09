@@ -1,0 +1,310 @@
+.calm-sound-panel {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid rgba(152, 178, 171, 0.18);
+  border-radius: 8px;
+  background: rgba(20, 33, 32, 0.9);
+  box-shadow: 0 14px 34px rgba(4, 11, 12, 0.24);
+}
+
+.calm-sound-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.calm-sound-heading h2,
+.calm-sound-heading p {
+  margin: 0;
+}
+
+.calm-sound-heading p {
+  margin-top: 4px;
+  color: #a7bbb5;
+  font-weight: 800;
+}
+
+.calm-sound-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.calm-sound-option {
+  display: grid;
+  min-height: 92px;
+  align-content: center;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid rgba(152, 178, 171, 0.22);
+  border-radius: 8px;
+  color: #e3eee9;
+  background: rgba(30, 49, 47, 0.82);
+  text-align: left;
+}
+
+.calm-sound-option strong,
+.calm-sound-option span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.calm-sound-option span {
+  color: #a7bbb5;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.calm-sound-option.active {
+  border-color: rgba(101, 156, 144, 0.54);
+  background: rgba(55, 91, 84, 0.86);
+}
+
+.calm-volume-control {
+  color: #a7bbb5;
+}
+
+.calm-volume-control input {
+  min-height: 32px;
+  accent-color: #6f9d91;
+}
+
+.calm-zone-page {
+  margin: -18px calc((100vw - min(1120px, calc(100vw - 28px))) / -2) -56px;
+  padding: 28px calc((100vw - min(1120px, calc(100vw - 28px))) / 2) 56px;
+  color: #e3eee9;
+  background:
+    radial-gradient(circle at 20% 8%, rgba(77, 124, 112, 0.2), transparent 34%),
+    linear-gradient(145deg, #10201f 0%, #172625 58%, #12191d 100%);
+}
+
+.calm-zone-page .page-title {
+  margin-top: 0;
+}
+
+.calm-zone-page .eyebrow,
+.calm-zone-page .activity-card p,
+.calm-zone-page .game-feedback span {
+  color: #a7bbb5;
+}
+
+.calm-zone-page .round-icon,
+.calm-zone-page .primary-button {
+  background: #4d7c70;
+}
+
+.calm-zone-page .icon-button,
+.calm-zone-page .secondary-button {
+  border-color: rgba(152, 178, 171, 0.28);
+  color: #e3eee9;
+  background: rgba(25, 40, 39, 0.86);
+}
+
+.calm-zone-page .activity-card,
+.calm-zone-page .game-panel,
+.calm-zone-page .calm-sound-panel {
+  border-color: rgba(152, 178, 171, 0.18);
+  background: rgba(20, 33, 32, 0.9);
+  box-shadow: 0 14px 34px rgba(4, 11, 12, 0.24);
+}
+
+.calm-zone-page .activity-card.completed {
+  border-color: rgba(116, 157, 147, 0.35);
+  background: rgba(25, 43, 41, 0.94);
+}
+
+.calm-zone-page .activity-visual,
+.calm-zone-page .target-card,
+.calm-zone-page .breath-practice,
+.calm-zone-page .sequence-step,
+.calm-zone-page .game-choice {
+  border-color: rgba(152, 178, 171, 0.2);
+  color: #e3eee9;
+  background: rgba(30, 49, 47, 0.82);
+}
+
+.calm-zone-page .game-choice.selected,
+.calm-zone-page .sequence-step.done,
+.calm-zone-page .game-feedback.success,
+.calm-zone-page .done-badge {
+  border-color: rgba(101, 156, 144, 0.45);
+  color: #e7f4ef;
+  background: rgba(55, 91, 84, 0.86);
+}
+
+.calm-zone-page .game-feedback {
+  border-color: rgba(152, 178, 171, 0.22);
+  color: #e3eee9;
+  background: rgba(20, 33, 32, 0.86);
+}
+
+.calm-zone-page .breathing-orb {
+  background: radial-gradient(circle, #d7e6df 0 22%, #6f9d91 25% 58%, #345f58 64%);
+  box-shadow: 0 0 34px rgba(111, 157, 145, 0.22);
+}
+
+.calm-zone-page .target-image,
+.calm-zone-page .activity-visual .visual-image,
+.calm-zone-page .choice-image {
+  filter: saturate(0.72) brightness(0.86);
+}
+
+.sensory-play-page {
+  gap: 14px;
+}
+
+.sensory-mode-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sensory-mode-bar button {
+  min-height: 52px;
+  padding: 0 18px;
+  border: 2px solid rgba(78, 139, 158, 0.24);
+  border-radius: 8px;
+  color: #24515f;
+  background: rgba(245, 253, 255, 0.88);
+  font-weight: 950;
+}
+
+.sensory-mode-bar button.active {
+  border-color: rgba(58, 151, 183, 0.5);
+  color: #153e4d;
+  background: rgba(213, 245, 255, 0.96);
+  box-shadow: inset 0 -3px 0 rgba(58, 151, 183, 0.26);
+}
+
+.sensory-wave-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sensory-wave-controls label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px;
+  border: 2px solid rgba(87, 160, 177, 0.22);
+  border-radius: 8px;
+  color: #24515f;
+  background: rgba(245, 253, 255, 0.9);
+  font-weight: 950;
+}
+
+.sensory-wave-controls span {
+  overflow-wrap: anywhere;
+}
+
+.sensory-wave-controls input {
+  width: 100%;
+  min-height: 34px;
+  accent-color: #3a97b7;
+}
+
+.sensory-play-surface {
+  position: relative;
+  min-height: clamp(360px, 58vh, 560px);
+  overflow: hidden;
+  border: 2px solid rgba(87, 160, 177, 0.24);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 232, 139, 0.46), transparent 28%),
+    radial-gradient(circle at 82% 20%, rgba(255, 172, 205, 0.34), transparent 30%),
+    radial-gradient(circle at 28% 82%, rgba(119, 232, 195, 0.36), transparent 32%),
+    linear-gradient(160deg, #e9fbff 0%, #d8f5ff 42%, #f1f8df 100%);
+  box-shadow: inset 0 0 48px rgba(255, 255, 255, 0.42), 0 18px 42px rgba(64, 126, 143, 0.18);
+  touch-action: none;
+}
+
+.sensory-play-surface.waves-mode {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.62), transparent 24%),
+    radial-gradient(circle at 78% 28%, rgba(154, 213, 255, 0.5), transparent 34%),
+    radial-gradient(circle at 38% 78%, rgba(255, 196, 224, 0.38), transparent 30%),
+    linear-gradient(160deg, #eefcff 0%, #cdefff 48%, #e9f8ea 100%);
+}
+
+.sensory-play-surface.bubbles-mode {
+  background:
+    radial-gradient(circle at 20% 22%, rgba(255, 234, 150, 0.5), transparent 28%),
+    radial-gradient(circle at 82% 72%, rgba(187, 159, 255, 0.32), transparent 34%),
+    radial-gradient(circle at 26% 82%, rgba(119, 232, 195, 0.4), transparent 34%),
+    linear-gradient(160deg, #f6feff 0%, #d8f5ff 46%, #fff3df 100%);
+}
+
+.sensory-bubble {
+  position: absolute;
+  display: block;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(255, 255, 255, 0.68);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.95) 0 10%, transparent 12%),
+    radial-gradient(circle at 50% 55%, var(--bubble-color), transparent 72%);
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.95) 0 10%, transparent 12%),
+    radial-gradient(circle at 50% 55%, color-mix(in srgb, var(--bubble-color), white 34%), color-mix(in srgb, var(--bubble-color), transparent 52%) 66%, transparent 72%);
+  box-shadow: 0 0 22px var(--bubble-color);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--bubble-color), transparent 32%);
+  animation: sensory-float 4.4s ease-in-out infinite;
+}
+
+.sensory-bubble:active {
+  transform: translate(-50%, -50%) scale(0.88);
+}
+
+.sensory-reset-card {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  min-height: 76px;
+  padding: 0 24px;
+  border: 2px solid rgba(58, 151, 183, 0.36);
+  border-radius: 8px;
+  color: #153e4d;
+  background: rgba(245, 253, 255, 0.94);
+  font-size: 1.25rem;
+  font-weight: 950;
+}
+
+.sensory-wave {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  border: 3px solid var(--wave-color);
+  border-radius: 999px;
+  box-shadow: 0 0 18px var(--wave-color);
+  animation: sensory-wave var(--wave-duration, 1.2s) ease-out forwards;
+}
+
+@keyframes sensory-float {
+  0%,
+  100% {
+    margin-top: 0;
+  }
+
+  50% {
+    margin-top: -12px;
+  }
+}
+
+@keyframes sensory-wave {
+  from {
+    opacity: 0.85;
+    width: 24px;
+    height: 24px;
+  }
+
+  to {
+    opacity: 0;
+    width: var(--wave-size, 190px);
+    height: var(--wave-size, 190px);
+  }
+}

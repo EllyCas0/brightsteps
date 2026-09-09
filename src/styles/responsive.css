@@ -1,0 +1,466 @@
+@media (max-width: 900px) {
+  .welcome-band,
+  .parent-hero,
+  .lesson-stage {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .lesson-stage {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-video-board {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .child-grid,
+  .activity-grid,
+  .dashboard-grid,
+  .form-grid,
+  .avatar-choice-list,
+  .support-level-cards,
+  .calm-sound-grid,
+  .game-choices,
+  .count-row,
+  .memory-grid,
+  .speech-card-grid,
+  .mood-picker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .speech-builder {
+    position: static;
+    grid-template-columns: 1fr;
+  }
+
+  .communication-page {
+    margin-inline: 0;
+    padding-inline: 10px;
+    border-inline: 0;
+  }
+
+  .communication-workspace {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .communication-group {
+    min-width: 0;
+  }
+
+  .communication-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .communication-tabs {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+
+  .communication-tabs button {
+    grid-template-columns: 42px minmax(118px, 1fr) 22px;
+    flex: 0 0 min(260px, 78vw);
+  }
+
+  .quick-communication-bar {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .quick-communication-bar button {
+    flex: 0 0 auto;
+  }
+
+  .custom-message-form {
+    grid-template-columns: 1fr;
+  }
+
+  .custom-message-list > span {
+    grid-template-columns: 1fr auto;
+  }
+
+  .custom-message-list small {
+    grid-column: 1 / -1;
+  }
+
+  .media-toggle {
+    margin-left: 0;
+  }
+
+  .onboarding-heading {
+    gap: 14px;
+  }
+
+  .lesson-visual {
+    width: 100%;
+  }
+
+  .calm-sound-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .sensory-wave-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .main-content {
+    width: min(100% - 20px, 1120px);
+    padding-top: 14px;
+  }
+
+  .calm-zone-page {
+    margin-inline: -10px;
+    padding-inline: 10px;
+  }
+
+  .calm-sound-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sensory-wave-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    padding-inline: 10px;
+  }
+
+  .onboarding-heading,
+  .onboarding-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .topbar-actions {
+    gap: 6px;
+  }
+
+  .calm-header-button {
+    width: 48px;
+    padding: 0;
+  }
+
+  .language-switcher {
+    gap: 4px;
+    padding-inline: 8px;
+  }
+
+  .language-switcher > svg {
+    display: none;
+  }
+
+  .language-switcher select {
+    min-width: 86px;
+  }
+
+  .calm-header-button span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  h1 {
+    font-size: clamp(2.35rem, 13vw, 4rem);
+    overflow-wrap: anywhere;
+  }
+
+  .brand-copy small {
+    display: none;
+  }
+
+  .aac-row,
+  .child-grid,
+  .activity-grid,
+  .dashboard-grid,
+  .form-grid,
+  .avatar-choice-list,
+  .support-level-cards,
+  .stats-grid,
+  .game-choices,
+  .speech-card-grid,
+  .mood-picker {
+    grid-template-columns: 1fr;
+  }
+
+  .sound-choice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .size-order-cue {
+    max-width: 100%;
+    flex-wrap: wrap;
+    border-radius: 8px;
+  }
+
+  .size-sort-pieces {
+    width: 100%;
+    min-height: 112px;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .size-sort-piece {
+    width: min(31%, 118px);
+    min-height: 92px;
+  }
+
+  .size-sort-slots {
+    gap: 8px;
+  }
+
+  .size-sort-slot-box {
+    min-height: 126px;
+    padding: 8px;
+  }
+
+  .size-sort-slot-label {
+    font-size: 0.88rem;
+  }
+
+  .size-sort-object-small {
+    width: 38px;
+    height: 38px;
+  }
+
+  .size-sort-object-medium {
+    width: 62px;
+    height: 62px;
+  }
+
+  .size-sort-object-big {
+    width: 88px;
+    height: 88px;
+  }
+
+  .emotion-choice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shape-sort-bin-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pair-choice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sound-listen-card {
+    grid-template-columns: 40px 92px 40px;
+    min-height: 156px;
+    padding: 18px 14px;
+  }
+
+  .sound-listen-button {
+    width: 92px;
+    height: 92px;
+  }
+
+  .sound-wave {
+    width: 34px;
+    height: 62px;
+  }
+
+  .sound-choice-card {
+    min-height: 142px;
+  }
+
+  .emotion-target-card {
+    min-height: 214px;
+  }
+
+  .emotion-choice-card {
+    min-height: 104px;
+  }
+
+  .shape-sort-target-card {
+    min-height: 198px;
+  }
+
+  .shape-sort-target-card .shape-large {
+    width: min(132px, 46vw);
+    height: min(132px, 46vw);
+  }
+
+  .shape-sort-bin {
+    min-height: 146px;
+  }
+
+  .shape-sort-bin .shape-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .pair-target-card {
+    min-height: 190px;
+  }
+
+  .pair-choice-card {
+    min-height: 138px;
+  }
+
+  .pair-choice-card .pair-choice-icon {
+    width: 58px;
+    height: 58px;
+  }
+
+  .speech-actions,
+  .speech-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .communication-header {
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+  }
+
+  .communication-title h1 {
+    font-size: clamp(2rem, 11vw, 3rem);
+  }
+
+  .communication-title-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .communication-builder {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+
+  .communication-builder .speech-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .quick-communication-bar {
+    overflow-x: auto;
+    padding: 10px;
+    scrollbar-width: thin;
+  }
+
+  .other-skill-row {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-communication-bar button {
+    grid-template-columns: 30px max-content;
+    flex: 0 0 auto;
+    min-height: 48px;
+    padding: 7px 10px;
+  }
+
+  .quick-card-image {
+    width: 30px;
+    height: 30px;
+  }
+
+  .communication-tabs button {
+    min-height: 64px;
+  }
+
+  .large-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .speech-card {
+    min-height: 148px;
+  }
+
+  .mood-card {
+    min-height: 118px;
+  }
+
+  .memory-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lesson-video-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lesson-step-item {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .lesson-step-item small {
+    grid-column: 2;
+  }
+
+  .sequence-step.visual {
+    grid-template-columns: 34px 78px minmax(0, 1fr);
+  }
+
+  .sequence-step-image {
+    width: 74px;
+    height: 74px;
+  }
+
+  .target-card {
+    min-height: 170px;
+  }
+
+  .memory-card {
+    min-height: 100px;
+  }
+
+  .big-card {
+    min-height: 132px;
+  }
+
+  .activity-card {
+    min-height: 0;
+  }
+
+  .bottom-nav {
+    bottom: 8px;
+    gap: 4px;
+    padding: 6px;
+  }
+
+
+  .nav-button {
+    min-height: 58px;
+    font-size: 0.72rem;
+  }
+
+  .nav-button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .form-actions,
+  .parent-actions {
+    flex-direction: column;
+  }
+
+  .primary-button,
+  .secondary-button,
+  .danger-button {
+    width: 100%;
+  }
+
+  .activity-heading {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
