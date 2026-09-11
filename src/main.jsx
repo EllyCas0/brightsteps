@@ -74,6 +74,15 @@ import {
   Avatar,
   VisualAsset
 } from './components/VisualAsset.jsx';
+import { CalmSoundActivity } from './components/calm/CalmSounds.jsx';
+import { ParentDashboard, ParentGate } from './components/ParentDashboard.jsx';
+import {
+  BackgroundTopicPicker,
+  ChildAvatarSetup,
+  LanguageSwitcher,
+  Onboarding
+} from './components/ProfileSetup.jsx';
+import { asArray, asChoiceArray } from './lib/collections.js';
 import {
   activities,
   activityGames,
@@ -100,15 +109,6 @@ import {
   supportLevelDetails
 } from './data/appData.jsx';
 import './styles.css';
-
-function asArray(value, fallback = []) {
-  return Array.isArray(value) ? value : fallback;
-}
-
-function asChoiceArray(value, fallback = []) {
-  if (Array.isArray(value)) return value;
-  return value ? [value] : fallback;
-}
 
 function hasChoiceText(values, text) {
   const terms = text === 'AAC' || text === 'CAA' ? ['AAC', 'CAA'] : [text];
@@ -567,440 +567,6 @@ function App() {
   );
 }
 
-function LanguageSwitcher({ value, onChange }) {
-  const languages = [
-    { id: 'en', label: 'English' },
-    { id: 'es', label: 'Español' }
-  ];
-
-  return (
-    <label className="language-switcher" aria-label="Choose language">
-      <Languages size={18} aria-hidden="true" />
-      <select value={value} onChange={(event) => onChange(event.target.value)}>
-        {languages.map((language) => (
-          <option key={language.id} value={language.id}>{language.label}</option>
-        ))}
-      </select>
-    </label>
-  );
-}
-
-function Onboarding({ onComplete, initialProfile, language, onLanguageChange }) {
-  const t = useT();
-  const [step, setStep] = useState(0);
-  const [form, setForm] = useState(
-    {
-      ...defaultProfile,
-      ...initialProfile,
-      communication: asChoiceArray(initialProfile?.communication, defaultProfile.communication)
-    }
-  );
-
-  const steps = [
-    {
-      title: 'Confirmation',
-      content: (
-        <label className="confirm-row setup-confirm">
-          <input type="checkbox" checked={form.diagnosisConfirmed} onChange={(event) => setForm({ ...form, diagnosisConfirmed: event.target.checked })} />
-          <span>
-            <strong>{t('IMPORTANT NOTICE')}</strong>
-            <span>{t('This app is a recreational and educational support tool designed to help children practice communication and daily living skills.')}</span>
-            <span>{t("Please consider the child's sensory sensitivities, comfort, and need for breaks when using sounds, visuals, touch, or any activity in the app.")}</span>
-            <span>{t('It does not provide diagnoses, treatment, or medical or psychological advice, and does not replace care from qualified healthcare professionals or therapists.')}</span>
-            <span>{t('The app should be used under the supervision and responsibility of a parent, legal guardian, or caregiver.')}</span>
-          </span>
-        </label>
-      )
-    },
-    {
-      title: 'Child profile',
-      content: (
-        <>
-          <div className="form-grid">
-            <label>{t('Name or nickname')}<input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder={t('Child name')} /></label>
-            <SelectField label="Age" value={form.age} options={choiceSets.age} onChange={(value) => setForm({ ...form, age: value })} />
-          </div>
-        </>
-      )
-    },
-    {
-      title: 'Autism support level',
-      content: (
-        <>
-          <SupportLevelCards
-            value={form.supportLevel}
-            onChange={(value) => {
-              const options = getCommunicationOptions(value);
-              const communication = asChoiceArray(form.communication).filter((item) => options.includes(item));
-              setForm({
-                ...form,
-                supportLevel: value,
-                communication
-              });
-            }}
-          />
-          <p className="support-note">{t("This information is used only to personalize your child's experience. It does not determine or confirm an autism diagnosis or support level.")}</p>
-          {form.supportLevel && (
-            <MultiChoice
-              label="Communication skills"
-              values={asChoiceArray(form.communication)}
-              options={getCommunicationOptions(form.supportLevel)}
-              onChange={(values) => setForm({ ...form, communication: values })}
-            />
-          )}
-        </>
-      )
-    },
-    { title: 'Current Recognition Skills', content: <><ChoiceGroup label="Letters" value={form.letters} options={choiceSets.letters} onChange={(value) => setForm({ ...form, letters: value })} /><ChoiceGroup label="Numbers" value={form.numbers} options={choiceSets.numbers} onChange={(value) => setForm({ ...form, numbers: value })} /></> },
-    {
-      title: 'Current Daily Skills',
-      content: (
-        <DailySkillsChoice
-          values={form.dailySkills}
-          onChange={(values) => setForm({ ...form, dailySkills: values })}
-        />
-      )
-    },
-    {
-      title: 'Parent goals',
-      content: (
-        <ParentGoalsChoice
-          values={form.objectives || []}
-          onChange={(values) => setForm({ ...form, objectives: values })}
-        />
-      )
-    }
-  ];
-
-  const isLastStep = step === steps.length - 1;
-  const canContinue = (step !== 0 || form.diagnosisConfirmed)
-    && (step !== 1 || (form.name.trim() && form.age))
-    && (step !== 2 || (form.supportLevel && asChoiceArray(form.communication).length));
-  const canSave = form.diagnosisConfirmed;
-
-  return (
-    <main className="onboarding">
-      <section className="onboarding-panel">
-        <div className="panel-heading onboarding-heading">
-          <div className="onboarding-title">
-            <span className="round-icon"><Baby /></span>
-            <div>
-              <p className="eyebrow">{t('Parent setup')}</p>
-              <h1>{t('Create a child profile')}</h1>
-              <p>{t('Answers personalize activity length, choices, sound, and visual support.')}</p>
-            </div>
-          </div>
-          <LanguageSwitcher value={language} onChange={onLanguageChange} />
-        </div>
-        <div className="progress-track" aria-label={`Step ${step + 1} of ${steps.length}`}>
-          <span style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
-        </div>
-        <h2>{t(steps[step].title)}</h2>
-        {steps[step].helper && <p className="step-helper">{steps[step].helper}</p>}
-        {steps[step].content}
-        <div className="form-actions">
-          <button className="secondary-button" disabled={step === 0} onClick={() => setStep(step - 1)}><ArrowLeft size={18} /> {t('Back')}</button>
-          {step < steps.length - 1 ? (
-            <button className="primary-button" disabled={!canContinue} onClick={() => setStep(step + 1)}>{t('Next')} <ChevronRight size={18} /></button>
-          ) : (
-            <button className="primary-button" disabled={isLastStep && !canSave} onClick={() => onComplete({ ...form, name: form.name.trim() || 'My child' })}><Check size={18} /> {t('Save profile')}</button>
-          )}
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function SupportLevelCards({ value, onChange }) {
-  const t = useT();
-  return (
-    <fieldset className="support-level-cards">
-      <legend className="sr-only">Autism support level</legend>
-      {supportLevelDetails.map((level) => (
-        <button
-          key={level.value}
-          type="button"
-          className={value === level.value ? 'support-level-card selected' : 'support-level-card'}
-          aria-pressed={value === level.value}
-          onClick={() => onChange(level.value)}
-        >
-          <span className="support-level-copy">
-            <strong>{t(level.title)}</strong>
-            <span>{t(level.subtitle)}</span>
-            <small>{t(level.description)}</small>
-          </span>
-          <span className="support-select">{value === level.value ? <Check size={18} /> : '○'} {t('Select')}</span>
-        </button>
-      ))}
-    </fieldset>
-  );
-}
-
-function ChoiceGroup({ label, value, options, onChange, compact = false, hideLabel = false }) {
-  const t = useT();
-  return (
-    <fieldset className={compact ? 'choice-group compact-choice-group' : 'choice-group'}>
-      <legend className={hideLabel ? 'sr-only' : undefined}>{t(label)}</legend>
-      <div className="choice-list">
-        {options.map((option) => (
-          <button key={option} type="button" className={value === option ? 'choice selected' : 'choice'} onClick={() => onChange(option)}>
-            {t(option)}
-          </button>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
-
-function SelectField({ label, value, options, onChange }) {
-  const t = useT();
-  return (
-    <label>
-      {t(label)}
-      <select value={value} onChange={(event) => onChange(event.target.value)}>
-        {options.map((option) => <option key={option} value={option}>{t(option)}</option>)}
-      </select>
-    </label>
-  );
-}
-
-function BackgroundTopicPicker({ value, onChange }) {
-  const t = useT();
-  const [open, setOpen] = useState(false);
-  const activeTopic = getBackgroundTopic(value);
-
-  function choose(topicId) {
-    onChange(topicId);
-    setOpen(false);
-  }
-
-  return (
-    <div className="background-picker">
-      <button
-        className={open ? 'icon-button active' : 'icon-button'}
-        type="button"
-        aria-label={t('Choose background')}
-        aria-expanded={open}
-        onClick={() => setOpen((isOpen) => !isOpen)}
-        title={t('Choose background')}
-      >
-        <ImageIcon />
-      </button>
-      {open && (
-        <div className="background-menu" role="menu" aria-label="Background topics">
-          <button
-            type="button"
-            className={!activeTopic ? 'background-choice selected' : 'background-choice'}
-            onClick={() => choose('')}
-          >
-            <span className="background-choice-icon" aria-hidden="true"><Palette size={22} /></span>
-            <span className="background-choice-copy">
-              <strong>{t('Default')}</strong>
-            </span>
-            {!activeTopic && <Check size={16} />}
-          </button>
-          {backgroundTopics.map((topic) => {
-            const TopicIcon = topic.icon;
-            return (
-              <button
-                key={topic.id}
-                type="button"
-                className={value === topic.id ? 'background-choice selected' : 'background-choice'}
-                onClick={() => choose(topic.id)}
-              >
-                <span className="background-choice-icon" aria-hidden="true"><TopicIcon size={22} /></span>
-                <span className="background-choice-copy">
-                  <strong>{t(topic.label)}</strong>
-                </span>
-                {value === topic.id && <Check size={16} />}
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function CustomMultiChoice({
-  values,
-  options,
-  onChange,
-  legend,
-  customLabel,
-  customPlaceholder,
-  customItemsLabel,
-  choiceListClassName = 'choice-list',
-  choiceClassName = 'choice',
-  note = 'You can select more than one option.'
-}) {
-  const t = useT();
-  const selectedValues = asChoiceArray(values);
-  const customItems = selectedValues.filter((item) => !options.includes(item));
-  const [otherOpen, setOtherOpen] = useState(customItems.length > 0);
-  const [customValue, setCustomValue] = useState(customItems[0] || '');
-
-  function toggle(option) {
-    onChange(
-      selectedValues.includes(option)
-        ? selectedValues.filter((item) => item !== option)
-        : [...selectedValues, option]
-    );
-  }
-
-  function removeCustom(item) {
-    onChange(selectedValues.filter((value) => value !== item));
-    if (customValue === item) setCustomValue('');
-  }
-
-  function addCustomItem() {
-    const nextValue = customValue.trim();
-    if (!nextValue || selectedValues.includes(nextValue)) return;
-    onChange([...selectedValues, nextValue]);
-  }
-
-  return (
-    <fieldset className="choice-group">
-      <legend className="sr-only">{t(legend)}</legend>
-      <p className="multi-choice-note">{t(note)}</p>
-      <div className={choiceListClassName}>
-        {options.map((option) => (
-          <button key={option} type="button" className={selectedValues.includes(option) ? `${choiceClassName} selected` : choiceClassName} onClick={() => toggle(option)}>
-            {selectedValues.includes(option) && <Check size={16} />} {t(option)}
-          </button>
-        ))}
-        <button type="button" className={otherOpen ? `${choiceClassName} selected` : choiceClassName} onClick={() => setOtherOpen((value) => !value)}>
-          {otherOpen && <Check size={16} />} {t('Other')}
-        </button>
-      </div>
-      {otherOpen && (
-        <div className="other-skill-row">
-          <label>
-            {t(customLabel)}
-            <input
-              value={customValue}
-              onChange={(event) => setCustomValue(event.target.value)}
-              placeholder={t(customPlaceholder)}
-            />
-          </label>
-          <button className="secondary-button" type="button" onClick={addCustomItem} disabled={!customValue.trim()}>
-            {t('Add')}
-          </button>
-        </div>
-      )}
-      {!!customItems.length && (
-        <div className="custom-skill-list" aria-label={customItemsLabel}>
-          {customItems.map((item) => (
-            <button key={item} type="button" onClick={() => removeCustom(item)}>
-              <Check size={16} /> {t(item)}
-            </button>
-          ))}
-        </div>
-      )}
-    </fieldset>
-  );
-}
-
-function DailySkillsChoice({ values, onChange }) {
-  return (
-    <CustomMultiChoice
-      values={values}
-      options={choiceSets.dailySkills}
-      onChange={onChange}
-      legend="Skills they already have"
-      customLabel="Other daily skill"
-      customPlaceholder="Write a skill"
-      customItemsLabel="Custom daily skills"
-    />
-  );
-}
-
-function ParentGoalsChoice({ values, onChange, dashboard = false }) {
-  return (
-    <CustomMultiChoice
-      values={values}
-      options={choiceSets.objectives}
-      onChange={onChange}
-      legend="Goals you want to achieve"
-      customLabel="Other parent goal"
-      customPlaceholder="Write a goal"
-      customItemsLabel="Custom parent goals"
-      choiceListClassName={dashboard ? 'objective-picker' : 'choice-list'}
-      choiceClassName={dashboard ? 'objective-option' : 'choice'}
-    />
-  );
-}
-
-function MultiChoice({ label, values, options, onChange, hideLabel = false }) {
-  const t = useT();
-  function toggle(option) {
-    onChange(values.includes(option) ? values.filter((item) => item !== option) : [...values, option]);
-  }
-  return (
-    <fieldset className="choice-group">
-      <legend className={hideLabel ? 'sr-only' : undefined}>{t(label)}</legend>
-      <p className="multi-choice-note">{t('You can select more than one option.')}</p>
-      <div className="choice-list">
-        {options.map((option) => (
-          <button key={option} type="button" className={values.includes(option) ? 'choice selected' : 'choice'} onClick={() => toggle(option)}>
-            {values.includes(option) && <Check size={16} />} {t(option)}
-          </button>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
-
-function AvatarPicker({ value, onChange }) {
-  return (
-    <fieldset className="avatar-picker">
-      <legend>Avatar</legend>
-      <div className="avatar-choice-list">
-        {avatarOptions.map((option) => (
-          <button
-            key={option.key}
-            type="button"
-            className={value === option.key ? 'avatar-choice selected' : 'avatar-choice'}
-            aria-pressed={value === option.key}
-            onClick={() => onChange(option.key)}
-          >
-            <Avatar avatar={option.key} name={option.label} size="large" />
-            <strong>{option.label}</strong>
-          </button>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
-
-function ChildAvatarSetup({ profile, onChoose }) {
-  const t = useT();
-  const language = useContext(LanguageContext);
-  const [selected, setSelected] = useState(profile.avatar || defaultProfile.avatar);
-
-  return (
-    <main className="onboarding child-avatar-screen">
-      <section className="onboarding-panel child-avatar-panel">
-        <div className="panel-heading">
-          <Avatar avatar={selected} name={profile.name || 'Child'} size="hero" />
-          <div>
-            <p className="eyebrow">{t('Child choice')}</p>
-            <h1>{t('Choose your Mini-Me')}</h1>
-            <p>{profile.name || (language === 'es' ? 'Tu niño' : 'Your child')} {language === 'es' ? 'puede escoger la imagen que quiere usar en BrightSteps.' : 'can pick the picture they want to use in BrightSteps.'}</p>
-          </div>
-        </div>
-        <AvatarPicker value={selected} onChange={setSelected} />
-        <div className="form-actions avatar-actions">
-          <span />
-          <button className="primary-button" type="button" onClick={() => onChoose(selected)}>
-            <Check size={18} /> {t('Start BrightSteps')}
-          </button>
-        </div>
-      </section>
-    </main>
-  );
-}
-
 function ChildHome({ profile, activeAvatar, progress, isFirstHomeVisit, soundOff, setScreen, onLearn, onChangeAvatar, onSpeechTable, onQuickChoice, onMoodChoice }) {
   const t = useT();
   const language = useContext(LanguageContext);
@@ -1251,7 +817,7 @@ function ActivityPlayer({ activity, profile, soundOff, onBack, onComplete, onNex
     return <CalmSoundActivity activity={activity} soundOff={soundOff} onBack={onBack} />;
   }
   if (activity.title === 'Sensory Play') {
-    return <SensoryPlayActivity activity={activity} onBack={onBack} onComplete={onComplete} />;
+    return <SensoryPlayActivity activity={activity} soundOff={soundOff} onBack={onBack} onComplete={onComplete} />;
   }
   if (activity.category === 'speech' && speechBoards[activity.title]) {
     return <SpeechBoard activity={activity} board={speechBoards[activity.title]} profile={profile} soundOff={soundOff} onBack={onBack} onComplete={onComplete} />;
@@ -1437,310 +1003,6 @@ function getGameRounds(activityTitle, activityIcon) {
     }
   ];
 }
-
-const quickCommunicationCards = [
-  { label: 'Yes', image: 'Yes', sentence: 'Yes.' },
-  { label: 'No', image: 'No', sentence: 'No.' },
-  { label: 'Help', image: 'Help', sentence: 'I need help.' },
-  { label: 'Stop', image: 'Stop', sentence: 'Stop please.' },
-  { label: 'Break', image: 'Break', sentence: 'I need a break.', followUp: 'break' },
-  { label: 'Bathroom', image: 'Bathroom', sentence: 'I need the bathroom.' },
-  { label: 'All Done', image: 'All done', sentence: 'All done.' }
-];
-
-const communicationCategories = [
-  {
-    id: 'want',
-    label: 'I Want',
-    description: 'food, drink, toys',
-    image: 'Drink',
-    cards: [
-      { label: 'Water', image: 'Water', sentence: 'I want water.' },
-      { label: 'Eat', image: 'Eat', sentence: 'I want to eat.' },
-      { label: 'Toy', image: 'Toy', sentence: 'I want a toy.' },
-      { label: 'Music', image: 'Sound + Picture', sentence: 'I want music.' },
-      { label: 'Outside', image: 'Sun', sentence: 'I want to go outside.' },
-      { label: 'Play', image: 'Play', sentence: 'I want to play.' },
-      { label: 'Drink', image: 'Drink', sentence: 'I want a drink.' },
-      { label: 'More', image: 'More please', sentence: 'I want more.' }
-    ]
-  },
-  {
-    id: 'need',
-    label: 'I Need',
-    description: 'help, bathroom, break',
-    image: 'Bathroom',
-    cards: [
-      { label: 'Help', image: 'Help', sentence: 'I need help.' },
-      { label: 'Break', image: 'Break', sentence: 'I need a break.', followUp: 'break' },
-      { label: 'Bathroom', image: 'Bathroom', sentence: 'I need the bathroom.' },
-      { label: 'Water', image: 'Water', sentence: 'I need water.' },
-      { label: 'Food', image: 'Eat', sentence: 'I need food.' },
-      { label: 'Quiet', image: 'Calm Break', sentence: 'I need quiet.' },
-      { label: 'Rest', image: 'Sleep', sentence: 'I need rest.' },
-      { label: 'Caregiver', image: 'Thank you', sentence: 'I need my caregiver.' }
-    ]
-  },
-  {
-    id: 'sensory',
-    label: 'Sensory Needs',
-    description: 'loud, bright, crowded',
-    image: 'Sensory Needs',
-    cards: [
-      { label: 'Too loud', image: 'Sensory Needs', sentence: 'It is too loud.' },
-      { label: 'Too bright', image: 'Sensory Needs', sentence: 'It is too bright.' },
-      { label: 'Too crowded', image: 'Sensory Needs', sentence: 'It is too crowded.' },
-      { label: 'Too close', image: 'Sensory Needs', sentence: 'Too close.' },
-      { label: 'Uncomfortable', image: 'Sensory Needs', sentence: 'I am uncomfortable.' },
-      { label: 'Headphones', image: 'Headphones', sentence: 'I need headphones.' },
-      { label: 'Quiet', image: 'Calm Break', sentence: 'I need quiet.' },
-      { label: 'Dim lights', image: 'Calm Break', sentence: 'I need dim lights.' }
-    ]
-  },
-  {
-    id: 'feel',
-    label: 'I Feel',
-    description: 'happy, sad, mad',
-    image: 'Happy',
-    cards: [
-      { group: 'Feelings', label: 'Happy', image: 'Happy', sentence: 'I feel happy.' },
-      { group: 'Feelings', label: 'Sad', image: 'Sad', sentence: 'I feel sad.' },
-      { group: 'Feelings', label: 'Mad', image: 'Mad', sentence: 'I feel mad.' },
-      { group: 'Feelings', label: 'Scared', image: 'Worried', sentence: 'I feel scared.' },
-      { group: 'Feelings', label: 'Tired', image: 'Tired', sentence: 'I feel tired.' },
-      { group: 'Feelings', label: 'Excited', image: 'Excited', sentence: 'I feel excited.' },
-      { group: 'Feelings', label: 'Calm', image: 'Calm', sentence: 'I feel calm.' },
-      { group: 'Feelings', label: 'Frustrated', image: 'Mad', sentence: 'I feel frustrated.' },
-      { group: 'Feelings', label: 'Overwhelmed', image: 'Worried', sentence: 'I feel overwhelmed.' },
-      { group: 'Feelings', label: 'Sick', image: 'Tired', sentence: 'I feel sick.' },
-      { group: 'Affection', label: 'I love you', image: 'Heart', sentence: 'I love you.' },
-      { group: 'Affection', label: 'Love mommy', image: 'Heart', sentence: 'I love mommy.' },
-      { group: 'Affection', label: 'Love daddy', image: 'Heart', sentence: 'I love daddy.' },
-      { group: 'Affection', label: 'I miss you', image: 'Sad', sentence: 'I miss you.' },
-      { group: 'Affection', label: 'Hug you', image: 'Thank you', sentence: 'I want to hug you.' },
-      { group: 'Affection', label: 'Hold hands', image: 'Take Turns', sentence: 'I want to hold your hand.' },
-      { group: 'Affection', label: 'Stay with me', image: 'Thank you', sentence: 'Stay with me.' }
-    ]
-  },
-  {
-    id: 'like',
-    label: "Like / Don't Like",
-    description: 'favorite or no',
-    image: 'Heart',
-    cards: [
-      { label: 'I Like', image: 'Thank you', sentence: 'I like this.' },
-      { label: "I Don't Like", image: 'Stop', sentence: "I don't like this." },
-      { label: 'Music', image: 'Sound + Picture', sentence: 'I like music.' },
-      { label: 'Loud Sounds', image: 'Worried', sentence: "I don't like loud sounds." },
-      { label: 'This', image: 'Choice Board', sentence: "I don't like this." },
-      { label: 'Outside', image: 'Sun', sentence: 'I like outside.' },
-      { label: 'Play', image: 'Play', sentence: 'I like playing.' },
-      { label: 'Quiet', image: 'Calm', sentence: 'I like quiet.' }
-    ]
-  },
-  {
-    id: 'yes-no',
-    label: 'Yes / No',
-    description: 'answer clearly',
-    image: 'Yes',
-    large: true,
-    cards: [
-      { label: 'Yes', image: 'Yes', sentence: 'Yes.' },
-      { label: 'No', image: 'No', sentence: 'No.' },
-      { label: 'Maybe', image: 'Okay', sentence: 'Maybe. I am not sure.' }
-    ]
-  },
-  {
-    id: 'help',
-    label: 'Help Me',
-    description: 'open, show, come',
-    image: 'Help',
-    cards: [
-      { label: 'Help me', image: 'Help', sentence: 'Help me.' },
-      { label: 'Open it', image: 'Toy', sentence: 'Open it please.' },
-      { label: 'Show me', image: 'Eye', sentence: 'Show me please.' },
-      { label: 'Come with me', image: 'Thank you', sentence: 'Come with me.' },
-      { label: "I can't do it", image: 'Worried', sentence: "I can't do it." },
-      { label: 'Please help', image: 'Help', sentence: 'Please help me.' }
-    ]
-  },
-  {
-    id: 'more',
-    label: 'More / All Done',
-    description: 'again, wait, finished',
-    image: 'All done',
-    cards: [
-      { label: 'More', image: 'More please', sentence: 'More please.' },
-      { label: 'Again', image: 'Again', sentence: 'Again please.' },
-      { label: 'All done', image: 'All done', sentence: 'All done.' },
-      { label: 'Stop', image: 'Stop', sentence: 'Stop please.' },
-      { label: 'Wait', image: 'Timer', sentence: 'Wait please.' }
-    ]
-  },
-  {
-    id: 'questions',
-    label: 'Questions',
-    description: 'what, where, who',
-    image: 'Eye',
-    cards: [
-      { label: 'What?', image: 'Choice Board', sentence: 'What?' },
-      { label: 'Where?', image: 'Eye', sentence: 'Where?' },
-      { label: 'Who?', image: 'Thank you', sentence: 'Who?' },
-      { label: 'When?', image: 'Timer', sentence: 'When?' },
-      { label: 'Why?', image: 'Worried', sentence: 'Why?' },
-      { label: 'Can I?', image: 'Help', sentence: 'Can I?' },
-      { label: 'Where is Mom?', image: 'Heart', sentence: 'Where is Mom?' },
-      { label: 'What is that?', image: 'Eye', sentence: 'What is that?' }
-    ]
-  },
-  {
-    id: 'play',
-    label: 'Games',
-    description: 'my turn, play with me',
-    image: 'Toy',
-    cards: [
-      { label: "Let's play", image: 'Play', sentence: "Let's play." },
-      { label: 'Play with me', image: 'Play', sentence: 'Play with me.' },
-      { label: 'My turn', image: 'Take Turns', sentence: 'My turn.' },
-      { label: 'Your turn', image: 'Take Turns', sentence: 'Your turn.' },
-      { label: 'Together', image: 'Share Toys', sentence: "Let's do it together." },
-      { label: 'Again', image: 'Again', sentence: 'Again please.' },
-      { label: 'Share', image: 'Share Toys', sentence: 'Share please.' }
-    ]
-  },
-  {
-    id: 'love-space',
-    label: 'Love & Space',
-    description: 'hug, I love you, space',
-    image: 'Love & Space',
-    cards: [
-      { group: 'Affection', label: 'Hug me', image: 'Thank you', sentence: 'I want a hug.' },
-      { group: 'Affection', label: 'Hug you', image: 'Thank you', sentence: 'I want to hug you.' },
-      { group: 'Affection', label: 'Kiss', image: 'Heart', sentence: 'I want a kiss.' },
-      { group: 'Affection', label: 'I love you', image: 'Heart', sentence: 'I love you.' },
-      { group: 'Affection', label: 'Hold my hand', image: 'Take Turns', sentence: 'Please hold my hand.' },
-      { group: 'Affection', label: 'Hold your hand', image: 'Take Turns', sentence: 'I want to hold your hand.' },
-      { group: 'Affection', label: 'Sit with me', image: 'Thank you', sentence: 'Sit with me.' },
-      { group: 'Affection', label: 'Stay with me', image: 'Thank you', sentence: 'Stay with me.' },
-      { group: 'Affection', label: 'I want mommy', image: 'Heart', sentence: 'I want mommy.' },
-      { group: 'Affection', label: 'I want daddy', image: 'Heart', sentence: 'I want daddy.' },
-      { group: 'Affection', label: 'I miss you', image: 'Sad', sentence: 'I miss you.' },
-      { group: 'Affection', label: 'Cuddle', image: 'Heart', sentence: 'I want to cuddle.' },
-      { group: 'Affection', label: 'High five', image: 'Take Turns', sentence: 'High five.' },
-      { group: 'Personal Space', label: 'I need space', image: 'Calm', sentence: 'I need space.' },
-      { group: 'Personal Space', label: 'No hug', image: 'Stop', sentence: 'No hug right now.' },
-      { group: 'Personal Space', label: 'Not now', image: 'Timer', sentence: 'Not now.' },
-      { group: 'Personal Space', label: "Don't touch me", image: 'Stop', sentence: "Don't touch me." },
-      { group: 'Personal Space', label: 'Too close', image: 'Worried', sentence: 'Too close.' },
-      { group: 'Personal Space', label: 'Stop', image: 'Stop', sentence: 'Stop please.' },
-      { group: 'Personal Space', label: 'Wait', image: 'Timer', sentence: 'Wait please.' },
-      { group: 'Personal Space', label: 'Gentle hands', image: 'Heart', sentence: 'Gentle hands please.' },
-      { group: 'Personal Space', label: 'Alone', image: 'Calm', sentence: 'I want to be alone.' },
-      { group: 'Personal Space', label: 'Break', image: 'Break', sentence: 'I need a break.', followUp: 'break' }
-    ]
-  },
-  {
-    id: 'break',
-    label: 'I Need a Break',
-    description: 'quiet, alone, breathe',
-    image: 'Calm Break',
-    cards: [
-      { label: 'I need a break', image: 'Calm Break', sentence: 'I need a break.', followUp: 'break', prominent: true },
-      { label: 'Quiet', image: 'Calm Break', sentence: 'I need a break. I want quiet.' },
-      { label: 'Headphones', image: 'Headphones', sentence: 'I need a break. I want headphones.' },
-      { label: 'Sit down', image: 'Bed', sentence: 'I need a break. I want to sit down.' },
-      { label: 'Dim lights', image: 'Calm Break', sentence: 'I need a break. I want dim lights.' },
-      { label: 'Alone time', image: 'Calm', sentence: 'I need a break. I want alone time.' },
-      { label: 'Breathe', image: 'Breathe', sentence: 'I need a break. I want to breathe.' },
-      { label: 'Favorite item', image: 'Toy', sentence: 'I need a break. I want my favorite item.' }
-    ]
-  },
-  {
-    id: 'hurt',
-    label: 'Something Hurts',
-    description: 'head, stomach, ear',
-    image: 'Something Hurts',
-    cards: [
-      { label: 'Something hurts', image: 'Something Hurts', sentence: 'Something hurts.', followUp: 'hurt', prominent: true }
-    ]
-  },
-  {
-    id: 'choice',
-    label: 'My Choice',
-    description: 'choose right now',
-    image: 'Choice Board',
-    cards: [
-      { label: 'I choose this', image: 'Choice Board', sentence: 'I choose this.' },
-      { label: 'Blue one', image: 'Water', sentence: 'I choose the blue one.' },
-      { label: 'Music', image: 'Sound + Picture', sentence: 'I choose music.' },
-      { label: 'Outside', image: 'Sun', sentence: 'I choose outside.' },
-      { label: 'Toy', image: 'Toy', sentence: 'I choose the toy.' },
-      { label: 'Quiet', image: 'Calm Break', sentence: 'I choose quiet.' }
-    ]
-  }
-];
-
-const defaultMyVoiceSettings = {
-  enabledQuick: quickCommunicationCards.map((card) => card.label),
-  enabledCategories: communicationCategories.map((category) => category.id),
-  customCards: []
-};
-
-function normalizeMyVoiceSettings(settings) {
-  const hasSettings = settings && typeof settings === 'object';
-  const enabledQuick = asArray(settings?.enabledQuick, hasSettings ? [] : defaultMyVoiceSettings.enabledQuick)
-    .filter((label) => quickCommunicationCards.some((card) => card.label === label));
-  const enabledCategories = asArray(settings?.enabledCategories, hasSettings ? [] : defaultMyVoiceSettings.enabledCategories)
-    .filter((id) => communicationCategories.some((category) => category.id === id));
-  const customCards = asArray(settings?.customCards)
-    .map((card, index) => ({
-      id: card?.id || `custom-${Date.now()}-${index}`,
-      label: String(card?.label || '').trim(),
-      sentence: String(card?.sentence || card?.label || '').trim(),
-      image: card?.image || 'Choice Board',
-      custom: true
-    }))
-    .filter((card) => card.label && card.sentence)
-    .slice(0, 12);
-
-  return {
-    enabledQuick,
-    enabledCategories: enabledCategories.length ? enabledCategories : defaultMyVoiceSettings.enabledCategories,
-    customCards
-  };
-}
-
-function createCustomCommunicationCategory(customCards) {
-  return {
-    id: 'custom',
-    label: 'Custom messages',
-    description: 'parent choices',
-    image: 'Choice Board',
-    cards: customCards
-  };
-}
-
-const breakSupportCards = [
-  { label: 'Quiet', image: 'Calm Break', sentence: 'I need a break. I want quiet.' },
-  { label: 'Headphones', image: 'Headphones', sentence: 'I need a break. I want headphones.' },
-  { label: 'Sit down', image: 'Bed', sentence: 'I need a break. I want to sit down.' },
-  { label: 'Dim lights', image: 'Moon', sentence: 'I need a break. I want dim lights.' },
-  { label: 'Alone time', image: 'Calm Break', sentence: 'I need a break. I want alone time.' },
-  { label: 'Breathe', image: 'Yoga Calm', sentence: 'I need a break. I want to breathe.' },
-  { label: 'Favorite item', image: 'Toy', sentence: 'I need a break. I want my favorite item.' }
-];
-
-const hurtBodyCards = ['Head', 'Eyes', 'Ears', 'Mouth', 'Throat', 'Stomach', 'Arm', 'Hand', 'Leg', 'Foot', "I don't know"].map((part) => ({
-  label: part,
-  image: part === 'Eyes' ? 'Eye' : part === "I don't know" ? 'Worried' : 'Worried',
-  sentence: part === "I don't know" ? "Something hurts. I don't know where." : `My ${part.toLowerCase()} hurts.`,
-  followUp: 'hurt-intensity'
-}));
-
-const hurtIntensityCards = [
-  { label: 'A little', image: 'Okay', sentence: 'It hurts a little.' },
-  { label: 'A lot', image: 'Worried', sentence: 'It hurts a lot.' }
-];
 
 function SpeechBoard({ activity, board, profile, soundOff, onBack, onComplete }) {
   if (board.type === 'communication-board') {
@@ -2825,7 +2087,7 @@ const sensoryBubbleSeeds = [
 
 const sensoryWaveColors = ['#74d6ff', '#a7f070', '#ffd166', '#f8a5ff', '#8ef0d1', '#b5a7ff'];
 
-function SensoryPlayActivity({ activity, onBack, onComplete }) {
+function SensoryPlayActivity({ activity, soundOff, onBack, onComplete }) {
   const t = useT();
   const [mode, setMode] = useState('bubbles');
   const [bubbles, setBubbles] = useState(sensoryBubbleSeeds);
@@ -2833,18 +2095,101 @@ function SensoryPlayActivity({ activity, onBack, onComplete }) {
   const [waveSize, setWaveSize] = useState(190);
   const [waveDuration, setWaveDuration] = useState(1.2);
   const [waveAmount, setWaveAmount] = useState(1);
+  const bubblePopAudioRef = useRef({ context: null, nodes: [] });
   const pendingWaveRef = useRef(null);
   const waveFrameRef = useRef(null);
 
   useEffect(() => () => {
     if (waveFrameRef.current) window.cancelAnimationFrame(waveFrameRef.current);
+    stopBubblePopAudio();
   }, []);
 
   function resetBubbles() {
     setBubbles(sensoryBubbleSeeds);
   }
 
+  function ensureBubblePopContext() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return null;
+    if (!bubblePopAudioRef.current.context || bubblePopAudioRef.current.context.state === 'closed') {
+      bubblePopAudioRef.current.context = new AudioContext();
+    }
+    if (bubblePopAudioRef.current.context.state === 'suspended') {
+      bubblePopAudioRef.current.context.resume();
+    }
+    return bubblePopAudioRef.current.context;
+  }
+
+  function trackBubblePopNode(node) {
+    bubblePopAudioRef.current.nodes.push(node);
+    return node;
+  }
+
+  function stopBubblePopAudio() {
+    bubblePopAudioRef.current.nodes.forEach((node) => {
+      try {
+        node.stop?.();
+      } catch {
+        // Bubble pop nodes may already be stopped.
+      }
+      node.disconnect?.();
+    });
+    bubblePopAudioRef.current = { ...bubblePopAudioRef.current, nodes: [] };
+  }
+
+  function makeBubblePopNoise(context) {
+    const buffer = context.createBuffer(1, Math.floor(context.sampleRate * 0.08), context.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let index = 0; index < data.length; index += 1) {
+      data[index] = (Math.random() * 2 - 1) * (1 - index / data.length);
+    }
+    const source = trackBubblePopNode(context.createBufferSource());
+    source.buffer = buffer;
+    return source;
+  }
+
+  function playBubblePop() {
+    if (soundOff) return;
+    const context = ensureBubblePopContext();
+    if (!context) return;
+
+    const startAt = context.currentTime + 0.01;
+    const output = trackBubblePopNode(context.createGain());
+    const popTone = trackBubblePopNode(context.createOscillator());
+    const toneGain = context.createGain();
+    const noise = makeBubblePopNoise(context);
+    const noiseFilter = context.createBiquadFilter();
+    const noiseGain = context.createGain();
+
+    output.gain.setValueAtTime(0.28, startAt);
+    popTone.type = 'sine';
+    popTone.frequency.setValueAtTime(760, startAt);
+    popTone.frequency.exponentialRampToValueAtTime(1260, startAt + 0.055);
+    toneGain.gain.setValueAtTime(0.0001, startAt);
+    toneGain.gain.exponentialRampToValueAtTime(0.12, startAt + 0.008);
+    toneGain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.11);
+
+    noiseFilter.type = 'highpass';
+    noiseFilter.frequency.value = 1200;
+    noiseGain.gain.setValueAtTime(0.09, startAt);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.075);
+
+    popTone.connect(toneGain).connect(output);
+    noise.connect(noiseFilter).connect(noiseGain).connect(output);
+    output.connect(context.destination);
+    popTone.start(startAt);
+    popTone.stop(startAt + 0.13);
+    noise.start(startAt);
+    noise.stop(startAt + 0.085);
+
+    window.setTimeout(() => {
+      [output, popTone, toneGain, noise, noiseFilter, noiseGain].forEach((node) => node.disconnect?.());
+      bubblePopAudioRef.current.nodes = bubblePopAudioRef.current.nodes.filter((node) => node !== output && node !== popTone && node !== noise);
+    }, 220);
+  }
+
   function popBubble(id) {
+    playBubblePop();
     setBubbles((current) => current.filter((bubble) => bubble.id !== id));
   }
 
@@ -3858,556 +3203,6 @@ function ShoeLesson({ onBack, onComplete }) {
       </div>
     </section>
   );
-}
-
-const calmSoundOptions = [
-  { id: 'rain', label: 'Rain', description: 'Soft steady rain' },
-  { id: 'ocean', label: 'Ocean', description: 'Slow wave sound' },
-  { id: 'nature', label: 'Nature', description: 'Gentle outdoor tone' },
-  { id: 'music', label: 'Soft music', description: 'Simple calm notes' },
-  { id: 'hum', label: 'Mmmm hum', description: 'Gentle yoga hum' }
-];
-
-function CalmSoundActivity({ activity, soundOff, onBack }) {
-  const t = useT();
-  return (
-    <section className="calm-sound-activity">
-      <div className="page-title">
-        <button className="icon-button" onClick={onBack} aria-label="Go back"><ArrowLeft /></button>
-        <span className="round-icon"><Volume2 /></span>
-        <div>
-          <p className="eyebrow">{t('Calm activities')}</p>
-          <h1>{t(activity.title)}</h1>
-        </div>
-      </div>
-      {soundOff && <span className="pill">{t('Quiet mode')}</span>}
-      <CalmSoundPanel soundOff={soundOff} />
-    </section>
-  );
-}
-
-function CalmSoundPanel({ soundOff }) {
-  const t = useT();
-  const [activeSound, setActiveSound] = useState('');
-  const [volume, setVolume] = useState(0.34);
-  const soundRef = useRef({ context: null, gain: null, sources: [], intervals: [] });
-
-  useEffect(() => {
-    if (soundRef.current.gain) {
-      soundRef.current.gain.gain.setTargetAtTime(volume, soundRef.current.context.currentTime, 0.04);
-    }
-  }, [volume]);
-
-  useEffect(() => {
-    if (soundOff) {
-      stopCalmSound();
-      setActiveSound('');
-    }
-  }, [soundOff]);
-
-  useEffect(() => () => stopCalmSound(), []);
-
-  function createNoiseSource(context) {
-    const bufferSize = context.sampleRate * 2;
-    const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let index = 0; index < bufferSize; index += 1) {
-      data[index] = Math.random() * 2 - 1;
-    }
-    const source = context.createBufferSource();
-    source.buffer = buffer;
-    source.loop = true;
-    return source;
-  }
-
-  function ensureAudioContext() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return null;
-    if (!soundRef.current.context || soundRef.current.context.state === 'closed') {
-      soundRef.current.context = new AudioContext();
-    }
-    if (soundRef.current.context.state === 'suspended') {
-      soundRef.current.context.resume();
-    }
-    return soundRef.current.context;
-  }
-
-  function trackNode(node) {
-    soundRef.current.sources.push(node);
-    return node;
-  }
-
-  function stopCalmSound() {
-    soundRef.current.intervals.forEach((intervalId) => window.clearInterval(intervalId));
-    soundRef.current.sources.forEach((source) => {
-      try {
-        source.stop?.();
-      } catch {
-        // Some audio nodes may already be stopped.
-      }
-      source.disconnect?.();
-    });
-    soundRef.current.gain?.disconnect();
-    soundRef.current = { ...soundRef.current, gain: null, sources: [], intervals: [] };
-  }
-
-  function playTone(context, output, frequency, duration = 0.22, delay = 0) {
-    const oscillator = trackNode(context.createOscillator());
-    const toneGain = context.createGain();
-    const startAt = context.currentTime + delay;
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(frequency, startAt);
-    toneGain.gain.setValueAtTime(0.0001, startAt);
-    toneGain.gain.exponentialRampToValueAtTime(0.08, startAt + 0.04);
-    toneGain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
-    oscillator.connect(toneGain).connect(output);
-    oscillator.start(startAt);
-    oscillator.stop(startAt + duration + 0.04);
-  }
-
-  function playBirdChirp(context, output, delay = 0) {
-    const chirpCount = 2 + Math.floor(Math.random() * 2);
-    const baseFrequency = 1250 + Math.random() * 950;
-
-    for (let index = 0; index < chirpCount; index += 1) {
-      const oscillator = trackNode(context.createOscillator());
-      const chirpGain = context.createGain();
-      const startAt = context.currentTime + delay + index * (0.11 + Math.random() * 0.05);
-      const duration = 0.09 + Math.random() * 0.05;
-      const startFrequency = baseFrequency + Math.random() * 320;
-      const endFrequency = startFrequency + 420 + Math.random() * 520;
-
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(startFrequency, startAt);
-      oscillator.frequency.exponentialRampToValueAtTime(endFrequency, startAt + duration);
-      chirpGain.gain.setValueAtTime(0.0001, startAt);
-      chirpGain.gain.exponentialRampToValueAtTime(0.045, startAt + 0.02);
-      chirpGain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
-      oscillator.connect(chirpGain).connect(output);
-      oscillator.start(startAt);
-      oscillator.stop(startAt + duration + 0.03);
-    }
-  }
-
-  function startCalmSound(soundId) {
-    stopCalmSound();
-    if (soundOff) return;
-    const context = ensureAudioContext();
-    if (!context) return;
-
-    const masterGain = context.createGain();
-    masterGain.gain.setValueAtTime(volume, context.currentTime);
-    masterGain.connect(context.destination);
-    soundRef.current.gain = masterGain;
-
-    if (soundId === 'rain') {
-      const rain = trackNode(createNoiseSource(context));
-      const filter = context.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 1650;
-      filter.Q.value = 0.55;
-      rain.connect(filter).connect(masterGain);
-      rain.start();
-    }
-
-    if (soundId === 'ocean') {
-      const ocean = trackNode(createNoiseSource(context));
-      const filter = context.createBiquadFilter();
-      const waveGain = context.createGain();
-      const lfo = trackNode(context.createOscillator());
-      const lfoGain = context.createGain();
-      filter.type = 'lowpass';
-      filter.frequency.value = 520;
-      waveGain.gain.value = 0.42;
-      lfo.frequency.value = 0.08;
-      lfoGain.gain.value = 0.24;
-      lfo.connect(lfoGain).connect(waveGain.gain);
-      ocean.connect(filter).connect(waveGain).connect(masterGain);
-      ocean.start();
-      lfo.start();
-    }
-
-    if (soundId === 'nature') {
-      const base = trackNode(createNoiseSource(context));
-      const filter = context.createBiquadFilter();
-      const baseGain = context.createGain();
-      filter.type = 'lowpass';
-      filter.frequency.value = 620;
-      baseGain.gain.value = 0.34;
-      base.connect(filter).connect(baseGain).connect(masterGain);
-      base.start();
-      playBirdChirp(context, masterGain, 0.18);
-      playBirdChirp(context, masterGain, 0.72);
-      const birdIntervalId = window.setInterval(() => {
-        playBirdChirp(context, masterGain);
-        if (Math.random() > 0.48) playBirdChirp(context, masterGain, 0.44);
-      }, 2100);
-      const softToneIntervalId = window.setInterval(() => {
-        const notes = [523.25, 659.25, 783.99, 987.77];
-        playTone(context, masterGain, notes[Math.floor(Math.random() * notes.length)], 0.14);
-      }, 2400);
-      soundRef.current.intervals.push(birdIntervalId, softToneIntervalId);
-    }
-
-    if (soundId === 'music') {
-      const notes = [261.63, 329.63, 392, 523.25];
-      notes.forEach((frequency, index) => {
-        const oscillator = trackNode(context.createOscillator());
-        const toneGain = context.createGain();
-        oscillator.type = 'sine';
-        oscillator.frequency.value = frequency;
-        toneGain.gain.value = index === 0 ? 0.09 : 0.035;
-        oscillator.connect(toneGain).connect(masterGain);
-        oscillator.start();
-      });
-    }
-
-    if (soundId === 'hum') {
-      const humGain = context.createGain();
-      const pulse = trackNode(context.createOscillator());
-      const pulseGain = context.createGain();
-      const base = trackNode(context.createOscillator());
-      const warmth = trackNode(context.createOscillator());
-
-      humGain.gain.setValueAtTime(0.15, context.currentTime);
-      pulse.type = 'sine';
-      pulse.frequency.value = 0.18;
-      pulseGain.gain.value = 0.045;
-      base.type = 'sine';
-      base.frequency.value = 136.1;
-      warmth.type = 'triangle';
-      warmth.frequency.value = 204.2;
-
-      pulse.connect(pulseGain).connect(humGain.gain);
-      base.connect(humGain);
-      warmth.connect(humGain);
-      humGain.connect(masterGain);
-      [pulse, base, warmth].forEach((node) => node.start());
-    }
-
-    setActiveSound(soundId);
-  }
-
-  function stopSoundButton() {
-    stopCalmSound();
-    setActiveSound('');
-  }
-
-  return (
-    <div className="calm-sound-panel">
-      <div className="calm-sound-heading">
-        <div>
-          <p>{soundOff ? t('Sound is muted.') : (activeSound ? `${t(calmSoundOptions.find((option) => option.id === activeSound)?.label)} ${t('is playing.')}` : t('Pick a sound'))}</p>
-        </div>
-        <button className="secondary-button" type="button" onClick={stopSoundButton} disabled={!activeSound}>
-          {t('Stop')}
-        </button>
-      </div>
-      <div className="calm-sound-grid" aria-label="Relaxing sounds">
-        {calmSoundOptions.map((option) => (
-          <button
-            key={option.id}
-            type="button"
-            className={activeSound === option.id ? 'calm-sound-option active' : 'calm-sound-option'}
-            disabled={soundOff}
-            onClick={() => startCalmSound(option.id)}
-          >
-            <strong>{t(option.label)}</strong>
-            <span>{t(option.description)}</span>
-          </button>
-        ))}
-      </div>
-      <label className="calm-volume-control">
-        {t('Volume')}
-        <input
-          type="range"
-          min="0"
-          max="0.7"
-          step="0.01"
-          value={volume}
-          disabled={soundOff}
-          onChange={(event) => setVolume(Number(event.target.value))}
-        />
-      </label>
-    </div>
-  );
-}
-
-function ParentGate({ onUnlock, onBack }) {
-  const t = useT();
-  const [answer, setAnswer] = useState('');
-  const currentYear = new Date().getFullYear();
-  const numericAnswer = Number(answer);
-  const isAdultBirthYear = /^\d{4}$/.test(answer.trim())
-    && numericAnswer >= 1900
-    && numericAnswer <= currentYear - 18;
-
-  return (
-    <section className="parent-gate">
-      <Lock size={42} />
-      <h1>{t('Adult Area')}</h1>
-      <p>{t('For grown-ups. Enter your birth year to continue.')}</p>
-      <label className="adult-check">
-        {t('Birth year')}
-        <input
-          inputMode="numeric"
-          value={answer}
-          onChange={(event) => setAnswer(event.target.value.replace(/\D/g, '').slice(0, 4))}
-          placeholder="1988"
-        />
-      </label>
-      <div className="form-actions">
-        <button className="secondary-button" onClick={onBack}>{t('Back')}</button>
-        <button className="primary-button" disabled={!isAdultBirthYear} onClick={onUnlock}>{t('Enter')}</button>
-      </div>
-    </section>
-  );
-}
-
-function MyVoiceSettingsEditor({ settings, onChange }) {
-  const t = useT();
-  const [customLabel, setCustomLabel] = useState('');
-  const [customSentence, setCustomSentence] = useState('');
-  const normalizedSettings = normalizeMyVoiceSettings(settings);
-
-  function updateSettings(updates) {
-    onChange(normalizeMyVoiceSettings({ ...normalizedSettings, ...updates }));
-  }
-
-  function toggleQuick(label) {
-    const enabledQuick = normalizedSettings.enabledQuick.includes(label)
-      ? normalizedSettings.enabledQuick.filter((item) => item !== label)
-      : [...normalizedSettings.enabledQuick, label];
-    updateSettings({ enabledQuick });
-  }
-
-  function toggleCategory(id) {
-    const isEnabled = normalizedSettings.enabledCategories.includes(id);
-    if (isEnabled && normalizedSettings.enabledCategories.length === 1) return;
-    const enabledCategories = isEnabled
-      ? normalizedSettings.enabledCategories.filter((item) => item !== id)
-      : [...normalizedSettings.enabledCategories, id];
-    updateSettings({ enabledCategories });
-  }
-
-  function addCustomMessage() {
-    const label = customLabel.trim();
-    const sentence = customSentence.trim() || label;
-    if (!label) return;
-    updateSettings({
-      customCards: [
-        ...normalizedSettings.customCards,
-        { id: createProfileId(), label, sentence, image: 'Choice Board' }
-      ].slice(-12)
-    });
-    setCustomLabel('');
-    setCustomSentence('');
-  }
-
-  function removeCustomMessage(id) {
-    updateSettings({
-      customCards: normalizedSettings.customCards.filter((card) => card.id !== id)
-    });
-  }
-
-  return (
-    <div className="my-voice-settings">
-      <p>{t('Choose what appears in My Voice.')}</p>
-
-      <div className="my-voice-setting-group">
-        <strong>{t('Quick buttons')}</strong>
-        <div className="my-voice-toggle-grid">
-          {quickCommunicationCards.map((card) => (
-            <button
-              key={card.label}
-              type="button"
-              className={normalizedSettings.enabledQuick.includes(card.label) ? 'choice selected' : 'choice'}
-              onClick={() => toggleQuick(card.label)}
-          >
-            {normalizedSettings.enabledQuick.includes(card.label) && <Check size={16} />}
-              {t(card.label)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="my-voice-setting-group">
-        <strong>{t('Categories')}</strong>
-        <div className="my-voice-toggle-grid">
-          {communicationCategories.map((category) => (
-            <button
-              key={category.id}
-              type="button"
-              className={normalizedSettings.enabledCategories.includes(category.id) ? 'choice selected' : 'choice'}
-              onClick={() => toggleCategory(category.id)}
-          >
-            {normalizedSettings.enabledCategories.includes(category.id) && <Check size={16} />}
-              {t(category.label)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="my-voice-setting-group">
-        <strong>{t('Custom messages')}</strong>
-        <div className="custom-message-form">
-          <label>
-            {t('Button label')}
-            <input value={customLabel} onChange={(event) => setCustomLabel(event.target.value)} placeholder={t('Snack')} />
-          </label>
-          <label>
-            {t('Spoken message')}
-            <input value={customSentence} onChange={(event) => setCustomSentence(event.target.value)} placeholder={t('I want a snack.')} />
-          </label>
-          <button className="primary-button" type="button" onClick={addCustomMessage} disabled={!customLabel.trim()}>
-            <Plus size={18} /> {t('Add message')}
-          </button>
-        </div>
-        <div className="custom-message-list">
-          {normalizedSettings.customCards.length ? normalizedSettings.customCards.map((card) => (
-            <span key={card.id}>
-              <strong>{card.label}</strong>
-              <small>{card.sentence}</small>
-              <button type="button" onClick={() => removeCustomMessage(card.id)} aria-label={`${t('Remove')} ${card.label}`}>
-                <Trash2 size={16} />
-              </button>
-            </span>
-          )) : (
-            <em>{t('No custom messages yet')}</em>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ParentDashboard({ profile, profiles, progress, personalization, onProfileChange, onSwitchProfile, onAddChild, onEdit, onReset }) {
-  const t = useT();
-  const language = useContext(LanguageContext);
-  const objectives = profile?.objectives?.length ? profile.objectives : ['No objectives selected yet'];
-  const selectedObjectives = asArray(profile?.objectives);
-  const usesVisualCommunication = hasChoiceText(profile?.communication, 'AAC')
-    || hasChoiceText(profile?.communication, 'picture')
-    || hasChoiceText(profile?.communication, 'Very limited');
-  const nextActivities = [
-    selectedObjectives.includes('Daily independence') ? 'Daily reminder practice' : 'Short daily routine',
-    usesVisualCommunication ? 'AAC help choices' : 'Ask for help story',
-    profile?.letters === 'Can read fluently' ? 'Reading choices' : (profile?.letters === 'Does not recognize letters' ? 'Letter Match' : 'Simple Words')
-  ];
-
-  return (
-    <section className="parent-dashboard">
-      <div className="parent-hero">
-        <div>
-          <p className="eyebrow">Parent dashboard</p>
-          <h1>{language === 'es' ? `Perfil y progreso de ${profile?.name}` : `${profile?.name}'s profile and progress`}</h1>
-        </div>
-        <div className="parent-actions">
-          <button className="secondary-button" onClick={onAddChild}><Baby size={18} /> {t('Add child')}</button>
-          <button className="secondary-button" onClick={onEdit}><RotateCcw size={18} /> {t('Edit profile')}</button>
-          <button className="danger-button" onClick={onReset}>{t('Reset')}</button>
-        </div>
-      </div>
-      <div className="profile-switcher" aria-label="Child profiles">
-        {profiles.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            className={item.id === profile?.id ? 'profile-tab active' : 'profile-tab'}
-            aria-pressed={item.id === profile?.id}
-            onClick={() => onSwitchProfile(item.id)}
-          >
-            <Baby size={16} />
-            {item.name || 'My child'}
-          </button>
-        ))}
-      </div>
-      <div className="dashboard-grid">
-        <DashboardPanel title="Child Profile" icon={<Baby />}>
-          <div className="profile-avatar-row">
-            <Avatar avatar={profile?.avatar} name={profile?.name || 'Child'} size="medium" />
-            <strong>{avatarOptions.find((option) => option.key === profile?.avatar)?.label || 'Avatar'}</strong>
-          </div>
-          <InfoRow label="Age" value={profile?.age} />
-          <InfoRow label="Support" value={profile?.supportLevel} />
-          <InfoRow label="Communication skills" value={formatChoiceList(profile?.communication, t)} />
-          <InfoRow label="Reading" value={profile?.letters} />
-        </DashboardPanel>
-        <DashboardPanel title="Parent Goals" icon={<Star />}>
-          <ParentGoalsChoice
-            values={selectedObjectives}
-            onChange={(objectives) => onProfileChange({ objectives })}
-            dashboard
-          />
-          <TagList items={objectives} />
-        </DashboardPanel>
-        <DashboardPanel title="My Voice Setup" icon={<MessageSquare />} className="my-voice-dashboard-panel">
-          <MyVoiceSettingsEditor
-            settings={profile?.myVoice}
-            onChange={(myVoice) => onProfileChange({ myVoice })}
-          />
-        </DashboardPanel>
-        <DashboardPanel title="Daily Skills Already Learned" icon={<HeartHandshake />}>
-          <TagList items={profile?.dailySkills?.length ? profile.dailySkills : ['None selected yet']} />
-        </DashboardPanel>
-        <DashboardPanel title="Progress" icon={<Palette />}>
-          <div className="stats-grid">
-            {Object.entries(progress.counts).map(([key, value]) => <div key={key}><strong>{value}</strong><span>{t(categoryLabels[key] || key)}</span></div>)}
-          </div>
-        </DashboardPanel>
-        <DashboardPanel title="Daily Rewards" icon={<Star />}>
-          <InfoRow label="Today activities" value={`${progress.todayActivities.length}/${progress.dailyGoal}`} />
-          <InfoRow label="Badges" value={progress.badges.length || 'None yet'} />
-          <InfoRow label="Day streak" value={progress.streak} />
-          <TagList items={progress.todayActivities.length ? progress.todayActivities : ['No activities today']} />
-        </DashboardPanel>
-        <DashboardPanel title="Mood Log" icon={<Moon />}>
-          <TagList items={progress.moodLog.length ? progress.moodLog.map((item) => `${item.mood} at ${item.time}`) : ['No mood check yet']} />
-        </DashboardPanel>
-        <DashboardPanel title="Completed Activities" icon={<Check />}>
-          <TagList items={progress.completed} />
-        </DashboardPanel>
-        <DashboardPanel title="Activities Practiced" icon={<Sparkles />}>
-          <TagList items={progress.practiced} />
-        </DashboardPanel>
-        <DashboardPanel title="Suggested Next Activities" icon={<ChevronRight />}>
-          <TagList items={nextActivities} />
-        </DashboardPanel>
-        <DashboardPanel title="Personalization" icon={<Brain />}>
-          <TagList items={personalization} />
-        </DashboardPanel>
-        <DashboardPanel title="Parent Resources" icon={<Info />}>
-          <ul className="resource-list">{resources.map((item) => <li key={item}>{t(item)}</li>)}</ul>
-        </DashboardPanel>
-        <DashboardPanel title="Emergency / Meltdown Support" icon={<Shield />}>
-          <p>{language === 'es' ? 'Mantenga al niño seguro, use menos palabras, baje luces y sonido cuando sea posible, ofrezca un descanso y espere antes de enseñar o corregir.' : 'Keep the child safe, use fewer words, lower lights and sound where possible, offer a break, and wait before teaching or correcting.'}</p>
-        </DashboardPanel>
-      </div>
-      <aside className="disclaimer">
-        {language === 'es' ? 'Esta app es educativa y de apoyo para niños que ya tienen un diagnóstico y se usa bajo responsabilidad del padre, madre o cuidador. No diagnostica autismo, no ofrece consejo médico y no reemplaza terapia, atención clínica ni orientación profesional.' : 'This app is educational and supportive for children who already have a diagnosis and is used under parent or caregiver responsibility. It does not diagnose autism, provide medical advice, or replace therapy, clinical care, or guidance from qualified professionals.'}
-      </aside>
-    </section>
-  );
-}
-
-function DashboardPanel({ title, icon, children, className = '' }) {
-  const t = useT();
-  return (
-    <article className={className ? `dashboard-panel ${className}` : 'dashboard-panel'}>
-      <h2>{icon}{t(title)}</h2>
-      {children}
-    </article>
-  );
-}
-
-function InfoRow({ label, value }) {
-  const t = useT();
-  return <p className="info-row"><span>{t(label)}</span><strong>{t(value)}</strong></p>;
-}
-
-function TagList({ items }) {
-  const t = useT();
-  return <div className="tag-list">{items.map((item) => <span key={item}>{t(item)}</span>)}</div>;
 }
 
 function NavButton({ icon, label, active, onClick }) {

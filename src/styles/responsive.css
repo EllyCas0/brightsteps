@@ -92,7 +92,17 @@
   }
 
   .onboarding-heading {
+    align-items: flex-start;
+    flex-direction: column;
     gap: 14px;
+  }
+
+  .onboarding-heading .language-switcher {
+    align-self: flex-start;
+  }
+
+  .onboarding-panel h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
   }
 
   .lesson-visual {
@@ -106,6 +116,14 @@
 
   .sensory-wave-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .child-avatar-panel .avatar-choice-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .child-avatar-panel h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
   }
 }
 
@@ -138,6 +156,32 @@
     flex-direction: column;
   }
 
+  .child-avatar-screen {
+    align-items: start;
+    padding: 10px;
+  }
+
+  .child-avatar-panel {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .child-avatar-panel .panel-heading {
+    align-items: center;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .child-avatar-panel h1 {
+    font-size: clamp(1.8rem, 8vw, 2.25rem);
+    line-height: 1.08;
+  }
+
+  .child-avatar-panel p {
+    line-height: 1.35;
+  }
+
   .topbar-actions {
     gap: 6px;
   }
@@ -158,6 +202,16 @@
 
   .language-switcher select {
     min-width: 86px;
+  }
+
+  .onboarding-heading .language-switcher {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .onboarding-heading .language-switcher select {
+    width: auto;
+    min-width: 116px;
   }
 
   .calm-header-button span {
@@ -190,6 +244,21 @@
   .speech-card-grid,
   .mood-picker {
     grid-template-columns: 1fr;
+  }
+
+  .child-avatar-panel .avatar-choice-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .child-avatar-panel .avatar-choice {
+    min-height: 138px;
+    padding: 10px 6px;
+  }
+
+  .child-avatar-panel .avatar-choice .avatar-large {
+    width: min(84px, 30vw);
+    height: min(84px, 30vw);
   }
 
   .sound-choice-grid {
