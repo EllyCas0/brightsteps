@@ -38,6 +38,16 @@
     margin-inline: 0;
     padding-inline: 10px;
     border-inline: 0;
+    overflow-x: hidden;
+  }
+
+  .primary-child-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .primary-child-grid .big-card {
+    min-height: 132px;
+    padding: 14px 8px;
   }
 
   .communication-workspace {
@@ -59,6 +69,7 @@
     overflow-x: auto;
     padding-bottom: 4px;
     scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
   }
 
   .communication-tabs button {
@@ -69,6 +80,7 @@
   .quick-communication-bar {
     overflow-x: auto;
     scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
   }
 
   .quick-communication-bar button {
@@ -92,7 +104,17 @@
   }
 
   .onboarding-heading {
+    align-items: flex-start;
+    flex-direction: column;
     gap: 14px;
+  }
+
+  .onboarding-heading .language-switcher {
+    align-self: flex-start;
+  }
+
+  .onboarding-panel h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
   }
 
   .lesson-visual {
@@ -107,12 +129,30 @@
   .sensory-wave-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .child-avatar-panel .avatar-choice-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .child-avatar-panel h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+  }
 }
 
 @media (max-width: 620px) {
   .main-content {
     width: min(100% - 20px, 1120px);
     padding-top: 14px;
+    padding-bottom: calc(118px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .welcome-band {
+    gap: 12px;
+    padding-block: 12px;
+  }
+
+  .home-avatar-card {
+    min-width: 0;
   }
 
   .calm-zone-page {
@@ -138,6 +178,32 @@
     flex-direction: column;
   }
 
+  .child-avatar-screen {
+    align-items: start;
+    padding: 10px;
+  }
+
+  .child-avatar-panel {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .child-avatar-panel .panel-heading {
+    align-items: center;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .child-avatar-panel h1 {
+    font-size: clamp(1.8rem, 8vw, 2.25rem);
+    line-height: 1.08;
+  }
+
+  .child-avatar-panel p {
+    line-height: 1.35;
+  }
+
   .topbar-actions {
     gap: 6px;
   }
@@ -158,6 +224,16 @@
 
   .language-switcher select {
     min-width: 86px;
+  }
+
+  .onboarding-heading .language-switcher {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .onboarding-heading .language-switcher select {
+    width: auto;
+    min-width: 116px;
   }
 
   .calm-header-button span {
@@ -190,6 +266,21 @@
   .speech-card-grid,
   .mood-picker {
     grid-template-columns: 1fr;
+  }
+
+  .child-avatar-panel .avatar-choice-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .child-avatar-panel .avatar-choice {
+    min-height: 138px;
+    padding: 10px 6px;
+  }
+
+  .child-avatar-panel .avatar-choice .avatar-large {
+    width: min(84px, 30vw);
+    height: min(84px, 30vw);
   }
 
   .sound-choice-grid {
@@ -343,7 +434,9 @@
   }
 
   .quick-communication-bar {
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow-x: visible;
     padding: 10px;
     scrollbar-width: thin;
   }
@@ -353,10 +446,21 @@
   }
 
   .quick-communication-bar button {
-    grid-template-columns: 30px max-content;
-    flex: 0 0 auto;
+    grid-template-columns: 30px minmax(0, 1fr);
+    flex: 1 1 auto;
     min-height: 48px;
     padding: 7px 10px;
+  }
+
+  .quick-communication-bar button span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .communication-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow-x: visible;
   }
 
   .quick-card-image {
@@ -365,7 +469,34 @@
   }
 
   .communication-tabs button {
+    grid-template-columns: 40px minmax(0, 1fr);
+    flex: 1 1 auto;
     min-height: 64px;
+  }
+
+  .communication-tabs button > svg {
+    display: none;
+  }
+
+  .communication-page {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .primary-child-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .primary-child-grid .big-card {
+    min-height: 104px;
+    gap: 8px;
+    padding: 10px 6px;
+    font-size: 0.92rem;
+  }
+
+  .primary-child-grid .big-card svg {
+    width: 32px;
+    height: 32px;
   }
 
   .large-cards {
