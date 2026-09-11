@@ -6,8 +6,39 @@ export const BACKGROUND_TOPIC_KEY = 'brightsteps-background-topic';
 export const LANGUAGE_KEY = 'brightsteps-language';
 export const BREATH_SOUND_IDLE_MS = 90000;
 
-export function getTodayKey() {
-  return new Date().toISOString().slice(0, 10);
+function padDatePart(value) {
+  return String(value).padStart(2, '0');
+}
+
+export function getTodayKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = padDatePart(date.getMonth() + 1);
+  const day = padDatePart(date.getDate());
+  return `${year}-${month}-${day}`;
+}
+
+function parseDateKey(dateKey) {
+  if (typeof dateKey !== 'string') return null;
+  const match = dateKey.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+  const [, year, month, day] = match.map(Number);
+  const utcTime = Date.UTC(year, month - 1, day);
+  const parsed = new Date(utcTime);
+  if (
+    parsed.getUTCFullYear() !== year
+    || parsed.getUTCMonth() !== month - 1
+    || parsed.getUTCDate() !== day
+  ) {
+    return null;
+  }
+  return utcTime;
+}
+
+export function getCalendarDayDiff(fromDateKey, toDateKey = getTodayKey()) {
+  const fromTime = parseDateKey(fromDateKey);
+  const toTime = parseDateKey(toDateKey);
+  if (fromTime === null || toTime === null) return 0;
+  return Math.round((toTime - fromTime) / 86400000);
 }
 
 export function loadJson(key, fallback) {

@@ -63,6 +63,7 @@ import {
   PROFILES_KEY,
   PROGRESS_KEY,
   STORAGE_KEY,
+  getCalendarDayDiff,
   getTodayKey,
   loadJson,
   loadText,
@@ -172,8 +173,12 @@ function getProgressStorageKey(profileId) {
 function normalizeProgress(saved) {
   const todayKey = getTodayKey();
   const lastActiveDate = saved?.lastActiveDate || todayKey;
-  const isNewDay = lastActiveDate !== todayKey;
-  const streak = isNewDay && saved?.todayDone ? (saved?.streak || 0) + 1 : (saved?.streak || 0);
+  const dayDiff = getCalendarDayDiff(lastActiveDate, todayKey);
+  const isNewDay = dayDiff > 0;
+  const savedStreak = Number.isFinite(saved?.streak) ? saved.streak : defaultProgress.streak;
+  const streak = isNewDay
+    ? (dayDiff === 1 && saved?.todayDone ? savedStreak + 1 : 0)
+    : savedStreak;
   const hasActivityHistory = Boolean(
     saved?.hasSeenHome
     || asArray(saved?.completed).length
@@ -243,6 +248,21 @@ function App() {
   }, [screen]);
 
   useEffect(() => {
+    if (!profile) return undefined;
+
+    const intervalId = window.setInterval(() => {
+      setProgress((current) => {
+        const next = normalizeProgress(current);
+        if (next.lastActiveDate === current.lastActiveDate) return current;
+        saveJson(getProgressStorageKey(profile?.id), next);
+        return next;
+      });
+    }, 60000);
+
+    return () => window.clearInterval(intervalId);
+  }, [profile?.id]);
+
+  useEffect(() => {
     if (screen !== 'home') {
       setWelcomeProfileId(null);
       return;
@@ -268,8 +288,9 @@ function App() {
 
   function completeActivity(name, category, options = {}) {
     const { showCelebration = true } = options;
-    const nextTodayActivities = Array.from(new Set([...progress.todayActivities, name]));
-    const earnedBadges = [...progress.badges];
+    const currentProgress = normalizeProgress(progress);
+    const nextTodayActivities = Array.from(new Set([...currentProgress.todayActivities, name]));
+    const earnedBadges = [...currentProgress.badges];
     if (category === 'calm' && !earnedBadges.includes('Calm Helper')) {
       earnedBadges.push('Calm Helper');
     }
@@ -277,13 +298,13 @@ function App() {
       earnedBadges.push('First Step');
     }
     const next = {
-      ...progress,
-      completed: Array.from(new Set([...progress.completed, name])),
-      practiced: Array.from(new Set([...progress.practiced, name])),
-      counts: { ...progress.counts, [category]: (progress.counts[category] || 0) + 1 },
-      rewardStars: progress.rewardStars + 2,
+      ...currentProgress,
+      completed: Array.from(new Set([...currentProgress.completed, name])),
+      practiced: Array.from(new Set([...currentProgress.practiced, name])),
+      counts: { ...currentProgress.counts, [category]: (currentProgress.counts[category] || 0) + 1 },
+      rewardStars: currentProgress.rewardStars + 2,
       todayActivities: nextTodayActivities,
-      todayDone: nextTodayActivities.length >= progress.dailyGoal,
+      todayDone: nextTodayActivities.length >= currentProgress.dailyGoal,
       badges: earnedBadges,
       lastActiveDate: getTodayKey()
     };
@@ -294,9 +315,9 @@ function App() {
         title: 'Great job!',
         message: `${name} is complete.`,
         stars: 2,
-        badge: earnedBadges.length > progress.badges.length ? earnedBadges[earnedBadges.length - 1] : null,
+        badge: earnedBadges.length > currentProgress.badges.length ? earnedBadges[earnedBadges.length - 1] : null,
         completeCount: nextTodayActivities.length,
-        goal: progress.dailyGoal
+        goal: currentProgress.dailyGoal
       });
       setScreen('celebration');
     }
@@ -315,25 +336,27 @@ function App() {
   }
 
   function handleQuickChoice(choice) {
+    const currentProgress = normalizeProgress(progress);
     const now = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     const updates = {
       happy: {
-        moodLog: [{ mood: 'Happy', time: now }, ...progress.moodLog].slice(0, 5),
-        rewardStars: progress.rewardStars + 1,
+        moodLog: [{ mood: 'Happy', time: now }, ...currentProgress.moodLog].slice(0, 5),
+        rewardStars: currentProgress.rewardStars + 1,
         lastActiveDate: getTodayKey()
       }
     };
-    const next = { ...progress, ...updates[choice] };
+    const next = { ...currentProgress, ...updates[choice] };
     setProgress(next);
     saveProgress(next);
   }
 
   function handleMoodChoice(mood) {
+    const currentProgress = normalizeProgress(progress);
     const now = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     const next = {
-      ...progress,
-      moodLog: [{ mood, time: now }, ...progress.moodLog].slice(0, 5),
-      rewardStars: progress.rewardStars + 1,
+      ...currentProgress,
+      moodLog: [{ mood, time: now }, ...currentProgress.moodLog].slice(0, 5),
+      rewardStars: currentProgress.rewardStars + 1,
       lastActiveDate: getTodayKey()
     };
     setProgress(next);
