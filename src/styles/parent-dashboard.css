@@ -137,6 +137,15 @@ legend {
   background: #dff2ed;
 }
 
+.choice:hover:not(:disabled),
+.choice:focus-visible {
+  border-color: rgba(46, 157, 145, 0.58);
+  color: #17433e;
+  background: #edf8f5;
+  box-shadow: 0 10px 18px rgba(40, 48, 58, 0.1);
+  transform: translateY(-2px);
+}
+
 .other-skill-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -165,6 +174,14 @@ legend {
   font-weight: 850;
 }
 
+.custom-skill-list button:hover:not(:disabled),
+.custom-skill-list button:focus-visible {
+  border-color: rgba(46, 157, 145, 0.58);
+  background: #cfeee8;
+  box-shadow: 0 8px 16px rgba(40, 48, 58, 0.1);
+  transform: translateY(-2px);
+}
+
 .support-level-cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -188,6 +205,14 @@ legend {
 .support-level-card.selected {
   border-color: var(--teal);
   background: #dff2ed;
+}
+
+.support-level-card:hover:not(:disabled),
+.support-level-card:focus-visible {
+  border-color: rgba(46, 157, 145, 0.58);
+  background: #edf8f5;
+  box-shadow: 0 14px 28px rgba(40, 48, 58, 0.12);
+  transform: translateY(-3px);
 }
 
 .support-level-copy {
@@ -282,6 +307,15 @@ legend {
   border-color: rgba(46, 157, 145, 0.58);
   color: #17433e;
   background: #dff2ed;
+}
+
+.avatar-choice:hover:not(:disabled),
+.avatar-choice:focus-visible {
+  border-color: rgba(46, 157, 145, 0.62);
+  color: #17433e;
+  background: #edf8f5;
+  box-shadow: 0 14px 28px rgba(40, 48, 58, 0.12);
+  transform: translateY(-3px);
 }
 
 .avatar-actions {
@@ -397,6 +431,15 @@ legend {
   background: #dff2ed;
 }
 
+.profile-tab:hover:not(:disabled),
+.profile-tab:focus-visible {
+  border-color: rgba(46, 157, 145, 0.58);
+  color: #17433e;
+  background: #edf8f5;
+  box-shadow: 0 10px 18px rgba(40, 48, 58, 0.1);
+  transform: translateY(-2px);
+}
+
 .dashboard-panel {
   padding: 18px;
 }
@@ -493,6 +536,14 @@ legend {
   background: #fff1ef;
 }
 
+.custom-message-list button:hover:not(:disabled),
+.custom-message-list button:focus-visible {
+  color: #731f16;
+  background: #ffe0da;
+  box-shadow: 0 8px 16px rgba(139, 44, 32, 0.14);
+  transform: translateY(-2px);
+}
+
 .custom-message-list em {
   color: var(--muted);
   font-style: normal;
@@ -552,6 +603,15 @@ legend {
   border-color: rgba(46, 157, 145, 0.5);
   color: #17433e;
   background: #dff2ed;
+}
+
+.objective-option:hover:not(:disabled),
+.objective-option:focus-visible {
+  border-color: rgba(46, 157, 145, 0.58);
+  color: #17433e;
+  background: #edf8f5;
+  box-shadow: 0 10px 18px rgba(40, 48, 58, 0.1);
+  transform: translateY(-2px);
 }
 
 .stats-grid {

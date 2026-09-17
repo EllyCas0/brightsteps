@@ -477,13 +477,13 @@ export function getImageAsset(key) {
 
 export const activities = {
   learn: [
-    { title: 'Letter Match', icon: 'A', level: 'basic', detail: 'Match the same uppercase letter', tags: ['letters', 'images'] },
+    { title: 'Letter Match', displayTitle: 'Match Letters', icon: 'A', level: 'basic', detail: 'Match the same uppercase letter', tags: ['letters', 'images'] },
     { title: 'Simple Words', icon: 'CAT', level: 'word', detail: 'Pick the word that matches a picture', tags: ['reading'] },
     { title: 'Number Garden', icon: '1 2', level: 'basic', detail: 'Count pictures and choose the number', tags: ['numbers'] },
-    { title: 'ABC 123 Sequence', icon: 'A 1', level: 'basic', detail: 'Put letters and numbers in order', tags: ['letters', 'numbers', 'sequence'] },
+    { title: 'ABC 123 Sequence', displayTitle: 'ABC & 123', icon: 'A 1', level: 'basic', detail: 'Put letters and numbers in order', tags: ['letters', 'numbers', 'sequence'] },
     { title: 'Shape Sort', icon: 'SH', level: 'basic', detail: 'Match shapes into the right group', tags: ['shapes'] },
     { title: 'Memory Cards', icon: 'M', level: 'basic', detail: 'Flip cards and find matching pairs', tags: ['memory'] },
-    { title: 'Color Match', icon: 'RED', level: 'basic', detail: 'Choose the color that matches the card', tags: ['colors'] }
+    { title: 'Color Match', displayTitle: 'Colors', icon: 'RED', level: 'basic', detail: 'Choose the color that matches the card', tags: ['colors'] }
   ],
   daily: [
     { title: 'Tie Shoes', icon: 'LACE', detail: 'Step-by-step shoe tying' },

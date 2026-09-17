@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { ArrowLeft, Baby, Check, ChevronRight, Image as ImageIcon, Languages, Palette } from 'lucide-react';
+import { ArrowLeft, Baby, Check, ChevronRight, Image as ImageIcon, Palette } from 'lucide-react';
 import { LanguageContext, useT } from '../data/translations.js';
 import { Avatar } from './VisualAsset.jsx';
 import { asChoiceArray } from '../lib/collections.js';
@@ -21,7 +21,6 @@ export function LanguageSwitcher({ value, onChange }) {
 
   return (
     <label className="language-switcher" aria-label="Choose language">
-      <Languages size={18} aria-hidden="true" />
       <select value={value} onChange={(event) => onChange(event.target.value)}>
         {languages.map((language) => (
           <option key={language.id} value={language.id}>{language.label}</option>

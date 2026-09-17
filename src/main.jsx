@@ -603,7 +603,6 @@ function App() {
 function ChildHome({ profile, activeAvatar, progress, isFirstHomeVisit, soundOff, setScreen, onLearn, onChangeAvatar, onSpeechTable, onQuickChoice, onMoodChoice }) {
   const t = useT();
   const language = useContext(LanguageContext);
-  const [moodPickerOpen, setMoodPickerOpen] = useState(false);
   const cards = [
     { id: 'learn', label: 'Learn', icon: <BookOpen />, tone: 'mint' },
     { id: 'speech', label: 'Communication', icon: <MessageSquare />, tone: 'aqua' },
@@ -617,35 +616,9 @@ function ChildHome({ profile, activeAvatar, progress, isFirstHomeVisit, soundOff
     { face: ':/', label: 'Worried', image: 'Worried' },
     { face: '>:(', label: 'Mad', image: 'Mad' }
   ];
-  const currentMood = moodOptions.find((mood) => mood.label === progress.moodLog[0]?.mood);
-  const quickChoices = {
-    happy: {
-      icon: <VisualAsset label={currentMood?.face || 'Happy'} imageKey={currentMood?.image || 'Happy'} className="quick-choice-image" fallback={false} />,
-      label: currentMood?.label || 'Mood',
-      title: 'Choose a feeling',
-      message: 'Pick the face that shows how you feel.'
-    }
-  };
-
-  function selectQuickChoice(choice) {
-    if (choice === 'happy') {
-      setMoodPickerOpen((value) => !value);
-      return;
-    }
-    onQuickChoice(choice);
-    setMoodPickerOpen(false);
-    if (!soundOff && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(t(quickChoices[choice].label));
-      utterance.lang = language === 'es' ? 'es-US' : 'en-US';
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
-    }
-  }
 
   function selectMood(mood) {
     onMoodChoice(mood.label);
-    setMoodPickerOpen(false);
     if (!soundOff && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(t(mood.label));
@@ -668,17 +641,13 @@ function ChildHome({ profile, activeAvatar, progress, isFirstHomeVisit, soundOff
         <button className="home-avatar-card avatar-edit-button" type="button" onClick={onChangeAvatar} aria-label={t('Change avatar')}>
           <Avatar avatar={activeAvatar} name={profile?.name || 'Child'} size="hero" />
         </button>
-        <div className="aac-row" aria-label="Quick visual choices">
-          {Object.entries(quickChoices).map(([choice, item]) => (
-            <button key={choice} type="button" onClick={() => selectQuickChoice(choice)}>
-              {item.icon}
-              {t(item.label)}
-            </button>
-          ))}
-        </div>
       </section>
-      {moodPickerOpen && (
-        <section className="mood-picker" aria-label="Choose mood">
+      <section className="home-section feelings-section">
+        <div className="home-section-heading">
+          <p className="eyebrow">{t('Check in')}</p>
+          <h2>{t('How do you feel?')}</h2>
+        </div>
+        <div className="mood-picker" aria-label={t('How do you feel?')}>
           {moodOptions.map((mood) => (
             <button
               key={mood.label}
@@ -690,19 +659,25 @@ function ChildHome({ profile, activeAvatar, progress, isFirstHomeVisit, soundOff
               <strong>{t(mood.label)}</strong>
             </button>
           ))}
-        </section>
-      )}
-      <section className="child-grid primary-child-grid" aria-label="Activity sections">
-        {cards.map((card) => (
-          <button
-            key={card.id}
-            className={`big-card ${card.tone}`}
-            onClick={card.id === 'speech' ? onSpeechTable : card.id === 'learn' ? onLearn : () => setScreen(card.id)}
-          >
-            {card.icon}
-            <span>{t(card.label)}</span>
-          </button>
-        ))}
+        </div>
+      </section>
+      <section className="home-section activity-choice-section">
+        <div className="home-section-heading">
+          <p className="eyebrow">{t('Pick one')}</p>
+          <h2>{t('What do you want to do?')}</h2>
+        </div>
+        <div className="child-grid primary-child-grid" aria-label={t('What do you want to do?')}>
+          {cards.map((card) => (
+            <button
+              key={card.id}
+              className={`big-card ${card.tone}`}
+              onClick={card.id === 'speech' ? onSpeechTable : card.id === 'learn' ? onLearn : () => setScreen(card.id)}
+            >
+              {card.icon}
+              <span>{t(card.label)}</span>
+            </button>
+          ))}
+        </div>
       </section>
     </>
   );
@@ -729,6 +704,10 @@ function Celebration({ celebration, onContinue, onHome }) {
       </div>
     </section>
   );
+}
+
+function getActivityDisplayTitle(activity) {
+  return activity?.displayTitle || activity?.title || '';
 }
 
 function CategoryPage({ category, profile, progress, soundOff, learnSection, onBack, onLearnSection, onLesson, onStart }) {
@@ -816,28 +795,36 @@ function CategoryPage({ category, profile, progress, soundOff, learnSection, onB
         {list.map((activity) => {
           const completed = completedSet.has(activity.title);
           const isSocialActivity = activityCategory === 'social';
+          const startActivity = activity.title === 'Tie Shoes' ? () => onLesson(activity) : () => onStart(activity);
+          const activityDisplayTitle = getActivityDisplayTitle(activity);
           return (
-            <article className={[
-              'activity-card',
-              isSocialActivity ? 'social-story-card' : '',
-              completed ? 'completed' : ''
-            ].filter(Boolean).join(' ')} key={activity.title}>
+            <button
+              type="button"
+              className={[
+                'activity-card',
+                'activity-start-card',
+                isSocialActivity ? 'social-story-card' : '',
+                completed ? 'completed' : ''
+              ].filter(Boolean).join(' ')}
+              key={activity.title}
+              onClick={startActivity}
+              aria-label={t(activityDisplayTitle)}
+            >
               <div className="activity-visual" aria-hidden="true">
                 <VisualAsset label={activity.icon} imageKey={activity.title === 'Calm Sounds' ? activity.icon : activity.title} />
               </div>
               <div>
                 <div className="activity-heading">
-                  <h2>{t(activity.title)}</h2>
+                  <h2>{t(activityDisplayTitle)}</h2>
                   {completed && <span className="done-badge"><Check size={15} /> {t('Complete')}</span>}
                 </div>
                 {isSocialActivity && activity.storyTitle && <strong className="activity-story-title">{t(activity.storyTitle)}</strong>}
-                <p>{t(activity.detail) || activity.tags?.join(' / ')}</p>
                 {activity.title === 'Calm Sounds' && soundOff && <span className="pill">{t('Quiet mode')}</span>}
               </div>
-              <button className="primary-button" onClick={activity.title === 'Tie Shoes' ? () => onLesson(activity) : () => onStart(activity)}>
+              <span className="primary-button activity-card-action" aria-hidden="true">
                 {t(completed ? 'Practice again' : isSocialActivity ? 'Start story' : 'Start')}
-              </button>
-            </article>
+              </span>
+            </button>
           );
         })}
       </div>
@@ -1083,7 +1070,7 @@ function SimpleSpeechBoard({ activity, board, soundOff, onBack, onComplete }) {
         <span className="round-icon"><MessageSquare /></span>
         <div>
           <p className="eyebrow">Communication</p>
-          <h1>{activity.title}</h1>
+          <h1>{t(getActivityDisplayTitle(activity))}</h1>
         </div>
       </div>
 
@@ -1153,6 +1140,9 @@ function SimpleSpeechBoard({ activity, board, soundOff, onBack, onComplete }) {
 function CommunicationBoard({ activity, profile, soundOff, onBack, onComplete }) {
   const language = useContext(LanguageContext);
   const t = useT();
+  const alphabetLetters = language === 'es'
+    ? 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('')
+    : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const myVoiceSettings = useMemo(() => normalizeMyVoiceSettings(profile?.myVoice), [profile?.myVoice]);
   const configuredQuickCards = useMemo(
     () => quickCommunicationCards.filter((card) => myVoiceSettings.enabledQuick.includes(card.label)),
@@ -1166,6 +1156,7 @@ function CommunicationBoard({ activity, profile, soundOff, onBack, onComplete })
   }, [myVoiceSettings]);
   const [activeTab, setActiveTab] = useState(fallbackCategories[0].id);
   const [sentenceParts, setSentenceParts] = useState([]);
+  const [letterWord, setLetterWord] = useState('');
   const [lastSpoken, setLastSpoken] = useState('');
   const [followUp, setFollowUp] = useState(null);
   const sentence = sentenceParts.join(' ');
@@ -1198,6 +1189,22 @@ function CommunicationBoard({ activity, profile, soundOff, onBack, onComplete })
 
   function repeatSentence() {
     if (sentence) speakText(sentence);
+  }
+
+  function addLetter(letter) {
+    setLetterWord((current) => `${current}${letter.toLowerCase()}`.slice(0, 18));
+  }
+
+  function speakLetterWord() {
+    if (letterWord) speakText(letterWord);
+  }
+
+  function addLetterWordToMessage() {
+    if (!letterWord) return;
+    setSentenceParts((current) => [...current, letterWord].slice(-2));
+    speakText(letterWord);
+    setLetterWord('');
+    setFollowUp(null);
   }
 
   const followUpTitle = followUp === 'break'
@@ -1267,6 +1274,39 @@ function CommunicationBoard({ activity, profile, soundOff, onBack, onComplete })
           ))}
         </div>
       )}
+
+      <section className="alphabet-builder" aria-label={t('Alphabet word builder')}>
+        <div className="alphabet-builder-header">
+          <div>
+            <p>{t('Letters')}</p>
+            <h2>{t('Spell a word')}</h2>
+          </div>
+          <div className="alphabet-word" aria-label={t('Word from letters')}>
+            {letterWord || t('Tap letters')}
+          </div>
+        </div>
+        <div className="alphabet-grid">
+          {alphabetLetters.map((letter) => (
+            <button key={letter} type="button" onClick={() => addLetter(letter)} aria-label={`${t('Letter')} ${letter}`}>
+              {letter}
+            </button>
+          ))}
+        </div>
+        <div className="alphabet-actions">
+          <button className="primary-button" type="button" disabled={!letterWord} onClick={addLetterWordToMessage}>
+            <Plus size={18} /> {t('Add word')}
+          </button>
+          <button className="secondary-button" type="button" disabled={!letterWord} onClick={speakLetterWord}>
+            <Volume2 size={18} /> {t('Speak word')}
+          </button>
+          <button className="secondary-button" type="button" disabled={!letterWord} onClick={() => setLetterWord((current) => current.slice(0, -1))}>
+            <Delete size={18} /> {t('Back')}
+          </button>
+          <button className="secondary-button" type="button" disabled={!letterWord} onClick={() => setLetterWord('')}>
+            <Trash2 size={18} /> {t('Clear')}
+          </button>
+        </div>
+      </section>
 
       <div className="communication-workspace">
         <nav className="communication-tabs" aria-label={t('Communication categories')}>
@@ -1915,7 +1955,7 @@ function GuidedActivity({ activity, config, soundOff, onBack, onComplete, onNext
         <span className="round-icon"><Puzzle /></span>
         <div>
           <p className="eyebrow">{t('Activity')}</p>
-          <h1>{t(activity.title)}</h1>
+          <h1>{t(getActivityDisplayTitle(activity))}</h1>
         </div>
         {activity.category === 'daily' && <MediaToggle value={mediaMode} onChange={setMediaMode} />}
       </div>
@@ -2269,7 +2309,7 @@ function SensoryPlayActivity({ activity, soundOff, onBack, onComplete }) {
         <span className="round-icon"><Sparkles /></span>
         <div>
           <p className="eyebrow">{t('Calm activities')}</p>
-          <h1>{t(activity.title)}</h1>
+          <h1>{t(getActivityDisplayTitle(activity))}</h1>
         </div>
       </div>
 
@@ -2467,6 +2507,93 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
     oscillator.stop(startAt + duration + 0.04);
   }
 
+  function playAnswerFeedbackSound(result) {
+    if (soundOff) return;
+    stopSoundGameAudio();
+    const context = ensureSoundGameContext();
+    if (!context) return;
+
+    const output = context.createGain();
+    output.gain.setValueAtTime(result === 'correct' ? 0.28 : 0.22, context.currentTime);
+    output.connect(context.destination);
+
+    if (result === 'correct') {
+      [523.25, 659.25, 783.99].forEach((frequency, index) => {
+        playSoundGameTone(context, output, frequency, context.currentTime + index * 0.09, 0.13);
+      });
+    } else {
+      [220, 164.81].forEach((frequency, index) => {
+        playSoundGameTone(context, output, frequency, context.currentTime + index * 0.12, 0.18);
+      });
+    }
+
+    trackSoundGameNode(output);
+  }
+
+  function playCatMeow(context, output, startAt) {
+    const oscillator = trackSoundGameNode(context.createOscillator());
+    const voiceGain = context.createGain();
+    const nasalFormant = context.createBiquadFilter();
+    const brightFormant = context.createBiquadFilter();
+
+    oscillator.type = 'sawtooth';
+    oscillator.frequency.setValueAtTime(760, startAt);
+    oscillator.frequency.exponentialRampToValueAtTime(430, startAt + 0.18);
+    oscillator.frequency.exponentialRampToValueAtTime(690, startAt + 0.48);
+    oscillator.frequency.exponentialRampToValueAtTime(520, startAt + 0.72);
+
+    nasalFormant.type = 'bandpass';
+    nasalFormant.frequency.setValueAtTime(880, startAt);
+    nasalFormant.frequency.linearRampToValueAtTime(1180, startAt + 0.44);
+    nasalFormant.Q.value = 6;
+
+    brightFormant.type = 'bandpass';
+    brightFormant.frequency.setValueAtTime(1650, startAt);
+    brightFormant.Q.value = 5;
+
+    voiceGain.gain.setValueAtTime(0.0001, startAt);
+    voiceGain.gain.exponentialRampToValueAtTime(0.2, startAt + 0.06);
+    voiceGain.gain.exponentialRampToValueAtTime(0.12, startAt + 0.34);
+    voiceGain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.76);
+
+    oscillator.connect(nasalFormant).connect(voiceGain).connect(output);
+    oscillator.connect(brightFormant).connect(voiceGain);
+    oscillator.start(startAt);
+    oscillator.stop(startAt + 0.82);
+  }
+
+  function playBedSleepSound(context, output, startAt) {
+    const snore = trackSoundGameNode(context.createOscillator());
+    const snoreGain = context.createGain();
+    const snoreFilter = context.createBiquadFilter();
+    snore.type = 'sawtooth';
+    snore.frequency.setValueAtTime(96, startAt);
+    snore.frequency.exponentialRampToValueAtTime(54, startAt + 0.36);
+    snore.frequency.exponentialRampToValueAtTime(88, startAt + 0.82);
+    snoreFilter.type = 'lowpass';
+    snoreFilter.frequency.setValueAtTime(360, startAt);
+    snoreFilter.Q.value = 1.4;
+    snoreGain.gain.setValueAtTime(0.0001, startAt);
+    snoreGain.gain.exponentialRampToValueAtTime(0.18, startAt + 0.12);
+    snoreGain.gain.exponentialRampToValueAtTime(0.08, startAt + 0.48);
+    snoreGain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.9);
+    snore.connect(snoreFilter).connect(snoreGain).connect(output);
+    snore.start(startAt);
+    snore.stop(startAt + 0.96);
+
+    const breath = createSoundGameNoise(context);
+    const breathFilter = context.createBiquadFilter();
+    const breathGain = context.createGain();
+    breathFilter.type = 'lowpass';
+    breathFilter.frequency.setValueAtTime(520, startAt);
+    breathGain.gain.setValueAtTime(0.0001, startAt);
+    breathGain.gain.linearRampToValueAtTime(0.12, startAt + 0.16);
+    breathGain.gain.linearRampToValueAtTime(0.0001, startAt + 0.8);
+    breath.connect(breathFilter).connect(breathGain).connect(output);
+    breath.start(startAt);
+    breath.stop(startAt + 0.88);
+  }
+
   function playSoundClue(label = game.target.label) {
     if (soundOff) return;
     showSoundHighlight();
@@ -2491,17 +2618,15 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
       rain.start();
       rain.stop(context.currentTime + 1.45);
     } else if (label === 'Cat') {
-      const startAt = context.currentTime + 0.04;
-      playSoundGameTone(context, output, 520, startAt, 0.28);
-      playSoundGameTone(context, output, 780, startAt + 0.18, 0.22);
+      playCatMeow(context, output, context.currentTime + 0.04);
+      playCatMeow(context, output, context.currentTime + 0.78);
     } else if (label === 'Toy') {
       [784, 1046.5, 1318.5].forEach((frequency, index) => {
         playSoundGameTone(context, output, frequency, context.currentTime + index * 0.14, 0.16);
       });
     } else if (label === 'Bed') {
-      [392, 329.63, 261.63].forEach((frequency, index) => {
-        playSoundGameTone(context, output, frequency, context.currentTime + index * 0.28, 0.34);
-      });
+      playBedSleepSound(context, output, context.currentTime + 0.02);
+      playBedSleepSound(context, output, context.currentTime + 1.02);
     }
 
     trackSoundGameNode(output);
@@ -2552,7 +2677,7 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
 
   useEffect(() => {
     if (!isCorrect || completed) return;
-    speakText(t(isSizeSort ? 'Great job!' : 'Great match!'));
+    playAnswerFeedbackSound('correct');
     setScore((value) => value + 1);
     if (isLastRound) {
       setCompleted(true);
@@ -2565,6 +2690,14 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
     }
     return undefined;
   }, [isCorrect]);
+
+  useEffect(() => {
+    const answeredIncorrectly = isSizeSort
+      ? sizeSortChecked && !isCorrect
+      : selected && !isCorrect;
+    if (!answeredIncorrectly) return;
+    playAnswerFeedbackSound('incorrect');
+  }, [selected, sizeSortChecked, isCorrect]);
 
   function goToNextRound() {
     stopSoundGameAudio();
@@ -2674,7 +2807,7 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
         <span className="round-icon"><Puzzle /></span>
         <div>
           <p className="eyebrow">{t('Activity')}</p>
-          <h1>{t(activity.title)}</h1>
+          <h1>{t(getActivityDisplayTitle(activity))}</h1>
         </div>
       </div>
       <div className="game-panel">
@@ -3026,7 +3159,7 @@ function MemoryGame({ activity, profile, onBack, onComplete }) {
         <span className="round-icon"><Puzzle /></span>
         <div>
           <p className="eyebrow">Activity</p>
-          <h1>{activity.title}</h1>
+          <h1>{t(getActivityDisplayTitle(activity))}</h1>
         </div>
       </div>
       <div className="game-panel">

@@ -15,7 +15,6 @@
   }
 
   .child-grid,
-  .activity-grid,
   .dashboard-grid,
   .form-grid,
   .avatar-choice-list,
@@ -151,6 +150,14 @@
     padding-block: 12px;
   }
 
+  .home-section {
+    margin-top: 14px;
+  }
+
+  .feelings-section {
+    padding: 12px;
+  }
+
   .home-avatar-card {
     min-width: 0;
   }
@@ -214,12 +221,7 @@
   }
 
   .language-switcher {
-    gap: 4px;
     padding-inline: 8px;
-  }
-
-  .language-switcher > svg {
-    display: none;
   }
 
   .language-switcher select {
@@ -247,7 +249,27 @@
 
   h1 {
     font-size: clamp(2.35rem, 13vw, 4rem);
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  .page-title {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .page-title h1 {
+    flex: 1 1 min(100%, 9ch);
+    min-width: min(100%, 9ch);
+    font-size: clamp(2rem, 10vw, 3.35rem);
+    line-height: 1.04;
+  }
+
+  .page-title .media-toggle {
+    flex: 1 1 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .brand-copy small {
@@ -256,7 +278,6 @@
 
   .aac-row,
   .child-grid,
-  .activity-grid,
   .dashboard-grid,
   .form-grid,
   .avatar-choice-list,
@@ -466,6 +487,18 @@
   .quick-card-image {
     width: 30px;
     height: 30px;
+  }
+
+  .alphabet-builder-header {
+    grid-template-columns: 1fr;
+  }
+
+  .alphabet-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .alphabet-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .communication-tabs button {

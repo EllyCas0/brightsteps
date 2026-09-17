@@ -40,8 +40,7 @@
   display: inline-flex;
   min-height: 48px;
   align-items: center;
-  gap: 8px;
-  padding: 0 10px;
+  padding: 0 8px 0 12px;
   border: 2px solid var(--line);
   border-radius: 8px;
   color: #17433e;
@@ -49,13 +48,9 @@
   font-weight: 900;
 }
 
-.language-switcher > svg {
-  flex: 0 0 auto;
-}
-
 .language-switcher select {
   min-height: 40px;
-  min-width: 112px;
+  min-width: 104px;
   border: 0;
   color: #17433e;
   background: transparent;
@@ -173,6 +168,15 @@
   background: #dff2ed;
 }
 
+.icon-button:hover:not(:disabled),
+.icon-button:focus-visible {
+  border-color: rgba(46, 157, 145, 0.62);
+  color: #17433e;
+  background: #edf8f5;
+  box-shadow: 0 10px 20px rgba(40, 48, 58, 0.12);
+  transform: translateY(-2px);
+}
+
 .background-picker {
   position: relative;
   flex: 0 0 auto;
@@ -211,8 +215,13 @@
 
 .background-choice:hover,
 .background-choice.selected {
-  border-color: rgba(46, 157, 145, 0.34);
+  border-color: rgba(46, 157, 145, 0.58);
   background: #edf8f5;
+}
+
+.background-choice:hover {
+  box-shadow: 0 10px 20px rgba(40, 48, 58, 0.1);
+  transform: translateY(-2px);
 }
 
 .background-choice-icon {
@@ -253,6 +262,13 @@
   font-weight: 900;
 }
 
+.calm-header-button:hover:not(:disabled),
+.calm-header-button:focus-visible {
+  background: #d85f50;
+  box-shadow: 0 12px 24px rgba(239, 116, 100, 0.28);
+  transform: translateY(-2px);
+}
+
 .main-content {
   width: min(1120px, calc(100% - 28px));
   margin: 0 auto;
@@ -264,7 +280,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: clamp(18px, 3.4vw, 32px) 0;
+  padding: clamp(18px, 3.4vw, 28px) 0 clamp(10px, 2vw, 18px);
 }
 
 .welcome-copy {
@@ -305,6 +321,45 @@
   padding: 0;
   border: 0;
   background: transparent;
+}
+
+.home-section {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.home-section-heading {
+  display: grid;
+  gap: 2px;
+}
+
+.home-section-heading h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.55rem, 3vw, 2.25rem);
+  line-height: 1.08;
+}
+
+.feelings-section {
+  padding: clamp(14px, 2.5vw, 20px);
+  border: 1px solid rgba(222, 216, 202, 0.82);
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.72);
+  box-shadow: 0 12px 30px rgba(40, 48, 58, 0.06);
+}
+
+.activity-choice-section {
+  margin-top: 24px;
+}
+
+.feelings-section .mood-picker,
+.activity-choice-section .primary-child-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.activity-choice-section .primary-child-grid .big-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .avatar-edit-button:focus-visible .avatar,
@@ -358,6 +413,14 @@ h2 {
   font-weight: 800;
 }
 
+.aac-row button:hover:not(:disabled),
+.aac-row button:focus-visible {
+  border-color: rgba(46, 157, 145, 0.62);
+  background: #edf8f5;
+  box-shadow: 0 12px 22px rgba(40, 48, 58, 0.12);
+  transform: translateY(-2px);
+}
+
 .mood-face-mini {
   display: grid;
   width: 34px;
@@ -370,16 +433,15 @@ h2 {
 
 .mood-picker {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  margin-bottom: 18px;
 }
 
 .mood-card {
   display: grid;
-  min-height: 142px;
+  min-height: 126px;
   place-items: center;
-  gap: 10px;
+  gap: 8px;
   padding: 14px 10px;
   border: 3px solid rgba(222, 216, 202, 0.95);
   border-radius: 8px;
@@ -392,8 +454,8 @@ h2 {
 
 .mood-card span {
   display: grid;
-  width: 58px;
-  height: 58px;
+  width: 54px;
+  height: 54px;
   place-items: center;
   font-size: 1.35rem;
   line-height: 1;
@@ -424,6 +486,12 @@ h2 {
   background: #dff2ed;
 }
 
+.mood-card:hover,
+.mood-card:focus-visible {
+  box-shadow: 0 14px 28px rgba(40, 48, 58, 0.14);
+  transform: translateY(-3px);
+}
+
 .child-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -442,6 +510,13 @@ h2 {
   box-shadow: var(--shadow);
   font-size: 1.2rem;
   font-weight: 900;
+}
+
+.big-card:hover:not(:disabled),
+.big-card:focus-visible {
+  filter: saturate(1.06) brightness(1.04);
+  box-shadow: 0 20px 42px rgba(40, 48, 58, 0.18);
+  transform: translateY(-3px);
 }
 
 .big-card svg {
@@ -570,11 +645,26 @@ h2 {
   background: var(--teal);
 }
 
+.nav-button:hover:not(:disabled),
+.nav-button:focus-visible {
+  color: #17433e;
+  background: #edf8f5;
+  box-shadow: inset 0 0 0 2px rgba(46, 157, 145, 0.22);
+}
+
+.nav-button.active:hover,
+.nav-button.active:focus-visible {
+  color: white;
+  background: #26887e;
+  box-shadow: 0 8px 18px rgba(46, 157, 145, 0.22);
+}
+
 .page-title,
 .panel-heading {
   display: flex;
   align-items: center;
   gap: 16px;
+  min-width: 0;
 }
 
 .page-title {
@@ -582,11 +672,20 @@ h2 {
 }
 
 .page-title h1 {
+  flex: 1 1 auto;
+  min-width: min(100%, 8ch);
   margin: 0;
   font-size: clamp(2rem, 3.6rem, 3.6rem);
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
-.activity-grid,
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+}
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -617,6 +716,39 @@ h2 {
   color: var(--ink);
   cursor: pointer;
   text-align: left;
+}
+
+.activity-start-card {
+  width: 100%;
+  color: var(--ink);
+  text-align: left;
+}
+
+.activity-start-card:hover:not(:disabled),
+.activity-start-card:focus-visible,
+.learn-section-card:hover:not(:disabled),
+.learn-section-card:focus-visible {
+  border-color: rgba(46, 157, 145, 0.54);
+  background: rgba(255, 253, 248, 0.98);
+  box-shadow: 0 18px 36px rgba(40, 48, 58, 0.13);
+  transform: translateY(-3px);
+}
+
+.activity-start-card:hover:not(:disabled) .activity-visual,
+.activity-start-card:focus-visible .activity-visual {
+  background: #ccefe8;
+  box-shadow: inset 0 0 0 3px rgba(46, 157, 145, 0.16);
+}
+
+.activity-card-action {
+  width: 100%;
+  pointer-events: none;
+}
+
+.activity-start-card:hover:not(:disabled) .activity-card-action,
+.activity-start-card:focus-visible .activity-card-action {
+  background: #26887e;
+  box-shadow: 0 12px 24px rgba(46, 157, 145, 0.28);
 }
 
 .learn-section-card .activity-heading svg {
@@ -708,8 +840,20 @@ h2 {
   background: var(--teal);
 }
 
+.primary-button:hover:not(:disabled),
+.primary-button:focus-visible {
+  background: #26887e;
+  box-shadow: 0 12px 24px rgba(46, 157, 145, 0.28);
+  transform: translateY(-2px);
+}
+
+.activity-start-card .activity-card-action.primary-button:hover {
+  transform: none;
+}
+
 .primary-button:disabled,
-.secondary-button:disabled {
+.secondary-button:disabled,
+.danger-button:disabled {
   opacity: 0.45;
 }
 
@@ -719,10 +863,28 @@ h2 {
   background: var(--paper);
 }
 
+.secondary-button:hover:not(:disabled),
+.secondary-button:focus-visible {
+  border-color: rgba(46, 157, 145, 0.58);
+  color: #17433e;
+  background: #edf8f5;
+  box-shadow: 0 12px 22px rgba(40, 48, 58, 0.12);
+  transform: translateY(-2px);
+}
+
 .danger-button {
   border: 2px solid #f1b5ac;
   color: #8b2c20;
   background: #fff1ef;
+}
+
+.danger-button:hover:not(:disabled),
+.danger-button:focus-visible {
+  border-color: #d85f50;
+  color: #731f16;
+  background: #ffe4df;
+  box-shadow: 0 12px 22px rgba(139, 44, 32, 0.14);
+  transform: translateY(-2px);
 }
 
 .pill {
