@@ -172,7 +172,19 @@
   }
 
   .sensory-wave-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .sensory-wave-controls label {
     grid-template-columns: 1fr;
+    gap: 4px;
+    min-height: 48px;
+    padding: 6px;
+  }
+
+  .sensory-wave-controls span {
+    font-size: 0.68rem;
   }
 
   .topbar {
@@ -362,6 +374,22 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .shape-sort-pieces {
+    min-height: 96px;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .shape-sort-piece {
+    width: 74px;
+    min-height: 70px;
+  }
+
+  .shape-sort-piece .shape-icon {
+    width: 40px;
+    height: 40px;
+  }
+
   .pair-choice-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -407,9 +435,19 @@
     min-height: 146px;
   }
 
+  .shape-sort-drop-bin {
+    min-height: 168px;
+    padding: 10px;
+  }
+
   .shape-sort-bin .shape-icon {
     width: 56px;
     height: 56px;
+  }
+
+  .shape-sort-drop-bin > .shape-icon {
+    width: 44px;
+    height: 44px;
   }
 
   .pair-target-card {

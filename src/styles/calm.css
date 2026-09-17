@@ -214,28 +214,33 @@
 .sensory-wave-controls {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 8px;
 }
 
 .sensory-wave-controls label {
   display: grid;
+  grid-template-columns: minmax(72px, 0.55fr) minmax(0, 1fr);
+  align-items: center;
   gap: 8px;
   min-width: 0;
-  padding: 12px;
-  border: 2px solid rgba(87, 160, 177, 0.22);
+  min-height: 42px;
+  padding: 7px 10px;
+  border: 1px solid rgba(87, 160, 177, 0.22);
   border-radius: 8px;
   color: #24515f;
-  background: rgba(245, 253, 255, 0.9);
-  font-weight: 950;
+  background: rgba(245, 253, 255, 0.72);
+  font-weight: 900;
 }
 
 .sensory-wave-controls span {
+  font-size: 0.78rem;
+  line-height: 1.05;
   overflow-wrap: anywhere;
 }
 
 .sensory-wave-controls input {
   width: 100%;
-  min-height: 34px;
+  min-height: 24px;
   accent-color: #3a97b7;
 }
 
@@ -273,6 +278,8 @@
 .sensory-bubble {
   position: absolute;
   display: block;
+  min-width: 76px;
+  min-height: 76px;
   transform: translate(-50%, -50%);
   border: 2px solid rgba(255, 255, 255, 0.68);
   border-radius: 999px;
@@ -285,6 +292,10 @@
   box-shadow: 0 0 22px var(--bubble-color);
   box-shadow: 0 0 22px color-mix(in srgb, var(--bubble-color), transparent 32%);
   animation: sensory-float 4.4s ease-in-out infinite;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .sensory-bubble:active {

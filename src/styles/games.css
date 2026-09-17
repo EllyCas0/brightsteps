@@ -237,6 +237,80 @@
   font-weight: 850;
 }
 
+.shape-sort-workspace {
+  display: grid;
+  gap: 16px;
+}
+
+.shape-sort-pieces-area,
+.shape-sort-bins-area {
+  display: grid;
+  gap: 10px;
+}
+
+.shape-sort-pieces-area .eyebrow,
+.shape-sort-bins-area .eyebrow {
+  margin: 0;
+  color: var(--muted);
+}
+
+.shape-sort-pieces {
+  display: flex;
+  min-height: 112px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px;
+  border: 2px solid rgba(222, 216, 202, 0.8);
+  border-radius: 8px;
+  background: #fffdf8;
+}
+
+.shape-sort-piece {
+  position: relative;
+  display: inline-grid;
+  width: 92px;
+  min-height: 86px;
+  place-items: center;
+  border: 3px solid rgba(222, 216, 202, 0.95);
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 10px 22px rgba(40, 48, 58, 0.055);
+  touch-action: manipulation;
+}
+
+.shape-sort-piece .shape-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.shape-sort-piece:hover:not(:disabled),
+.shape-sort-piece:focus-visible,
+.shape-sort-piece.selected {
+  border-color: rgba(79, 142, 203, 0.62);
+  background: #edf8ff;
+  box-shadow: 0 12px 24px rgba(79, 142, 203, 0.14);
+}
+
+.shape-sort-piece:hover:not(:disabled),
+.shape-sort-piece:focus-visible {
+  transform: translateY(-3px);
+}
+
+.shape-sort-selected-icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border-radius: 999px;
+  color: white;
+  background: var(--blue);
+}
+
 .audio-prompt-button {
   margin-top: 10px;
 }
@@ -977,16 +1051,89 @@
   box-shadow: 0 10px 22px rgba(40, 48, 58, 0.055);
 }
 
+.shape-sort-drop-bin {
+  align-content: start;
+  min-height: 206px;
+  padding: 14px;
+}
+
 .shape-sort-bin .shape-icon {
   width: 68px;
   height: 68px;
   background: #1f6f68;
 }
 
+.shape-sort-drop-bin > .shape-icon {
+  width: 54px;
+  height: 54px;
+}
+
+.shape-sort-bin .shape-circle {
+  background: var(--coral);
+}
+
+.shape-sort-bin .shape-square {
+  background: var(--blue);
+}
+
+.shape-sort-bin .shape-triangle {
+  background: var(--gold);
+}
+
+.shape-sort-bin .shape-star {
+  background: var(--plum);
+}
+
 .shape-sort-bin > span:not(.choice-state-icon) {
   display: block;
   font-size: 1.12rem;
   line-height: 1.15;
+}
+
+.shape-sort-bin > .shape-sort-bin-count {
+  display: inline-grid;
+  min-width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 999px;
+  color: #17433e;
+  background: #dff2ed;
+  font-size: 0.95rem;
+  font-weight: 950;
+}
+
+.shape-sort-bin > .shape-sort-bin-pieces {
+  display: flex;
+  width: 100%;
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+  font-size: inherit;
+  line-height: normal;
+}
+
+.shape-sort-mini-piece {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 2px solid rgba(222, 216, 202, 0.95);
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 6px 12px rgba(40, 48, 58, 0.06);
+}
+
+.shape-sort-mini-piece .shape-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.shape-sort-mini-piece.needs-retry {
+  border-color: rgba(240, 184, 75, 0.92);
+  background: #fff4d8;
 }
 
 .shape-sort-bin small {
@@ -999,7 +1146,8 @@
 
 .shape-sort-bin:hover:not(:disabled),
 .shape-sort-bin:focus-visible,
-.shape-sort-bin.drag-ready {
+.shape-sort-bin.drag-ready,
+.shape-sort-bin.ready {
   border-color: rgba(46, 157, 145, 0.62);
   background: #f4fbf9;
   box-shadow: 0 14px 28px rgba(40, 48, 58, 0.12);

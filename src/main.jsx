@@ -603,6 +603,7 @@ function App() {
 function ChildHome({ profile, activeAvatar, progress, isFirstHomeVisit, soundOff, setScreen, onLearn, onChangeAvatar, onSpeechTable, onQuickChoice, onMoodChoice }) {
   const t = useT();
   const language = useContext(LanguageContext);
+  const [moodPickerOpen, setMoodPickerOpen] = useState(!progress.moodLog[0]?.mood);
   const cards = [
     { id: 'learn', label: 'Learn', icon: <BookOpen />, tone: 'mint' },
     { id: 'speech', label: 'Communication', icon: <MessageSquare />, tone: 'aqua' },
@@ -616,9 +617,20 @@ function ChildHome({ profile, activeAvatar, progress, isFirstHomeVisit, soundOff
     { face: ':/', label: 'Worried', image: 'Worried' },
     { face: '>:(', label: 'Mad', image: 'Mad' }
   ];
+  const selectedMoodLabel = progress.moodLog[0]?.mood;
+  const visibleMoodOptions = moodPickerOpen
+    ? moodOptions
+    : moodOptions.filter((mood) => mood.label === selectedMoodLabel);
+
+  useEffect(() => {
+    if (!selectedMoodLabel) {
+      setMoodPickerOpen(true);
+    }
+  }, [selectedMoodLabel]);
 
   function selectMood(mood) {
     onMoodChoice(mood.label);
+    setMoodPickerOpen(false);
     if (!soundOff && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(t(mood.label));
@@ -644,26 +656,34 @@ function ChildHome({ profile, activeAvatar, progress, isFirstHomeVisit, soundOff
       </section>
       <section className="home-section feelings-section">
         <div className="home-section-heading">
-          <p className="eyebrow">{t('Check in')}</p>
           <h2>{t('How do you feel?')}</h2>
         </div>
-        <div className="mood-picker" aria-label={t('How do you feel?')}>
-          {moodOptions.map((mood) => (
-            <button
-              key={mood.label}
-              type="button"
-              className={progress.moodLog[0]?.mood === mood.label ? 'mood-card selected' : 'mood-card'}
-              onClick={() => selectMood(mood)}
-            >
-              <span aria-hidden="true"><VisualAsset label={mood.face} imageKey={mood.image} /></span>
-              <strong>{t(mood.label)}</strong>
-            </button>
-          ))}
+        <div className={moodPickerOpen ? 'mood-picker' : 'mood-picker mood-picker-selected'} aria-label={t('How do you feel?')}>
+          {visibleMoodOptions.map((mood) => {
+            const isSelected = selectedMoodLabel === mood.label;
+            return (
+              <button
+                key={mood.label}
+                type="button"
+                className={isSelected ? 'mood-card selected' : 'mood-card'}
+                aria-pressed={isSelected}
+                onClick={() => {
+                  if (!moodPickerOpen && isSelected) {
+                    setMoodPickerOpen(true);
+                    return;
+                  }
+                  selectMood(mood);
+                }}
+              >
+                <span aria-hidden="true"><VisualAsset label={mood.face} imageKey={mood.image} /></span>
+                <strong>{t(mood.label)}</strong>
+              </button>
+            );
+          })}
         </div>
       </section>
       <section className="home-section activity-choice-section">
         <div className="home-section-heading">
-          <p className="eyebrow">{t('Pick one')}</p>
           <h2>{t('What do you want to do?')}</h2>
         </div>
         <div className="child-grid primary-child-grid" aria-label={t('What do you want to do?')}>
@@ -888,6 +908,15 @@ function MediaToggle({ value, onChange }) {
 
 function ShapeIcon({ shape, size = 'small' }) {
   return <span className={`shape-icon shape-${shape.toLowerCase()} shape-${size}`} aria-hidden="true" />;
+}
+
+function createShapeSortPieces(choices = []) {
+  return shuffleCards(choices.flatMap((choice) => (
+    [0, 1].map((copyIndex) => ({
+      ...choice,
+      id: `${choice.value}-${copyIndex}`
+    }))
+  )));
 }
 
 function SizeSortIcon({ size = 'medium', target = false }) {
@@ -2169,6 +2198,7 @@ function SensoryPlayActivity({ activity, soundOff, onBack, onComplete }) {
   const [waveDuration, setWaveDuration] = useState(1.2);
   const [waveAmount, setWaveAmount] = useState(1);
   const bubblePopAudioRef = useRef({ context: null, nodes: [] });
+  const poppedBubbleIdsRef = useRef(new Set());
   const pendingWaveRef = useRef(null);
   const waveFrameRef = useRef(null);
 
@@ -2178,6 +2208,7 @@ function SensoryPlayActivity({ activity, soundOff, onBack, onComplete }) {
   }, []);
 
   function resetBubbles() {
+    poppedBubbleIdsRef.current.clear();
     setBubbles(sensoryBubbleSeeds);
   }
 
@@ -2262,8 +2293,16 @@ function SensoryPlayActivity({ activity, soundOff, onBack, onComplete }) {
   }
 
   function popBubble(id) {
+    if (poppedBubbleIdsRef.current.has(id)) return;
+    poppedBubbleIdsRef.current.add(id);
     playBubblePop();
     setBubbles((current) => current.filter((bubble) => bubble.id !== id));
+  }
+
+  function handleBubblePointerDown(event, id) {
+    event.preventDefault();
+    event.stopPropagation();
+    popBubble(id);
   }
 
   function commitPendingWave() {
@@ -2351,6 +2390,7 @@ function SensoryPlayActivity({ activity, soundOff, onBack, onComplete }) {
               className="sensory-bubble"
               style={{ left: `${bubble.x}%`, top: `${bubble.y}%`, width: bubble.size, height: bubble.size, '--bubble-color': bubble.color }}
               aria-label={t('Pop bubble')}
+              onPointerDown={(event) => handleBubblePointerDown(event, bubble.id)}
               onClick={() => popBubble(bubble.id)}
             />
           )) : (
@@ -2402,6 +2442,9 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
   const [soundHighlighted, setSoundHighlighted] = useState(false);
   const [shapeDragging, setShapeDragging] = useState(false);
   const [dragOverChoice, setDragOverChoice] = useState(null);
+  const [shapeSortPieces, setShapeSortPieces] = useState(() => createShapeSortPieces(game.choices));
+  const [shapePlacements, setShapePlacements] = useState({});
+  const [activeShapePieceId, setActiveShapePieceId] = useState(null);
   const [sizeSlots, setSizeSlots] = useState([null, null, null]);
   const [activeSizePieceId, setActiveSizePieceId] = useState(null);
   const [sizeSortChecked, setSizeSortChecked] = useState(false);
@@ -2411,7 +2454,10 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
   const sizeSortIsCorrect = isSizeSort
     && sizeSortChecked
     && sizeSlots.every((piece, index) => piece?.value === game.target.order[index]);
-  const isCorrect = isSizeSort ? sizeSortIsCorrect : selected?.value === game.target.value;
+  const shapeSortIsCorrect = isShapeSort
+    && shapeSortPieces.length > 0
+    && shapeSortPieces.every((piece) => shapePlacements[piece.id] === piece.value);
+  const isCorrect = isShapeSort ? shapeSortIsCorrect : isSizeSort ? sizeSortIsCorrect : selected?.value === game.target.value;
   const isLastRound = roundIndex >= rounds.length - 1;
   const successDetail = isMatchPairs ? (game.explanation || 'These two go together.') : 'You found the right answer.';
   const retryDetail = isMatchPairs
@@ -2429,6 +2475,9 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
     shapeDraggingRef.current = false;
     setShapeDragging(false);
     setDragOverChoice(null);
+    setShapeSortPieces(createShapeSortPieces(game.choices));
+    setShapePlacements({});
+    setActiveShapePieceId(null);
     setSizeSlots([null, null, null]);
     setActiveSizePieceId(null);
     setSizeSortChecked(false);
@@ -2717,6 +2766,9 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
     shapeDraggingRef.current = false;
     setShapeDragging(false);
     setDragOverChoice(null);
+    setShapeSortPieces(createShapeSortPieces(rounds[0].choices));
+    setShapePlacements({});
+    setActiveShapePieceId(null);
     setSizeSlots([null, null, null]);
     setActiveSizePieceId(null);
     setSizeSortChecked(false);
@@ -2728,6 +2780,35 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
   function chooseMatch(choice) {
     setSelected(choice);
     speakText(t(choice.label));
+  }
+
+  function findShapePiece(pieceId) {
+    return shapeSortPieces.find((piece) => piece.id === pieceId) || null;
+  }
+
+  function placeShapePiece(piece, binValue) {
+    if (!piece || isCorrect) return;
+    setShapePlacements((placements) => ({
+      ...placements,
+      [piece.id]: binValue
+    }));
+    setActiveShapePieceId(null);
+    setDragOverChoice(null);
+    setShapeDragging(false);
+    speakText(t(piece.label));
+  }
+
+  function chooseShapePiece(piece) {
+    if (isCorrect) return;
+    setActiveShapePieceId((pieceId) => pieceId === piece.id ? null : piece.id);
+  }
+
+  function chooseShapeBin(binValue) {
+    if (isCorrect) return;
+    const activePiece = findShapePiece(activeShapePieceId);
+    if (activePiece) {
+      placeShapePiece(activePiece, binValue);
+    }
   }
 
   function findSizePiece(pieceId) {
@@ -2799,6 +2880,11 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
 
   const sizeSortPlacedIds = new Set(sizeSlots.filter(Boolean).map((piece) => piece.id));
   const sizeSortSourcePieces = choiceOrder.filter((piece) => !sizeSortPlacedIds.has(piece.id));
+  const shapeSortSourcePieces = shapeSortPieces.filter((piece) => !shapePlacements[piece.id]);
+  const shapeSortBins = choiceOrder.map((choice) => ({
+    ...choice,
+    pieces: shapeSortPieces.filter((piece) => shapePlacements[piece.id] === choice.value)
+  }));
 
   return (
     <section className="game-page">
@@ -2817,8 +2903,8 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
         </div>
         <div className={isSoundMatch ? 'game-prompt sound-game-prompt' : isEmotionMatch ? 'game-prompt emotion-game-prompt' : isShapeSort ? 'game-prompt shape-sort-prompt' : isMatchPairs ? 'game-prompt pair-game-prompt' : isSizeSort ? 'game-prompt size-sort-prompt' : 'game-prompt'}>
           <p className="eyebrow">{t('Your turn')}</p>
-          <h2>{t(isSoundMatch ? 'Listen, then pick what made the sound.' : isEmotionMatch ? 'What feeling is this?' : isShapeSort ? 'Where does this shape go?' : isMatchPairs ? 'What goes with this?' : isSizeSort ? 'Put them in order.' : game.prompt)}</h2>
-          {isShapeSort && <p>{t('Pick the matching group.')}</p>}
+          <h2>{t(isSoundMatch ? 'Listen, then pick what made the sound.' : isEmotionMatch ? 'What feeling is this?' : isShapeSort ? 'Drag each shape to its group.' : isMatchPairs ? 'What goes with this?' : isSizeSort ? 'Put them in order.' : game.prompt)}</h2>
+          {isShapeSort && <p>{t('Put every shape with the same shape.')}</p>}
           {isMatchPairs && <p>{t('Find its match.')}</p>}
           {isSizeSort && (
             <div className="size-order-cue" aria-label={t('Small → Medium → Big')}>
@@ -2831,7 +2917,96 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
             </div>
           )}
         </div>
-        {isSizeSort ? (
+        {isShapeSort ? (
+          <div className="shape-sort-workspace">
+            <div className="shape-sort-pieces-area">
+              <p className="eyebrow">{t('Shapes to sort')}</p>
+              <div className="shape-sort-pieces" aria-label={t('Shapes to sort')}>
+                {shapeSortSourcePieces.map((piece) => (
+                  <button
+                    key={piece.id}
+                    type="button"
+                    className={activeShapePieceId === piece.id ? 'shape-sort-piece selected' : 'shape-sort-piece'}
+                    draggable={!isCorrect}
+                    disabled={isCorrect}
+                    aria-label={`${t(piece.label)}${activeShapePieceId === piece.id ? `. ${t('Selected')}` : ''}`}
+                    onClick={() => chooseShapePiece(piece)}
+                    onDragStart={(event) => {
+                      event.dataTransfer.effectAllowed = 'move';
+                      event.dataTransfer.setData('text/plain', piece.id);
+                      setActiveShapePieceId(piece.id);
+                      setShapeDragging(true);
+                    }}
+                    onDragEnd={() => {
+                      setShapeDragging(false);
+                      setDragOverChoice(null);
+                    }}
+                  >
+                    <ShapeIcon shape={piece.label} />
+                    {activeShapePieceId === piece.id && <Check className="shape-sort-selected-icon" size={18} aria-hidden="true" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="shape-sort-bins-area">
+              <p className="eyebrow">{t('Matching groups')}</p>
+              <div className="shape-sort-bin-grid" aria-label={t('Matching groups')}>
+                {shapeSortBins.map((bin) => (
+                  <button
+                    key={bin.value}
+                    type="button"
+                    className={[
+                      'shape-sort-bin',
+                      'shape-sort-drop-bin',
+                      activeShapePieceId ? 'ready' : '',
+                      dragOverChoice === bin.value ? 'drag-over' : '',
+                      isCorrect ? 'correct' : ''
+                    ].filter(Boolean).join(' ')}
+                    disabled={isCorrect}
+                    data-shape-choice={bin.value}
+                    aria-label={t(bin.label)}
+                    onClick={() => chooseShapeBin(bin.value)}
+                    onDragOver={(event) => {
+                      if (isCorrect) return;
+                      event.preventDefault();
+                      event.dataTransfer.dropEffect = 'move';
+                      setDragOverChoice(bin.value);
+                    }}
+                    onDragEnter={() => {
+                      if (!isCorrect) setDragOverChoice(bin.value);
+                    }}
+                    onDragLeave={() => setDragOverChoice((value) => value === bin.value ? null : value)}
+                    onDrop={(event) => {
+                      if (isCorrect) return;
+                      event.preventDefault();
+                      const pieceId = event.dataTransfer.getData('text/plain') || activeShapePieceId;
+                      placeShapePiece(findShapePiece(pieceId), bin.value);
+                    }}
+                  >
+                    <ShapeIcon shape={bin.label} />
+                    <span>{t(bin.label)}</span>
+                    <span className="shape-sort-bin-count">{bin.pieces.length}</span>
+                    <span className="shape-sort-bin-pieces" aria-hidden="true">
+                      {bin.pieces.map((piece) => (
+                        <span
+                          key={piece.id}
+                          className={piece.value === bin.value ? 'shape-sort-mini-piece correct' : 'shape-sort-mini-piece needs-retry'}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            chooseShapePiece(piece);
+                          }}
+                        >
+                          <ShapeIcon shape={piece.label} />
+                        </span>
+                      ))}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : isSizeSort ? (
           <div className="size-sort-workspace">
             <div className="size-sort-pieces-area">
               <p className="eyebrow">{t('Pieces to sort')}</p>
@@ -2982,7 +3157,7 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
             {isMatchPairs && <strong className="pair-object-label">{t(game.target.label)}</strong>}
           </div>
         )}
-        {!isSizeSort && (
+        {!isShapeSort && !isSizeSort && (
         <div className={isSoundMatch ? 'game-choices sound-choice-grid' : isEmotionMatch ? 'game-choices emotion-choice-grid' : isShapeSort ? 'game-choices shape-sort-bin-grid' : isMatchPairs ? 'game-choices pair-choice-grid' : 'game-choices'}>
           {choiceOrder.map((choice) => {
             const isSelectedChoice = selected?.label === choice.label;
@@ -3043,7 +3218,7 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
           })}
         </div>
         )}
-        {(selected || sizeSortChecked) && (
+        {(selected || sizeSortChecked || (isShapeSort && isCorrect)) && (
           <div className={isCorrect ? 'game-feedback success' : 'game-feedback'} role="status" aria-live="polite">
             {isMatchPairs && isCorrect && (
               <div className="pair-success-link" aria-hidden="true">
@@ -3070,13 +3245,13 @@ function MatchGame({ activity, soundOff, onBack, onComplete }) {
                 : isEmotionMatch
                 ? (isCorrect ? `${t('That face is')} ${t(game.target.label).toLowerCase()}.` : t('Look at the face one more time.'))
                 : isShapeSort
-                  ? t(isCorrect ? `${game.target.label} goes with ${game.target.label}.` : 'Look at the shape.')
+                  ? t(isCorrect ? 'All shapes are in the right groups.' : 'Look at the shape.')
                   : isMatchPairs
                     ? t(isCorrect ? successDetail : (game.hint || retryDetail))
                     : t(isSoundMatch ? (isCorrect ? successDetail : 'Listen one more time and choose again.') : (isCorrect ? successDetail : retryDetail))}
             </span>
             {isEmotionMatch && !isCorrect && <small>{t('Look at the mouth and eyes.')}</small>}
-            {isShapeSort && !isCorrect && <small>{t(getShapeHint(game.target.label))}</small>}
+            {isShapeSort && !isCorrect && <small>{t('Move a shape to the matching group.')}</small>}
           </div>
         )}
         {completed && (
