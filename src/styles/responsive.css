@@ -158,6 +158,16 @@
     padding: 12px;
   }
 
+  .feelings-section .home-section-heading {
+    grid-template-columns: 1fr;
+    row-gap: 8px;
+  }
+
+  .selected-mood-chip {
+    justify-self: start;
+    max-width: 100%;
+  }
+
   .home-avatar-card {
     min-width: 0;
   }
@@ -282,6 +292,14 @@
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .memory-prompt {
+    grid-template-columns: 1fr;
+  }
+
+  .memory-prompt .pair-stepper {
+    justify-self: start;
   }
 
   .brand-copy small {
@@ -527,8 +545,17 @@
     height: 30px;
   }
 
-  .alphabet-builder-header {
+  .alphabet-builder-toggle {
     grid-template-columns: 1fr;
+  }
+
+  .alphabet-toggle-icon {
+    display: none;
+  }
+
+  .alphabet-word.compact {
+    max-width: 100%;
+    justify-content: flex-start;
   }
 
   .alphabet-grid {

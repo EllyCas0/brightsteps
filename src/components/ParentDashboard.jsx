@@ -190,7 +190,7 @@ export function ParentDashboard({ profile, profiles, progress, personalization, 
     <section className="parent-dashboard">
       <div className="parent-hero">
         <div>
-          <p className="eyebrow">Parent dashboard</p>
+          <p className="eyebrow">{t('Parent dashboard')}</p>
           <h1>{language === 'es' ? `Perfil y progreso de ${profile?.name}` : `${profile?.name}'s profile and progress`}</h1>
         </div>
         <div className="parent-actions">
@@ -199,7 +199,7 @@ export function ParentDashboard({ profile, profiles, progress, personalization, 
           <button className="danger-button" onClick={onReset}>{t('Reset')}</button>
         </div>
       </div>
-      <div className="profile-switcher" aria-label="Child profiles">
+      <div className="profile-switcher" aria-label={t('Child profiles')}>
         {profiles.map((item) => (
           <button
             key={item.id}
@@ -209,7 +209,7 @@ export function ParentDashboard({ profile, profiles, progress, personalization, 
             onClick={() => onSwitchProfile(item.id)}
           >
             <Baby size={16} />
-            {item.name || 'My child'}
+            {item.name || t('My child')}
           </button>
         ))}
       </div>

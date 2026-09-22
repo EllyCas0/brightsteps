@@ -1,26 +1,28 @@
 import React, { useContext, useState } from 'react';
-import { ArrowLeft, Baby, Check, ChevronRight, Image as ImageIcon, Palette } from 'lucide-react';
+import { ArrowLeft, Baby, Check, ChevronRight } from 'lucide-react';
 import { LanguageContext, useT } from '../data/translations.js';
 import { Avatar } from './VisualAsset.jsx';
 import { asChoiceArray } from '../lib/collections.js';
+import { backgroundTopics, getBackgroundTopic } from '../data/backgroundTopics.jsx';
+import backgroundIcon from '../assets/icon_background.png';
+import defaultBackgroundIcon from '../assets/default.png';
 import {
   avatarOptions,
-  backgroundTopics,
   choiceSets,
   defaultProfile,
-  getBackgroundTopic,
   getCommunicationOptions,
   supportLevelDetails
-} from '../data/appData.jsx';
+} from '../data/profileCore.js';
 
 export function LanguageSwitcher({ value, onChange }) {
+  const t = useT();
   const languages = [
     { id: 'en', label: 'English' },
     { id: 'es', label: 'Español' }
   ];
 
   return (
-    <label className="language-switcher" aria-label="Choose language">
+    <label className="language-switcher" aria-label={t('Choose language')}>
       <select value={value} onChange={(event) => onChange(event.target.value)}>
         {languages.map((language) => (
           <option key={language.id} value={language.id}>{language.label}</option>
@@ -137,7 +139,7 @@ export function Onboarding({ onComplete, initialProfile, language, onLanguageCha
           </div>
           <LanguageSwitcher value={language} onChange={onLanguageChange} />
         </div>
-        <div className="progress-track" aria-label={`Step ${step + 1} of ${steps.length}`}>
+        <div className="progress-track" aria-label={`${t('Step')} ${step + 1} ${t('of')} ${steps.length}`}>
           <span style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
         </div>
         <h2>{t(steps[step].title)}</h2>
@@ -160,7 +162,7 @@ function SupportLevelCards({ value, onChange }) {
   const t = useT();
   return (
     <fieldset className="support-level-cards">
-      <legend className="sr-only">Autism support level</legend>
+      <legend className="sr-only">{t('Autism support level')}</legend>
       {supportLevelDetails.map((level) => (
         <button
           key={level.value}
@@ -229,38 +231,39 @@ export function BackgroundTopicPicker({ value, onChange }) {
         onClick={() => setOpen((isOpen) => !isOpen)}
         title={t('Choose background')}
       >
-        <ImageIcon />
+        <img className="background-picker-button-image" src={backgroundIcon} alt="" aria-hidden="true" />
       </button>
       {open && (
-        <div className="background-menu" role="menu" aria-label="Background topics">
+        <div className="background-menu" role="menu" aria-label={t('Background topics')}>
           <button
             type="button"
             className={!activeTopic ? 'background-choice selected' : 'background-choice'}
             onClick={() => choose('')}
           >
-            <span className="background-choice-icon" aria-hidden="true"><Palette size={22} /></span>
+            <span className="background-choice-icon" aria-hidden="true">
+              <img src={defaultBackgroundIcon} alt="" />
+            </span>
             <span className="background-choice-copy">
               <strong>{t('Default')}</strong>
             </span>
             {!activeTopic && <Check size={16} />}
           </button>
-          {backgroundTopics.map((topic) => {
-            const TopicIcon = topic.icon;
-            return (
+          {backgroundTopics.map((topic) => (
               <button
                 key={topic.id}
                 type="button"
                 className={value === topic.id ? 'background-choice selected' : 'background-choice'}
                 onClick={() => choose(topic.id)}
               >
-                <span className="background-choice-icon" aria-hidden="true"><TopicIcon size={22} /></span>
+                <span className="background-choice-icon" aria-hidden="true">
+                  <img src={topic.iconImage} alt="" />
+                </span>
                 <span className="background-choice-copy">
                   <strong>{t(topic.label)}</strong>
                 </span>
                 {value === topic.id && <Check size={16} />}
               </button>
-            );
-          })}
+          ))}
         </div>
       )}
     </div>
@@ -334,7 +337,7 @@ function CustomMultiChoice({
         </div>
       )}
       {!!customItems.length && (
-        <div className="custom-skill-list" aria-label={customItemsLabel}>
+        <div className="custom-skill-list" aria-label={t(customItemsLabel)}>
           {customItems.map((item) => (
             <button key={item} type="button" onClick={() => removeCustom(item)}>
               <Check size={16} /> {t(item)}
@@ -397,9 +400,10 @@ function MultiChoice({ label, values, options, onChange, hideLabel = false }) {
 }
 
 function AvatarPicker({ value, onChange }) {
+  const t = useT();
   return (
     <fieldset className="avatar-picker">
-      <legend>Avatar</legend>
+      <legend>{t('Avatar')}</legend>
       <div className="avatar-choice-list">
         {avatarOptions.map((option) => (
           <button

@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Production and preview builds
+build/
+dist/
+dist-site/
+release/
+
+# Codex/Sites temporary build output
+.codex-build*/
+.codex-sites*/
+
+# Local tool logs and temporary archives
+.codex-*.out
+.codex-*.err
+*.tar.gz

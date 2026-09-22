@@ -15,7 +15,7 @@ export function CalmSoundActivity({ activity, soundOff, onBack }) {
   return (
     <section className="calm-sound-activity">
       <div className="page-title">
-        <button className="icon-button" onClick={onBack} aria-label="Go back"><ArrowLeft /></button>
+        <button className="icon-button" onClick={onBack} aria-label={t('Go back')}><ArrowLeft /></button>
         <span className="round-icon"><Volume2 /></span>
         <div>
           <p className="eyebrow">{t('Calm activities')}</p>
@@ -245,7 +245,7 @@ function CalmSoundPanel({ soundOff }) {
           {t('Stop')}
         </button>
       </div>
-      <div className="calm-sound-grid" aria-label="Relaxing sounds">
+      <div className="calm-sound-grid" aria-label={t('Relaxing sounds')}>
         {calmSoundOptions.map((option) => (
           <button
             key={option.id}

@@ -1,4 +1,5 @@
-import { defaultProfile, getImageAsset } from '../data/appData.jsx';
+import { getImageAsset } from '../data/appData.jsx';
+import { defaultProfile } from '../data/profileCore.js';
 
 export function VisualAsset({ label, imageKey, className = 'visual-image', fallback = true }) {
   const src = getImageAsset(imageKey || label);

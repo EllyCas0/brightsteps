@@ -1,21 +1,33 @@
 :root {
-  color: #23303f;
-  background: #f9f5ec;
+  --ink: #173F73;
+  --muted: #4c688a;
+  --paper: #ffffff;
+  --cream: #FFF9ED;
+  --line: #CDE9E4;
+  --teal: #69D3C1;
+  --teal-strong: #4EBBAA;
+  --coral: #FF6658;
+  --orange: #FF9A3D;
+  --gold: #FFD052;
+  --blue: #69B9F4;
+  --leaf: #69C77B;
+  --aqua: #69D3C1;
+  --pink: #F786B3;
+  --plum: #A88BE8;
+  --bg-mint: #EAF8F5;
+  --bg-blue: #EAF6FE;
+  --bg-pink: #FFF0F6;
+  --bg-lavender: #F2F0FF;
+  --bg-cream: #FFFCF5;
+  --bg-green: #EFF9EE;
+  --bg-yellow: #FFF6D8;
+  --bg-coral: #FFF0ED;
+  --shadow: 0 18px 50px rgba(23, 63, 115, 0.12);
+  color: var(--ink);
+  background: var(--bg-cream);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --ink: #23303f;
-  --muted: #617081;
-  --paper: #fffdf8;
-  --line: #ded8ca;
-  --teal: #2e9d91;
-  --coral: #ef7464;
-  --gold: #f0b84b;
-  --blue: #4f8ecb;
-  --leaf: #78a85f;
-  --aqua: #2f8ea6;
-  --plum: #8e78b8;
-  --shadow: 0 18px 50px rgba(40, 48, 58, 0.13);
 }
 
 * {
@@ -72,7 +84,7 @@ button svg {
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 4px solid rgba(79, 142, 203, 0.35);
+  outline: 4px solid rgba(105, 185, 244, 0.42);
   outline-offset: 3px;
 }
 

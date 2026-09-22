@@ -139,6 +139,18 @@
   background: rgba(25, 43, 41, 0.94);
 }
 
+.calm-zone-page .activity-start-card,
+.calm-zone-page .activity-card h2,
+.calm-zone-page .activity-heading {
+  color: #f3fffb;
+}
+
+.calm-zone-page .activity-start-card:hover:not(:disabled),
+.calm-zone-page .activity-start-card:focus-visible {
+  border-color: rgba(152, 214, 200, 0.5);
+  background: rgba(25, 43, 41, 0.96);
+}
+
 .calm-zone-page .activity-visual,
 .calm-zone-page .target-card,
 .calm-zone-page .breath-practice,
