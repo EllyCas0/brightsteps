@@ -1022,6 +1022,8 @@
 }
 
 .shape-sort-bin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
   gap: 14px;
 }
 
@@ -1113,6 +1115,7 @@
 .shape-sort-bin {
   position: relative;
   display: grid;
+  min-width: 0;
   min-height: 164px;
   place-items: center;
   align-content: center;
