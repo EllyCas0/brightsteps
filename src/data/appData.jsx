@@ -18,6 +18,7 @@ import calmBreakImage from '../assets/images/calm-break.webp';
 import catImage from '../assets/images/cat.webp';
 import cloudImage from '../assets/images/cloud.webp';
 import cupImage from '../assets/images/cup.webp';
+import dailySkillsImage from '../assets/images/daily-skills.webp';
 import dogImage from '../assets/images/dog.webp';
 import doneImage from '../assets/images/done.webp';
 import emotionMatchImage from '../assets/images/emotion-match.webp';
@@ -29,6 +30,7 @@ import happyFaceImage from '../assets/images/happy-face.webp';
 import houseImage from '../assets/images/house.webp';
 import lionImage from '../assets/images/lion.webp';
 import needsBoardImage from '../assets/images/needs-board.webp';
+import numbersAndLettersImage from '../assets/images/numbers-and-letters.webp';
 import okayFaceImage from '../assets/images/okay-face.webp';
 import loveAndSpaceImage from '../assets/images/love-and-space.webp';
 import memoryMatchImage from '../assets/images/memory-match.webp';
@@ -36,6 +38,7 @@ import mouseImage from '../assets/images/mouse.webp';
 import sadFaceImage from '../assets/images/sad-face.webp';
 import sensoryImage from '../assets/images/sensory.webp';
 import shapeSortImage from '../assets/images/shape-sort.webp';
+import socialImage from '../assets/images/social.webp';
 import sortBySizeImage from '../assets/images/sort-by-size.webp';
 import soundMatchImage from '../assets/images/sound-match.webp';
 import somethingHurtsImage from '../assets/images/something-hurts.webp';
@@ -191,6 +194,7 @@ export const imageAssets = {
   cat: catImage,
   Cup: cupImage,
   cup: cupImage,
+  'Daily Skills': dailySkillsImage,
   Dog: dogImage,
   dog: dogImage,
   Done: doneImage,
@@ -221,6 +225,7 @@ export const imageAssets = {
   Mouse: mouseImage,
   mouse: mouseImage,
   Needs: needsBoardImage,
+  'Numbers & Letters': numbersAndLettersImage,
   Okay: okayFaceImage,
   Rain: waterImage,
   Red: flowerImage,
@@ -264,6 +269,7 @@ export const imageAssets = {
   SHIRT: backpackImage,
   SOAP: washHandsImage,
   SOFT: calmImage,
+  Social: socialImage,
   SORT: shapeSortImage,
   SND: soundMatchImage,
   STAR: doneImage,
@@ -386,19 +392,19 @@ export const learnSections = [
   {
     id: 'daily',
     title: 'Daily Skills',
-    icon: 'Tie Shoes',
+    icon: 'Daily Skills',
     detail: 'Practice routines like shoes, teeth, hands, bathroom, dressing, water, and bedtime.'
   },
   {
     id: 'social',
     title: 'Social',
-    icon: 'Take Turns',
+    icon: 'Social',
     detail: 'Practice greetings, turns, sharing, attention, feelings, and asking for help.'
   },
   {
     id: 'numbers-letters',
     title: 'Numbers & Letters',
-    icon: 'A',
+    icon: 'Numbers & Letters',
     detail: 'Learn letters, numbers, words, shapes, colors, and memory matching.'
   }
 ];
