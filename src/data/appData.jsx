@@ -1,7 +1,10 @@
 import angryFaceImage from '../assets/images/angry-face.webp';
+import appleImage from '../assets/images/apple.webp';
 import backpackImage from '../assets/images/backpack.webp';
 import bathroomImage from '../assets/images/bathroom.webp';
 import bedImage from '../assets/images/bed.webp';
+import birdImage from '../assets/images/bird.webp';
+import bookImage from '../assets/images/book.webp';
 import breakImage from '../assets/images/break.webp';
 import breatheImage from '../assets/images/breathe.webp';
 import brushStep1Image from '../assets/images/brush-step-1-toothpaste.webp';
@@ -13,19 +16,28 @@ import brushTeethImage from '../assets/images/brush-teeth.webp';
 import calmImage from '../assets/images/calm.webp';
 import calmBreakImage from '../assets/images/calm-break.webp';
 import catImage from '../assets/images/cat.webp';
+import cloudImage from '../assets/images/cloud.webp';
 import cupImage from '../assets/images/cup.webp';
+import dogImage from '../assets/images/dog.webp';
 import doneImage from '../assets/images/done.webp';
+import emotionMatchImage from '../assets/images/emotion-match.webp';
 import eyeImage from '../assets/images/eye.webp';
 import excitedFaceImage from '../assets/images/excited-face.webp';
 import flowerImage from '../assets/images/flower.webp';
 import heartImage from '../assets/images/heart.webp';
 import happyFaceImage from '../assets/images/happy-face.webp';
+import houseImage from '../assets/images/house.webp';
+import lionImage from '../assets/images/lion.webp';
 import needsBoardImage from '../assets/images/needs-board.webp';
 import okayFaceImage from '../assets/images/okay-face.webp';
 import loveAndSpaceImage from '../assets/images/love-and-space.webp';
+import memoryMatchImage from '../assets/images/memory-match.webp';
+import mouseImage from '../assets/images/mouse.webp';
 import sadFaceImage from '../assets/images/sad-face.webp';
 import sensoryImage from '../assets/images/sensory.webp';
 import shapeSortImage from '../assets/images/shape-sort.webp';
+import sortBySizeImage from '../assets/images/sort-by-size.webp';
+import soundMatchImage from '../assets/images/sound-match.webp';
 import somethingHurtsImage from '../assets/images/something-hurts.webp';
 import sunImage from '../assets/images/sun.webp';
 import tieStep1Image from '../assets/images/tie-step-1.webp';
@@ -34,10 +46,13 @@ import tieStep3Image from '../assets/images/tie-step-3.webp';
 import tieStep4Image from '../assets/images/tie-step-4.webp';
 import tieStep5Image from '../assets/images/tie-step-5.webp';
 import tieShoesImage from '../assets/images/tie-shoes.webp';
+import tigerImage from '../assets/images/tiger.webp';
 import tiredFaceImage from '../assets/images/tired-face.webp';
 import toysImage from '../assets/images/toys.webp';
+import treeImage from '../assets/images/tree.webp';
 import washHandsImage from '../assets/images/wash-hands.webp';
 import waterImage from '../assets/images/water.webp';
+import whatGoesTogetherImage from '../assets/images/what-goes-together.webp';
 import worriedFaceImage from '../assets/images/worried-face.webp';
 import yogaImage from '../assets/images/yoga.webp';
 import avatarBoy2 from '../assets/avatars/avatar-boy-2.webp';
@@ -140,6 +155,12 @@ export const imageAssets = {
   'Girl 2 Worried': girl2WorriedAvatar,
   Angry: angryFaceImage,
   A: happyFaceImage,
+  Apple: appleImage,
+  apple: appleImage,
+  Bird: birdImage,
+  bird: birdImage,
+  Book: bookImage,
+  book: bookImage,
   Backpack: backpackImage,
   BAG: backpackImage,
   Bed: bedImage,
@@ -160,7 +181,8 @@ export const imageAssets = {
   'Calm Break': calmImage,
   'Color Match': flowerImage,
   COLOR: flowerImage,
-  Cloud: flowerImage,
+  Cloud: cloudImage,
+  cloud: cloudImage,
   CHECK: doneImage,
   Circle: flowerImage,
   TOOTH: brushTeethImage,
@@ -169,6 +191,8 @@ export const imageAssets = {
   cat: catImage,
   Cup: cupImage,
   cup: cupImage,
+  Dog: dogImage,
+  dog: dogImage,
   Done: doneImage,
   Eye: eyeImage,
   Excited: excitedFaceImage,
@@ -184,12 +208,18 @@ export const imageAssets = {
   Help: needsBoardImage,
   HELP: needsBoardImage,
   HI: happyFaceImage,
+  House: houseImage,
+  house: houseImage,
+  Lion: lionImage,
+  lion: lionImage,
   Mad: angryFaceImage,
-  'Memory Cards': heartImage,
+  'Memory Cards': memoryMatchImage,
   More: needsBoardImage,
   'Morning Routine': sunImage,
   Moon: calmImage,
   M: heartImage,
+  Mouse: mouseImage,
+  mouse: mouseImage,
   Needs: needsBoardImage,
   Okay: okayFaceImage,
   Rain: waterImage,
@@ -206,24 +236,28 @@ export const imageAssets = {
   sun: sunImage,
   S: sunImage,
   Thirsty: waterImage,
+  Tiger: tigerImage,
+  tiger: tigerImage,
   TIRED: tiredFaceImage,
   'Tie Shoes': tieShoesImage,
   LACE: tieShoesImage,
   Leaf: flowerImage,
+  Tree: treeImage,
+  tree: treeImage,
   Triangle: backpackImage,
   Tired: tiredFaceImage,
   TV: needsBoardImage,
   Water: waterImage,
   Worried: worriedFaceImage,
   Yellow: sunImage,
-  'Emotion Match': happyFaceImage,
+  'Emotion Match': emotionMatchImage,
   'Feel Check': happyFaceImage,
   Feelings: happyFaceImage,
   Faces: sadFaceImage,
-  'Match Pairs': sunImage,
+  'Match Pairs': whatGoesTogetherImage,
   'Number Garden': flowerImage,
   'ABC 123 Sequence': flowerImage,
-  PAIR: sunImage,
+  PAIR: whatGoesTogetherImage,
   RAIN: waterImage,
   RED: flowerImage,
   SHARE: heartImage,
@@ -231,7 +265,7 @@ export const imageAssets = {
   SOAP: washHandsImage,
   SOFT: calmImage,
   SORT: shapeSortImage,
-  SND: waterImage,
+  SND: soundMatchImage,
   STAR: doneImage,
   'Picture Words': catImage,
   'Simple Words': catImage,
@@ -265,7 +299,7 @@ export const imageAssets = {
   Please: heartImage,
   'Thank you': heartImage,
   'Shape Sort': shapeSortImage,
-  'Sort by Size': shapeSortImage,
+  'Sort by Size': sortBySizeImage,
   'Soft Visuals': calmImage,
   'Bedtime Routine': bedImage,
   'Copy Movements': happyFaceImage,
@@ -282,7 +316,7 @@ export const imageAssets = {
   'Sensory Needs': sensoryImage,
   'Sensory Play': sensoryImage,
   'Sound + Picture': waterImage,
-  'Sound Match': waterImage,
+  'Sound Match': soundMatchImage,
   'Tie Step 1': tieStep1Image,
   'Tie Step 2': tieStep2Image,
   'Tie Step 3': tieStep3Image,
@@ -332,12 +366,12 @@ export const activities = {
     { title: 'Faces', storyTitle: 'Look at Their Face', icon: 'FACE', detail: 'Practice noticing facial expression.' }
   ],
   play: [
-    { title: 'Memory Cards', icon: 'Memory Cards', detail: 'Flip cards and find matching pairs' },
-    { title: 'Match Pairs', displayTitle: 'What Goes Together?', icon: 'PAIR', detail: 'Match things that go together' },
+    { title: 'Memory Cards', displayTitle: 'Memory Match', icon: 'Memory Cards', detail: 'Flip cards and find matching pairs' },
     { title: 'Shape Sort', icon: 'Shape Sort', detail: 'Sort 3 shapes into matching groups' },
-    { title: 'Sort by Size', icon: 'Shape Sort', detail: 'Sort small, medium, and big' },
-    { title: 'Emotion Match', icon: 'Emotion Match', detail: 'Match 3 feeling faces' },
-    { title: 'Sound Match', icon: 'SND', detail: 'Listen and match 3 sounds' }
+    { title: 'Sort by Size', displayTitle: 'Size Sort', icon: 'Sort by Size', detail: 'Sort small, medium, and big' },
+    { title: 'Match Pairs', displayTitle: 'Go Together', icon: 'PAIR', detail: 'Match things that go together' },
+    { title: 'Emotion Match', displayTitle: 'Feeling Faces', icon: 'Emotion Match', detail: 'Match 3 feeling faces' },
+    { title: 'Sound Match', displayTitle: 'Listen & Match', icon: 'SND', detail: 'Listen and match 3 sounds' }
   ],
   calm: [
     { title: 'Breathe', icon: 'AIR', detail: 'Slow visual breathing' },
@@ -774,7 +808,7 @@ export const activityGames = {
   }
 };
 
-export const memoryPairLabels = ['Moon', 'Star', 'Leaf', 'Heart', 'Sun', 'Water', 'Cat', 'Bed', 'Cup', 'Toy'];
+export const memoryPairLabels = ['Apple', 'Bird', 'Book', 'Cat', 'Dog', 'Flower', 'House', 'Lion', 'Mouse', 'Tiger'];
 
 export function createMemoryDeck(pairCount) {
   return memoryPairLabels
