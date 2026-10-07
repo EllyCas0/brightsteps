@@ -17,6 +17,7 @@ import calmImage from '../assets/images/calm.webp';
 import calmBreakImage from '../assets/images/calm-break.webp';
 import catImage from '../assets/images/cat.webp';
 import cloudImage from '../assets/images/cloud.webp';
+import colorsImage from '../assets/images/colors.webp';
 import cupImage from '../assets/images/cup.webp';
 import dailySkillsImage from '../assets/images/daily-skills.webp';
 import dogImage from '../assets/images/dog.webp';
@@ -30,6 +31,7 @@ import happyFaceImage from '../assets/images/happy-face.webp';
 import houseImage from '../assets/images/house.webp';
 import lionImage from '../assets/images/lion.webp';
 import needsBoardImage from '../assets/images/needs-board.webp';
+import numberGardenImage from '../assets/images/number-garden.webp';
 import numbersAndLettersImage from '../assets/images/numbers-and-letters.webp';
 import okayFaceImage from '../assets/images/okay-face.webp';
 import loveAndSpaceImage from '../assets/images/love-and-space.webp';
@@ -182,8 +184,9 @@ export const imageAssets = {
   'Bathroom Routine': bathroomImage,
   Calm: calmImage,
   'Calm Break': calmImage,
-  'Color Match': flowerImage,
-  COLOR: flowerImage,
+  'Color Match': colorsImage,
+  Colors: colorsImage,
+  COLOR: colorsImage,
   Cloud: cloudImage,
   cloud: cloudImage,
   CHECK: doneImage,
@@ -260,7 +263,7 @@ export const imageAssets = {
   Feelings: happyFaceImage,
   Faces: sadFaceImage,
   'Match Pairs': whatGoesTogetherImage,
-  'Number Garden': flowerImage,
+  'Number Garden': numberGardenImage,
   'ABC 123 Sequence': flowerImage,
   PAIR: whatGoesTogetherImage,
   RAIN: waterImage,
