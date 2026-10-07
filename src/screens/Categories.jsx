@@ -40,7 +40,7 @@ export function CategoryPage({ category, profile, progress, soundOff, learnSecti
           <button className="icon-button" onClick={onBack} aria-label={t('Go back')}><ArrowLeft /></button>
           <span className="round-icon"><BookOpen /></span>
           <div>
-            <p className="eyebrow">{t('Learn activities')}</p>
+            <p className="eyebrow">{t('Activities')}</p>
             <h1>{t('Learn')}</h1>
           </div>
         </div>
@@ -74,7 +74,7 @@ export function CategoryPage({ category, profile, progress, soundOff, learnSecti
         <button className="icon-button" onClick={onBack} aria-label={t('Go back')}><ArrowLeft /></button>
         <span className="round-icon">{pageTitle[1]}</span>
         <div>
-          <p className="eyebrow">{t(category === 'learn' ? 'Learn activities' : `${categoryLabels[category]} activities`)}</p>
+          <p className="eyebrow">{t(category === 'learn' ? 'Learn activities' : 'Activities')}</p>
           <h1>{t(pageTitle[0])}</h1>
         </div>
       </div>

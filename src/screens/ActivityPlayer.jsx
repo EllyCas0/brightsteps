@@ -37,7 +37,7 @@ export function ActivityPlayer({ activity, profile, soundOff, onBack, onComplete
   } else if (guidedActivities[activity.title]) {
     activityView = <GuidedActivity activity={activity} config={guidedActivities[activity.title]} soundOff={soundOff} onBack={onBack} onComplete={onComplete} onNextStory={onNextStory} />;
   } else {
-    activityView = <MatchGame activity={activity} soundOff={soundOff} onBack={onBack} onComplete={onComplete} />;
+    activityView = <MatchGame activity={activity} profile={profile} soundOff={soundOff} onBack={onBack} onComplete={onComplete} />;
   }
 
   return (

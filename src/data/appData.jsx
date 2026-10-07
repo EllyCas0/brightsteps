@@ -169,7 +169,6 @@ export const imageAssets = {
   cat: catImage,
   Cup: cupImage,
   cup: cupImage,
-  'Drink Water Reminder': waterImage,
   Done: doneImage,
   Eye: eyeImage,
   Excited: excitedFaceImage,
@@ -234,6 +233,7 @@ export const imageAssets = {
   SORT: shapeSortImage,
   SND: waterImage,
   STAR: doneImage,
+  'Picture Words': catImage,
   'Simple Words': catImage,
   'Say Hello': happyFaceImage,
   'Speech Table': needsBoardImage,
@@ -304,22 +304,16 @@ export function getImageAsset(key) {
 
 export const activities = {
   learn: [
-    { title: 'Letter Match', displayTitle: 'Match Letters', icon: 'A', level: 'basic', detail: 'Match the same uppercase letter', tags: ['letters', 'images'] },
+    { title: 'Picture Words', icon: 'CAT', level: 'basic', detail: 'Match a picture to its word', tags: ['letters', 'reading'] },
     { title: 'Simple Words', icon: 'CAT', level: 'word', detail: 'Pick the word that matches a picture', tags: ['reading'] },
     { title: 'Number Garden', icon: '1 2', level: 'basic', detail: 'Count pictures and choose the number', tags: ['numbers'] },
-    { title: 'ABC 123 Sequence', displayTitle: 'ABC & 123', icon: 'A 1', level: 'basic', detail: 'Put letters and numbers in order', tags: ['letters', 'numbers', 'sequence'] },
     { title: 'Color Match', displayTitle: 'Colors', icon: 'RED', level: 'basic', detail: 'Choose the color that matches the card', tags: ['colors'] }
   ],
   daily: [
     { title: 'Tie Shoes', icon: 'LACE', detail: 'Step-by-step shoe tying' },
     { title: 'Brush Teeth', icon: 'TOOTH', detail: 'Gentle routine practice' },
     { title: 'Wash Hands', icon: 'SOAP', detail: 'Clean hands sequence' },
-    { title: 'Bathroom Routine', icon: 'Bathroom', detail: 'Independent bathroom steps' },
-    { title: 'Get Dressed', icon: 'SHIRT', detail: 'Clothes in order' },
     { title: 'Pack Backpack', icon: 'BAG', detail: 'School-ready checklist' },
-    { title: 'Drink Water Reminder', icon: 'Water', detail: 'Remember to drink water' },
-    { title: 'Bedtime Routine', icon: 'Bedtime Routine', detail: 'Calm sequence before sleep' },
-    { title: 'Morning Routine', icon: 'AM', detail: 'First, next, then' }
   ],
   speech: [
     { title: 'My Voice', icon: 'Speech Board', detail: 'Tap picture words to speak a clear message' },
@@ -376,12 +370,9 @@ export const learnSections = [
 ];
 
 export const learnedSkillActivityMap = {
-  Dressing: ['Get Dressed'],
   'Brushing teeth': ['Brush Teeth'],
   'Tying shoes': ['Tie Shoes'],
-  'Washing hands': ['Wash Hands'],
-  'Using the bathroom': ['Bathroom Routine'],
-  'Following routines': ['Morning Routine']
+  'Washing hands': ['Wash Hands']
 };
 
 export const resources = [
@@ -470,6 +461,50 @@ export const activityGames = {
           { label: 'S', value: 'S' },
           { label: 'A', value: 'A' },
           { label: 'M', value: 'M' }
+        ]
+      }
+    ]
+  },
+  'Picture Words': {
+    rounds: [
+      {
+        prompt: 'Choose the word for the picture.',
+        target: { label: 'Cat', value: 'cat' },
+        choices: [
+          { label: 'Cat', value: 'cat' },
+          { label: 'Cup', value: 'cup' },
+          { label: 'Bed', value: 'bed' },
+          { label: 'Sun', value: 'sun' }
+        ]
+      },
+      {
+        prompt: 'Choose the word for the picture.',
+        target: { label: 'Sun', value: 'sun' },
+        choices: [
+          { label: 'Bed', value: 'bed' },
+          { label: 'Sun', value: 'sun' },
+          { label: 'Flower', value: 'flower' },
+          { label: 'Cat', value: 'cat' }
+        ]
+      },
+      {
+        prompt: 'Choose the word for the picture.',
+        target: { label: 'Cup', value: 'cup' },
+        choices: [
+          { label: 'Flower', value: 'flower' },
+          { label: 'Cat', value: 'cat' },
+          { label: 'Cup', value: 'cup' },
+          { label: 'Bed', value: 'bed' }
+        ]
+      },
+      {
+        prompt: 'Choose the word for the picture.',
+        target: { label: 'Flower', value: 'flower' },
+        choices: [
+          { label: 'Sun', value: 'sun' },
+          { label: 'Flower', value: 'flower' },
+          { label: 'Cup', value: 'cup' },
+          { label: 'Cat', value: 'cat' }
         ]
       }
     ]
@@ -761,9 +796,28 @@ export const guidedActivities = {
   'Simple Words': {
     type: 'choices',
     prompt: 'Pick the word that matches the picture.',
-    visual: 'CAT',
-    correct: 'cat',
-    choices: ['cat', 'sun', 'bed', 'cup']
+    rounds: [
+      {
+        visual: 'cat',
+        correct: 'cat',
+        choices: ['cat', 'sun', 'bed', 'cup']
+      },
+      {
+        visual: 'sun',
+        correct: 'sun',
+        choices: ['bed', 'sun', 'cup', 'cat']
+      },
+      {
+        visual: 'bed',
+        correct: 'bed',
+        choices: ['cup', 'cat', 'bed', 'sun']
+      },
+      {
+        visual: 'cup',
+        correct: 'cup',
+        choices: ['sun', 'cup', 'cat', 'bed']
+      }
+    ]
   },
   'ABC 123 Sequence': {
     type: 'steps',
@@ -807,11 +861,6 @@ export const guidedActivities = {
     type: 'steps',
     prompt: 'Tap each bathroom step in order.',
     steps: ['Go bathroom', 'Pants down', 'Use toilet', 'Wipe', 'Flush', 'Wash hands']
-  },
-  'Drink Water Reminder': {
-    type: 'script',
-    prompt: 'Practice a helpful reminder.',
-    lines: ['Reminder', 'Drink water', 'Take a sip', 'All done']
   },
   'Bedtime Routine': {
     type: 'steps',

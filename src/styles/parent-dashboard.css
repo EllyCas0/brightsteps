@@ -489,13 +489,55 @@ legend {
 
 .custom-message-form {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(120px, 0.42fr) auto;
   align-items: end;
   gap: 10px;
 }
 
 .custom-message-form input {
   min-height: 46px;
+}
+
+.custom-image-field {
+  min-width: 0;
+}
+
+.custom-image-picker {
+  position: relative;
+  display: grid;
+  min-height: 46px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: white;
+  font-weight: 900;
+  overflow: hidden;
+}
+
+.custom-image-picker img,
+.custom-message-preview img {
+  display: block;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.custom-image-picker input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.custom-image-picker small {
+  min-width: 0;
+  color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
 .custom-message-list {
@@ -505,13 +547,23 @@ legend {
 
 .custom-message-list > span {
   display: grid;
-  grid-template-columns: minmax(92px, 0.8fr) minmax(0, 1fr) auto;
+  grid-template-columns: 42px minmax(92px, 0.8fr) minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
   border: 1px solid rgba(105, 211, 193, 0.22);
   border-radius: 8px;
   background: var(--bg-mint);
+}
+
+.custom-message-preview {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--muted);
+  background: white;
 }
 
 .custom-message-list strong,

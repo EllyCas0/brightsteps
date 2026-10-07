@@ -260,6 +260,7 @@ export function normalizeMyVoiceSettings(settings) {
       label: String(card?.label || '').trim(),
       sentence: String(card?.sentence || card?.label || '').trim(),
       image: card?.image || 'Choice Board',
+      imageSrc: typeof card?.imageSrc === 'string' ? card.imageSrc : '',
       custom: true
     }))
     .filter((card) => card.label && card.sentence)

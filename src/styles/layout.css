@@ -73,7 +73,19 @@
 .brand {
   display: flex;
   align-items: center;
+  gap: 10px;
   min-width: 0;
+}
+
+.deploy-version {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  background: var(--paper);
+  font-size: 0.78rem;
+  font-weight: 900;
 }
 
 .brand-copy,

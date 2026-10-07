@@ -24,6 +24,35 @@ function createCustomCardId() {
   return `custom-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+function resizeImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const maxSize = 420;
+        const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+        const width = Math.max(1, Math.round(image.width * scale));
+        const height = Math.max(1, Math.round(image.height * scale));
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext('2d');
+        if (!context) {
+          reject(new Error('Canvas not available'));
+          return;
+        }
+        context.drawImage(image, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      image.onerror = reject;
+      image.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 export function ParentGate({ onUnlock, onBack }) {
   const t = useT();
   const [answer, setAnswer] = useState('');
@@ -59,6 +88,7 @@ function MyVoiceSettingsEditor({ settings, onChange }) {
   const t = useT();
   const [customLabel, setCustomLabel] = useState('');
   const [customSentence, setCustomSentence] = useState('');
+  const [customImageSrc, setCustomImageSrc] = useState('');
   const normalizedSettings = normalizeMyVoiceSettings(settings);
 
   function updateSettings(updates) {
@@ -81,6 +111,16 @@ function MyVoiceSettingsEditor({ settings, onChange }) {
     updateSettings({ enabledCategories });
   }
 
+  async function chooseCustomImage(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      setCustomImageSrc(await resizeImageFile(file));
+    } catch {
+      setCustomImageSrc('');
+    }
+  }
+
   function addCustomMessage() {
     const label = customLabel.trim();
     const sentence = customSentence.trim() || label;
@@ -88,11 +128,12 @@ function MyVoiceSettingsEditor({ settings, onChange }) {
     updateSettings({
       customCards: [
         ...normalizedSettings.customCards,
-        { id: createCustomCardId(), label, sentence, image: 'Choice Board' }
+        { id: createCustomCardId(), label, sentence, image: 'Choice Board', imageSrc: customImageSrc }
       ].slice(-12)
     });
     setCustomLabel('');
     setCustomSentence('');
+    setCustomImageSrc('');
   }
 
   function removeCustomMessage(id) {
@@ -150,6 +191,14 @@ function MyVoiceSettingsEditor({ settings, onChange }) {
             {t('Spoken message')}
             <input value={customSentence} onChange={(event) => setCustomSentence(event.target.value)} placeholder={t('I want a snack.')} />
           </label>
+          <label className="custom-image-field">
+            {t('Button image')}
+            <span className="custom-image-picker">
+              {customImageSrc ? <img src={customImageSrc} alt="" /> : <MessageSquare size={22} />}
+              <input type="file" accept="image/*" onChange={chooseCustomImage} />
+              <small>{customImageSrc ? t('Change image') : t('Add image')}</small>
+            </span>
+          </label>
           <button className="primary-button" type="button" onClick={addCustomMessage} disabled={!customLabel.trim()}>
             <Plus size={18} /> {t('Add message')}
           </button>
@@ -157,6 +206,9 @@ function MyVoiceSettingsEditor({ settings, onChange }) {
         <div className="custom-message-list">
           {normalizedSettings.customCards.length ? normalizedSettings.customCards.map((card) => (
             <span key={card.id}>
+              <span className="custom-message-preview" aria-hidden="true">
+                {card.imageSrc ? <img src={card.imageSrc} alt="" /> : <MessageSquare size={20} />}
+              </span>
               <strong>{card.label}</strong>
               <small>{card.sentence}</small>
               <button type="button" onClick={() => removeCustomMessage(card.id)} aria-label={`${t('Remove')} ${card.label}`}>
@@ -183,7 +235,7 @@ export function ParentDashboard({ profile, profiles, progress, personalization, 
   const nextActivities = [
     selectedObjectives.includes('Daily independence') ? 'Daily reminder practice' : 'Short daily routine',
     usesVisualCommunication ? 'AAC help choices' : 'Ask for help story',
-    profile?.letters === 'Can read fluently' ? 'Reading choices' : (profile?.letters === 'Does not recognize letters' ? 'Letter Match' : 'Simple Words')
+    profile?.letters === 'Can read fluently' ? 'Reading choices' : 'Simple Words'
   ];
 
   return (

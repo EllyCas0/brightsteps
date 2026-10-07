@@ -7,15 +7,28 @@ import { MediaToggle } from './MediaToggle.jsx';
 import { getActivityDisplayTitle } from './Categories.jsx';
 import { activityGames, createMemoryDeck, getImageAsset, shuffleCards } from '../data/appData.jsx';
 
-function ShapeIcon({ shape, size = 'small' }) {
-  return <span className={`shape-icon shape-${shape.toLowerCase()} shape-${size}`} aria-hidden="true" />;
+const shapeSortColorVariants = ['coral', 'blue', 'gold', 'plum', 'leaf', 'pink', 'orange', 'aqua'];
+
+function ShapeIcon({ shape, size = 'small', colorVariant }) {
+  return (
+    <span
+      className={[
+        'shape-icon',
+        `shape-${shape.toLowerCase()}`,
+        `shape-${size}`,
+        colorVariant ? `shape-color-${colorVariant}` : ''
+      ].filter(Boolean).join(' ')}
+      aria-hidden="true"
+    />
+  );
 }
 
 function createShapeSortPieces(choices = []) {
-  return shuffleCards(choices.flatMap((choice) => (
+  return shuffleCards(choices.flatMap((choice, choiceIndex) => (
     [0, 1].map((copyIndex) => ({
       ...choice,
-      id: `${choice.value}-${copyIndex}`
+      id: `${choice.value}-${copyIndex}`,
+      colorVariant: shapeSortColorVariants[(choiceIndex * 2 + copyIndex) % shapeSortColorVariants.length]
     }))
   )));
 }
@@ -61,7 +74,13 @@ function PairObjectVisual({ item, className = 'pair-object-icon' }) {
   return <Icon className={className} aria-hidden="true" />;
 }
 
-function GameTargetVisual({ activityTitle, target }) {
+function WordLetterBadge({ label, className = '' }) {
+  const firstLetter = String(label || '').trim().charAt(0).toUpperCase();
+  return <span className={`word-letter-badge ${className}`.trim()} aria-hidden="true">{firstLetter}</span>;
+}
+
+function GameTargetVisual({ activityTitle, target, label }) {
+  const displayLabel = label || target.label;
   if (activityTitle === 'Color Match') {
     return <span className="sr-only">{target.label}</span>;
   }
@@ -70,6 +89,17 @@ function GameTargetVisual({ activityTitle, target }) {
   }
   if (activityTitle === 'Letter Match') {
     return <span className="game-letter game-letter-large">{target.label}</span>;
+  }
+  if (activityTitle === 'Picture Words') {
+    return (
+      <div className="picture-word-target">
+        <VisualAsset label={target.label} className="target-image picture-word-target-image" />
+        <div className="picture-word-target-copy">
+          <WordLetterBadge label={displayLabel} />
+          <strong>{displayLabel}</strong>
+        </div>
+      </div>
+    );
   }
   if (activityTitle === 'Shape Sort') {
     return <ShapeIcon shape={target.label} size="large" />;
@@ -94,7 +124,8 @@ function GameTargetVisual({ activityTitle, target }) {
   return <VisualAsset label={target.label} className="target-image" />;
 }
 
-function GameChoiceVisual({ activityTitle, choice }) {
+function GameChoiceVisual({ activityTitle, choice, label }) {
+  const displayLabel = label || choice.label;
   if (activityTitle === 'Color Match') {
     return <span className="color-swatch" style={{ '--swatch-color': choice.value }} aria-hidden="true" />;
   }
@@ -110,7 +141,183 @@ function GameChoiceVisual({ activityTitle, choice }) {
   if (activityTitle === 'Match Pairs') {
     return <PairObjectVisual item={choice} className="pair-object-icon pair-choice-icon" />;
   }
+  if (activityTitle === 'Picture Words') {
+    return (
+      <span className="picture-word-choice-copy">
+        <WordLetterBadge label={displayLabel} className="choice-letter" />
+        <span>{displayLabel}</span>
+      </span>
+    );
+  }
   return <VisualAsset label={choice.label} className="choice-image" fallback={false} />;
+}
+
+function getPositiveMessage(activityTitle, roundIndex, hadHelp = false) {
+  if (hadHelp) return 'You found it!';
+  const messagesByGame = {
+    'Sound Match': ['Great listening!', 'You heard it!', 'Nice listening!'],
+    'Emotion Match': ['You found the feeling!', 'Nice looking!', 'You noticed it!'],
+    'Shape Sort': ['Nice sorting!', 'Right group!', 'Good sorting!'],
+    'Sort by Size': ['Nice order!', 'You sorted it!', 'Great ordering!'],
+    'Match Pairs': ['Great match!', 'They go together!', 'Nice pair!'],
+    'Picture Words': ['Nice word!', 'You read it!', 'Great word match!'],
+    'Color Match': ['Nice work!', 'You found it!', 'Great match!'],
+    'Letter Match': ['Nice work!', 'You found it!', 'Great match!'],
+    'Number Garden': ['Nice counting!', 'You counted it!', 'Great counting!']
+  };
+  const messages = messagesByGame[activityTitle] || ['Nice work!', 'You found it!', 'Great match!'];
+  return messages[roundIndex % messages.length];
+}
+
+function RoundCelebration({ label = '+1' }) {
+  return (
+    <div className="round-celebration" aria-hidden="true">
+      <span className="round-celebration-star"><Star size={18} /></span>
+      <span>{label}</span>
+    </div>
+  );
+}
+
+function playSoftCelebrationSound(soundOff) {
+  if (soundOff) return;
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+  const context = new AudioContext();
+  const output = context.createGain();
+  output.gain.setValueAtTime(0.16, context.currentTime);
+  output.connect(context.destination);
+  [523.25, 659.25].forEach((frequency, index) => {
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    const startAt = context.currentTime + index * 0.08;
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(frequency, startAt);
+    gain.gain.setValueAtTime(0.0001, startAt);
+    gain.gain.exponentialRampToValueAtTime(0.09, startAt + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.18);
+    oscillator.connect(gain).connect(output);
+    oscillator.start(startAt);
+    oscillator.stop(startAt + 0.22);
+  });
+  window.setTimeout(() => {
+    output.disconnect();
+    context.close?.();
+  }, 420);
+}
+
+function asProfileList(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  return [value];
+}
+
+function getProfileText(profile, field) {
+  return String(profile?.[field] || '');
+}
+
+function usesVisualCommunication(profile) {
+  const communication = asProfileList(profile?.communication).join(' ');
+  return communication.includes('AAC')
+    || communication.includes('picture')
+    || communication.includes('visual')
+    || communication.includes('facial expression')
+    || communication.includes('gesture');
+}
+
+function needsLowFrustrationMode(profile) {
+  const communication = asProfileList(profile?.communication).join(' ');
+  return profile?.supportLevel?.startsWith('Level 3')
+    || communication.includes('Very limited')
+    || communication.includes('AAC')
+    || communication.includes('picture');
+}
+
+function getChoiceLimit(profile, activityTitle) {
+  if (activityTitle === 'Sort by Size') return null;
+  if (profile?.supportLevel?.startsWith('Level 3')) return 2;
+  if (needsLowFrustrationMode(profile)) return 2;
+  if (profile?.supportLevel?.startsWith('Level 2')) return 3;
+  if (activityTitle === 'Letter Match' && getProfileText(profile, 'letters') === 'Does not recognize letters') return 2;
+  if (activityTitle === 'Number Garden' && getProfileText(profile, 'numbers') === 'Does not recognize numbers') return 2;
+  return null;
+}
+
+function limitRoundChoices(round, limit) {
+  if (!limit || !round?.choices || round.choices.length <= limit) return round;
+  const correctChoice = round.choices.find((choice) => choice.value === round.target.value) || round.choices[0];
+  const distractors = round.choices.filter((choice) => choice !== correctChoice).slice(0, Math.max(0, limit - 1));
+  return {
+    ...round,
+    choices: shuffleCards([correctChoice, ...distractors])
+  };
+}
+
+function getAdaptiveExtraRounds(activityTitle, profile) {
+  if (activityTitle === 'Number Garden' && getProfileText(profile, 'numbers') === 'Recognizes numbers beyond 10') {
+    return [
+      {
+        prompt: 'How many hearts are in the garden?',
+        target: { label: '8', value: '8', count: 8, item: 'Heart' },
+        choices: [
+          { label: '6', value: '6' },
+          { label: '8', value: '8' },
+          { label: '9', value: '9' },
+          { label: '10', value: '10' }
+        ]
+      },
+      {
+        prompt: 'How many suns are in the garden?',
+        target: { label: '10', value: '10', count: 10, item: 'Sun' },
+        choices: [
+          { label: '7', value: '7' },
+          { label: '9', value: '9' },
+          { label: '10', value: '10' },
+          { label: '11', value: '11' }
+        ]
+      }
+    ];
+  }
+
+  if (activityTitle === 'Letter Match' && ['Can read simple words', 'Can read fluently'].includes(getProfileText(profile, 'letters'))) {
+    return [
+      {
+        prompt: 'Find the same letter.',
+        target: { label: 'T', value: 'T' },
+        choices: [
+          { label: 'F', value: 'F' },
+          { label: 'T', value: 'T' },
+          { label: 'L', value: 'L' },
+          { label: 'I', value: 'I' }
+        ]
+      },
+      {
+        prompt: 'Find the same letter.',
+        target: { label: 'R', value: 'R' },
+        choices: [
+          { label: 'P', value: 'P' },
+          { label: 'B', value: 'B' },
+          { label: 'R', value: 'R' },
+          { label: 'D', value: 'D' }
+        ]
+      }
+    ];
+  }
+
+  return [];
+}
+
+function getProfileAdaptedRounds(activityTitle, activityIcon, profile) {
+  const baseRounds = getGameRounds(activityTitle, activityIcon);
+  const rounds = [...baseRounds, ...getAdaptiveExtraRounds(activityTitle, profile)];
+  const choiceLimit = getChoiceLimit(profile, activityTitle);
+  return rounds.map((round) => limitRoundChoices(round, choiceLimit));
+}
+
+function getInitialMemoryPairCount(profile) {
+  if (needsLowFrustrationMode(profile)) return 2;
+  if (getProfileText(profile, 'numbers') === 'Recognizes numbers beyond 10') return 4;
+  if (getProfileText(profile, 'numbers') === 'Recognizes numbers 1-10') return 3;
+  return 2;
 }
 
 export function GameCompleteActions({ onRepeat, onGames, onNext, backLabel = 'Back to Games', nextLabel = 'Next story' }) {
@@ -155,7 +362,7 @@ function getGameRounds(activityTitle, activityIcon) {
 }
 
 
-export function MatchGame({ activity, soundOff, onBack, onComplete }) {
+export function MatchGame({ activity, profile, soundOff, onBack, onComplete }) {
   const t = useT();
   const language = useContext(LanguageContext);
   const soundGameAudioRef = useRef({ context: null, nodes: [] });
@@ -166,13 +373,19 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
   const isShapeSort = activity.title === 'Shape Sort';
   const isMatchPairs = activity.title === 'Match Pairs';
   const isSizeSort = activity.title === 'Sort by Size';
-  const rounds = useMemo(() => getGameRounds(activity.title, activity.icon), [activity.title, activity.icon]);
+  const isPictureWords = activity.title === 'Picture Words';
+  const rounds = useMemo(
+    () => getProfileAdaptedRounds(activity.title, activity.icon, profile),
+    [activity.title, activity.icon, profile]
+  );
   const [roundIndex, setRoundIndex] = useState(0);
   const game = rounds[roundIndex] || rounds[0];
   const [choiceOrder, setChoiceOrder] = useState(() => shuffleCards(game.choices));
   const [selected, setSelected] = useState(null);
   const [completed, setCompleted] = useState(false);
   const [score, setScore] = useState(0);
+  const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [helpRequested, setHelpRequested] = useState(false);
   const [soundHighlighted, setSoundHighlighted] = useState(false);
   const [shapeDragging, setShapeDragging] = useState(false);
   const [dragOverChoice, setDragOverChoice] = useState(null);
@@ -196,7 +409,13 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
   const successDetail = isMatchPairs ? (game.explanation || 'These two go together.') : 'You found the right answer.';
   const retryDetail = isMatchPairs
     ? 'Look at the big card and pick what goes with it.'
+    : isPictureWords
+      ? 'Look at the picture and pick its word.'
     : 'Look at the big card and pick the same one.';
+  const visualCommunicationMode = usesVisualCommunication(profile);
+  const showAnswerHint = helpRequested;
+  const reduceChoices = helpRequested && wrongAttempts >= 3 && !isCorrect && !isShapeSort && !isSizeSort;
+  const successTitle = getPositiveMessage(activity.title, roundIndex, wrongAttempts > 0 || sizeSortAttempts > 1);
 
   useEffect(() => () => {
     stopSoundGameAudio();
@@ -205,6 +424,8 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
 
   useEffect(() => {
     setSelected(null);
+    setWrongAttempts(0);
+    setHelpRequested(false);
     setSoundHighlighted(false);
     shapeDraggingRef.current = false;
     setShapeDragging(false);
@@ -490,6 +711,8 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
     setSelected(null);
     setCompleted(false);
     setScore(0);
+    setWrongAttempts(0);
+    setHelpRequested(false);
     setSoundHighlighted(false);
     shapeDraggingRef.current = false;
     setShapeDragging(false);
@@ -507,6 +730,9 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
 
   function chooseMatch(choice) {
     setSelected(choice);
+    if (choice.value !== game.target.value) {
+      setWrongAttempts((attempts) => attempts + 1);
+    }
     speakText(t(choice.label));
   }
 
@@ -523,6 +749,9 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
     setActiveShapePieceId(null);
     setDragOverChoice(null);
     setShapeDragging(false);
+    if (piece.value !== binValue) {
+      setWrongAttempts((attempts) => attempts + 1);
+    }
     speakText(t(piece.label));
   }
 
@@ -592,6 +821,70 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
     setSizeSortAttempts((attempts) => attempts + 1);
   }
 
+  function changeSizeOrder() {
+    if (!isSizeSort || isCorrect) return;
+    const firstWrongPiece = sizeSlots.find((piece, index) => piece && piece.value !== game.target.order[index]);
+    setSizeSortChecked(false);
+    setActiveSizePieceId(firstWrongPiece?.id || null);
+  }
+
+  function askForHelp() {
+    if (isCorrect) return;
+    setHelpRequested(true);
+    speakText(t(getHelpMessage()));
+  }
+
+  function getHelpMessage() {
+    if (isSoundMatch) return 'I can help. Listen again and try the highlighted answer.';
+    if (isEmotionMatch) return 'I can help. Look at the highlighted feeling.';
+    if (isMatchPairs) return game.hint || 'I can help. Try the highlighted card.';
+    if (isPictureWords) return 'I can help. Look at the first letter and picture.';
+    if (isSizeSort) return 'I can help. Small goes first, then medium, then big.';
+    if (isShapeSort) return 'I can help. Pick a shape, then try the highlighted group.';
+    return 'I can help. Try the highlighted answer.';
+  }
+
+  function getFeedbackTitle() {
+    if (isCorrect) return successTitle;
+    if (shouldShowSupportHint && wrongAttempts === 0 && !sizeSortChecked) return 'I can help.';
+    if (isSizeSort) return 'Almost! Try again.';
+    if (isMatchPairs || isSoundMatch || isEmotionMatch || isShapeSort) return 'Try again.';
+    return 'Try one more time.';
+  }
+
+  function getProgressiveHint() {
+    const attempts = isSizeSort ? sizeSortAttempts : wrongAttempts;
+    if (isCorrect) {
+      if (isSizeSort) return 'Small → Medium → Big';
+      if (isEmotionMatch) return `${t('That face is')} ${t(game.target.label).toLowerCase()}.`;
+      if (isShapeSort) return 'All shapes are in the right groups.';
+      return successDetail;
+    }
+    if (attempts >= 3 && showAnswerHint) {
+      if (isSoundMatch) return 'Only two choices now. Listen and pick the matching sound.';
+      if (isEmotionMatch) return 'Only two choices now. Look at the mouth and eyes.';
+      if (isMatchPairs) return game.hint || 'Only two choices now. Pick what goes with it.';
+      if (isPictureWords) return 'Only two choices now. Pick the word for the picture.';
+      if (isSizeSort) return 'Use the highlighted spots to fix the order.';
+      if (isShapeSort) return getShapeHint(getFirstMisplacedShape()?.label || game.target.label);
+      return 'Only two choices now. Pick the matching answer.';
+    }
+    if (attempts >= 2 && showAnswerHint) {
+      if (isSoundMatch) return 'The matching sound is highlighted.';
+      if (isEmotionMatch) return 'The matching feeling is highlighted.';
+      if (isMatchPairs) return game.hint || 'The matching card is highlighted.';
+      if (isPictureWords) return 'The matching word is highlighted.';
+      if (isSizeSort) return getSizeSortHint();
+      if (isShapeSort) return 'The matching group is highlighted.';
+      return 'The matching answer is highlighted.';
+    }
+    if (isSizeSort) return getSizeSortHint();
+    if (isEmotionMatch) return 'Look at the face one more time.';
+    if (isShapeSort) return 'Look at the shape.';
+    if (isSoundMatch) return 'Listen one more time and choose again.';
+    return retryDetail;
+  }
+
   function getShapeHint(shape) {
     if (shape === 'Circle') return 'Round. No corners.';
     if (shape === 'Square') return '4 equal sides.';
@@ -606,9 +899,26 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
     return 'Now find the biggest one.';
   }
 
+  function getFirstMisplacedShape() {
+    return shapeSortPieces.find((piece) => {
+      const placement = shapePlacements[piece.id];
+      return placement && placement !== piece.value;
+    }) || null;
+  }
+
+  function getHintedShapeBinValue() {
+    const activePiece = findShapePiece(activeShapePieceId);
+    return activePiece?.value || getFirstMisplacedShape()?.value || null;
+  }
+
   const sizeSortPlacedIds = new Set(sizeSlots.filter(Boolean).map((piece) => piece.id));
   const sizeSortSourcePieces = choiceOrder.filter((piece) => !sizeSortPlacedIds.has(piece.id));
   const shapeSortSourcePieces = shapeSortPieces.filter((piece) => !shapePlacements[piece.id]);
+  const hintedShapeBinValue = showAnswerHint ? getHintedShapeBinValue() : null;
+  const shouldShowSupportHint = !isCorrect && helpRequested;
+  const visibleChoiceOrder = reduceChoices
+    ? choiceOrder.filter((choice) => choice.value === game.target.value || choice.value === selected?.value)
+    : choiceOrder;
   const shapeSortBins = choiceOrder.map((choice) => ({
     ...choice,
     pieces: shapeSortPieces.filter((piece) => shapePlacements[piece.id] === choice.value)
@@ -629,9 +939,16 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
           <span>{t('Round')} {roundIndex + 1} {t('of')} {rounds.length}</span>
           <span>{t('Score')}: {score}</span>
         </div>
-        <div className={isSoundMatch ? 'game-prompt sound-game-prompt' : isEmotionMatch ? 'game-prompt emotion-game-prompt' : isShapeSort ? 'game-prompt shape-sort-prompt' : isMatchPairs ? 'game-prompt pair-game-prompt' : isSizeSort ? 'game-prompt size-sort-prompt' : 'game-prompt'}>
+          <div className={isSoundMatch ? 'game-prompt sound-game-prompt' : isEmotionMatch ? 'game-prompt emotion-game-prompt' : isShapeSort ? 'game-prompt shape-sort-prompt' : isMatchPairs ? 'game-prompt pair-game-prompt' : isSizeSort ? 'game-prompt size-sort-prompt' : isPictureWords ? 'game-prompt picture-word-prompt' : 'game-prompt'}>
           <p className="eyebrow">{t('Your turn')}</p>
           <h2>{t(isSoundMatch ? 'Listen, then pick what made the sound.' : isEmotionMatch ? 'What feeling is this?' : isShapeSort ? 'Drag each shape to its group.' : isMatchPairs ? 'What goes with this?' : isSizeSort ? 'Put them in order.' : game.prompt)}</h2>
+          {visualCommunicationMode && helpRequested && (
+            <div className="game-visual-cue" aria-label={t('Visual help')}>
+              <span><Info size={18} aria-hidden="true" /> {t('Look')}</span>
+              <span><Check size={18} aria-hidden="true" /> {t('Choose')}</span>
+              <span><HeartHandshake size={18} aria-hidden="true" /> {t('Help me')}</span>
+            </div>
+          )}
           {isShapeSort && <p>{t('Put every shape with the same shape.')}</p>}
           {isMatchPairs && <p>{t('Find its match.')}</p>}
           {isSizeSort && (
@@ -644,6 +961,9 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
               <strong>{t('Small → Medium → Big')}</strong>
             </div>
           )}
+          <button className="secondary-button game-help-button" type="button" onClick={askForHelp} disabled={isCorrect}>
+            <Info size={18} /> {t('Help me')}
+          </button>
         </div>
         {isShapeSort ? (
           <div className="shape-sort-workspace">
@@ -670,7 +990,7 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
                       setDragOverChoice(null);
                     }}
                   >
-                    <ShapeIcon shape={piece.label} />
+                    <ShapeIcon shape={piece.label} colorVariant={piece.colorVariant} />
                     {activeShapePieceId === piece.id && <Check className="shape-sort-selected-icon" size={18} aria-hidden="true" />}
                   </button>
                 ))}
@@ -689,6 +1009,7 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
                       'shape-sort-drop-bin',
                       activeShapePieceId ? 'ready' : '',
                       dragOverChoice === bin.value ? 'drag-over' : '',
+                      hintedShapeBinValue === bin.value ? 'hinted' : '',
                       isCorrect ? 'correct' : ''
                     ].filter(Boolean).join(' ')}
                     disabled={isCorrect}
@@ -725,7 +1046,7 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
                             chooseShapePiece(piece);
                           }}
                         >
-                          <ShapeIcon shape={piece.label} />
+                          <ShapeIcon shape={piece.label} colorVariant={piece.colorVariant} />
                         </span>
                       ))}
                     </span>
@@ -767,7 +1088,9 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
                 {game.target.order.map((size, index) => {
                   const piece = sizeSlots[index];
                   const slotLabel = index === 0 ? 'Spot 1' : index === 1 ? 'Spot 2' : 'Spot 3';
-                  const shouldHint = !isCorrect && sizeSortChecked && sizeSortAttempts >= 2 && index === 0;
+                  const shouldHint = !isCorrect
+                    && showAnswerHint
+                    && (piece ? piece.value !== size : index === 0);
                   return (
                     <button
                       key={size}
@@ -781,8 +1104,15 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
                         isCorrect ? 'correct' : ''
                       ].filter(Boolean).join(' ')}
                       disabled={isCorrect}
+                      draggable={Boolean(piece) && !isCorrect}
                       aria-label={`${t(slotLabel)}: ${piece ? `${t(game.target.object)} ${t(piece.label)}` : t('Empty spot')}`}
                       onClick={() => chooseSizeSlot(index)}
+                      onDragStart={(event) => {
+                        if (!piece || isCorrect) return;
+                        event.dataTransfer.effectAllowed = 'move';
+                        event.dataTransfer.setData('text/plain', piece.id);
+                        setActiveSizePieceId(piece.id);
+                      }}
                       onDragOver={(event) => {
                         if (isCorrect) return;
                         event.preventDefault();
@@ -820,6 +1150,11 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
             <button className="primary-button size-sort-check-button" type="button" onClick={checkSizeOrder} disabled={!sizeSortFilled || isCorrect}>
               <Check size={18} /> {t('Check my order')}
             </button>
+            {sizeSortChecked && !isCorrect && (
+              <button className="secondary-button size-sort-check-button" type="button" onClick={changeSizeOrder}>
+                <RotateCcw size={18} /> {t('Change order')}
+              </button>
+            )}
           </div>
         ) : isSoundMatch ? (
           <button
@@ -847,10 +1182,12 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
                     ? 'target-card shape-sort-target-card'
                     : isMatchPairs
                       ? 'target-card pair-target-card'
+                      : isPictureWords
+                        ? 'target-card picture-word-target-card'
                       : 'target-card',
               isMatchPairs && isCorrect ? 'matched' : ''
             ].filter(Boolean).join(' ')}
-            aria-label={activity.title === 'Color Match' ? `Color card: ${game.target.label}` : isEmotionMatch ? `${t('What feeling is this?')} ${t(game.target.label)}` : isShapeSort ? `${t('Shape to sort')}: ${t(game.target.label)}` : isMatchPairs ? `${t('What goes with this?')} ${t(game.target.label)}` : undefined}
+            aria-label={activity.title === 'Color Match' ? `Color card: ${game.target.label}` : isEmotionMatch ? `${t('What feeling is this?')} ${t(game.target.label)}` : isShapeSort ? `${t('Shape to sort')}: ${t(game.target.label)}` : isMatchPairs ? `${t('What goes with this?')} ${t(game.target.label)}` : isPictureWords ? `${t('Choose the word for the picture.')} ${t(game.target.label)}` : undefined}
             style={activity.title === 'Color Match' ? { '--target-color': game.target.value } : undefined}
             draggable={isShapeSort && !isCorrect}
             onDragStart={(event) => {
@@ -881,26 +1218,30 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
             }}
           >
             {isShapeSort && <span className="eyebrow">{t('This shape')}</span>}
-            <GameTargetVisual activityTitle={activity.title} target={game.target} />
+            <GameTargetVisual activityTitle={activity.title} target={game.target} label={t(game.target.label)} />
             {isMatchPairs && <strong className="pair-object-label">{t(game.target.label)}</strong>}
           </div>
         )}
         {!isShapeSort && !isSizeSort && (
-        <div className={isSoundMatch ? 'game-choices sound-choice-grid' : isEmotionMatch ? 'game-choices emotion-choice-grid' : isShapeSort ? 'game-choices shape-sort-bin-grid' : isMatchPairs ? 'game-choices pair-choice-grid' : 'game-choices'}>
-          {choiceOrder.map((choice) => {
+        <div className={isSoundMatch ? 'game-choices sound-choice-grid' : isEmotionMatch ? 'game-choices emotion-choice-grid' : isShapeSort ? 'game-choices shape-sort-bin-grid' : isMatchPairs ? 'game-choices pair-choice-grid' : isPictureWords ? 'game-choices picture-word-choice-grid' : 'game-choices'}>
+          {visibleChoiceOrder.map((choice) => {
             const isSelectedChoice = selected?.label === choice.label;
             const isCorrectChoice = isSoundMatch && isCorrect && choice.value === game.target.value;
             const isEmotionCorrectChoice = isEmotionMatch && isCorrect && choice.value === game.target.value;
             const isShapeCorrectChoice = isShapeSort && isCorrect && choice.value === game.target.value;
             const isPairCorrectChoice = isMatchPairs && isCorrect && choice.value === game.target.value;
+            const isPictureWordCorrectChoice = isPictureWords && isCorrect && choice.value === game.target.value;
+            const isHintedChoice = showAnswerHint && !isCorrect && choice.value === game.target.value;
             const choiceClassName = [
               'game-choice',
               isSoundMatch ? 'sound-choice-card' : '',
               isEmotionMatch ? 'emotion-choice-card' : '',
               isShapeSort ? 'shape-sort-bin' : '',
               isMatchPairs ? 'pair-choice-card' : '',
+              isPictureWords ? 'picture-word-choice-card' : '',
               isSelectedChoice ? 'selected' : '',
-              (isCorrectChoice || isEmotionCorrectChoice || isShapeCorrectChoice || isPairCorrectChoice) ? 'correct' : '',
+              isHintedChoice ? 'hinted' : '',
+              (isCorrectChoice || isEmotionCorrectChoice || isShapeCorrectChoice || isPairCorrectChoice || isPictureWordCorrectChoice) ? 'correct' : '',
               (isSoundMatch || isEmotionMatch || isShapeSort || isMatchPairs) && isSelectedChoice && !isCorrect ? 'needs-retry' : '',
               isShapeSort && shapeDragging ? 'drag-ready' : '',
               isShapeSort && dragOverChoice === choice.value ? 'drag-over' : ''
@@ -937,16 +1278,17 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
                   chooseMatch(choice);
                 }}
               >
-                {!isEmotionMatch && <GameChoiceVisual activityTitle={activity.title} choice={choice} />}
-                {activity.title !== 'Letter Match' && <span>{t(choice.label)}</span>}
-                {(isCorrectChoice || isEmotionCorrectChoice || isShapeCorrectChoice || isPairCorrectChoice) && <Check className="choice-state-icon" size={22} aria-label={t('Great job!')} />}
+                {!isEmotionMatch && activity.title !== 'Color Match' && <GameChoiceVisual activityTitle={activity.title} choice={choice} label={t(choice.label)} />}
+                {activity.title !== 'Letter Match' && !isPictureWords && <span>{t(choice.label)}</span>}
+                {isHintedChoice && <Info className="choice-state-icon hint-icon" size={22} aria-label={t('Try this one')} />}
+                {(isCorrectChoice || isEmotionCorrectChoice || isShapeCorrectChoice || isPairCorrectChoice || isPictureWordCorrectChoice) && <Check className="choice-state-icon" size={22} aria-label={t('Great job!')} />}
                 {(isEmotionMatch || isShapeSort || isMatchPairs) && isSelectedChoice && !isCorrect && <span className="choice-state-icon selection-dot" aria-hidden="true" />}
               </button>
             );
           })}
         </div>
         )}
-        {(selected || sizeSortChecked || (isShapeSort && isCorrect)) && (
+        {(selected || sizeSortChecked || wrongAttempts > 0 || shouldShowSupportHint || (isShapeSort && isCorrect)) && (
           <div className={isCorrect ? 'game-feedback success' : 'game-feedback'} role="status" aria-live="polite">
             {isMatchPairs && isCorrect && (
               <div className="pair-success-link" aria-hidden="true">
@@ -966,17 +1308,20 @@ export function MatchGame({ activity, soundOff, onBack, onComplete }) {
                 {isCorrect ? <Check size={20} /> : isSoundMatch ? <Volume2 size={20} /> : <Info size={20} />}
               </span>
             )}
-            <strong>{t(isSizeSort ? (isCorrect ? 'Great job!' : 'Almost! Try again.') : isMatchPairs ? (isCorrect ? 'Great match!' : 'Try again.') : isSoundMatch || isEmotionMatch || isShapeSort ? (isCorrect ? 'Great job!' : 'Try again.') : (isCorrect ? 'Great match!' : 'Try one more time.'))}</strong>
+            {isCorrect && <RoundCelebration />}
+            <strong>{t(getFeedbackTitle())}</strong>
             <span>
-              {isSizeSort
-                ? t(isCorrect ? 'Small → Medium → Big' : getSizeSortHint())
+              {shouldShowSupportHint && !isCorrect
+                ? t(getHelpMessage())
+                : isSizeSort
+                ? t(getProgressiveHint())
                 : isEmotionMatch
-                ? (isCorrect ? `${t('That face is')} ${t(game.target.label).toLowerCase()}.` : t('Look at the face one more time.'))
+                ? (isCorrect ? getProgressiveHint() : t(getProgressiveHint()))
                 : isShapeSort
-                  ? t(isCorrect ? 'All shapes are in the right groups.' : 'Look at the shape.')
+                  ? t(getProgressiveHint())
                   : isMatchPairs
-                    ? t(isCorrect ? successDetail : (game.hint || retryDetail))
-                    : t(isSoundMatch ? (isCorrect ? successDetail : 'Listen one more time and choose again.') : (isCorrect ? successDetail : retryDetail))}
+                    ? t(getProgressiveHint())
+                    : t(getProgressiveHint())}
             </span>
             {isEmotionMatch && !isCorrect && <small>{t('Look at the mouth and eyes.')}</small>}
             {isShapeSort && !isCorrect && <small>{t('Move a shape to the matching group.')}</small>}
@@ -1004,12 +1349,14 @@ export function MemoryGame({ activity, profile, soundOff, onBack, onComplete }) 
   const t = useT();
   const language = useContext(LanguageContext);
   const startsWithImages = profile?.letters === 'Does not recognize letters';
+  const initialPairCount = getInitialMemoryPairCount(profile);
   const [mode, setMode] = useState(startsWithImages ? 'images' : 'words');
-  const [pairCount, setPairCount] = useState(2);
-  const [deck, setDeck] = useState(() => shuffleCards(createMemoryDeck(2)));
+  const [pairCount, setPairCount] = useState(initialPairCount);
+  const [deck, setDeck] = useState(() => shuffleCards(createMemoryDeck(initialPairCount)));
   const [flipped, setFlipped] = useState([]);
   const [matched, setMatched] = useState([]);
   const [completed, setCompleted] = useState(false);
+  const [lastMemoryMatch, setLastMemoryMatch] = useState(null);
   const complete = matched.length === deck.length;
   const matchedPairs = matched.length / 2;
   const memoryColumns = pairCount <= 2 ? 2 : pairCount <= 3 ? 3 : pairCount <= 8 ? 4 : 5;
@@ -1021,6 +1368,7 @@ export function MemoryGame({ activity, profile, soundOff, onBack, onComplete }) 
     setFlipped([]);
     setMatched([]);
     setCompleted(false);
+    setLastMemoryMatch(null);
   }
 
   function changePairCount(delta) {
@@ -1049,12 +1397,17 @@ export function MemoryGame({ activity, profile, soundOff, onBack, onComplete }) 
     if (nextFlipped.length === 2) {
       const pair = deck.filter((item) => nextFlipped.includes(item.id));
       if (pair[0].label === pair[1].label) {
+        playSoftCelebrationSound(soundOff);
         window.setTimeout(() => {
           setMatched((items) => [...items, pair[0].id, pair[1].id]);
+          setLastMemoryMatch(pair[0].label);
           setFlipped([]);
         }, 450);
       } else {
-        window.setTimeout(() => setFlipped([]), 800);
+        window.setTimeout(() => {
+          setLastMemoryMatch(null);
+          setFlipped([]);
+        }, 800);
       }
     }
   }
@@ -1110,6 +1463,7 @@ export function MemoryGame({ activity, profile, soundOff, onBack, onComplete }) 
             type="button"
             className={mode === 'words' ? 'mode-option active' : 'mode-option'}
             aria-pressed={mode === 'words'}
+            disabled={startsWithImages}
             onClick={() => resetGame('words')}
           >
             {t('Words')}
@@ -1137,8 +1491,10 @@ export function MemoryGame({ activity, profile, soundOff, onBack, onComplete }) 
             );
           })}
         </div>
-        <div className={complete ? 'game-feedback success' : 'game-feedback'}>
-          <strong>{complete ? t('All pairs found!') : `${matchedPairs} ${t('of')} ${pairCount} ${t('Pairs')}`}</strong>
+        <div className={complete || lastMemoryMatch ? 'game-feedback success' : 'game-feedback'}>
+          {lastMemoryMatch && <RoundCelebration label="+2" />}
+          <strong>{complete ? t('All pairs found!') : lastMemoryMatch ? t('Nice pair!') : `${matchedPairs} ${t('of')} ${pairCount} ${t('Pairs')}`}</strong>
+          {lastMemoryMatch && !complete && <span>{`${t('You found it!')} ${t(lastMemoryMatch)}.`}</span>}
         </div>
         {completed && (
           <GameCompleteActions onRepeat={() => resetGame()} onGames={onBack} />

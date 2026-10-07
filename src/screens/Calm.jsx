@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, Check, Droplets, Flower2, Leaf, RotateCcw, Volume2 } from 'lucide-react';
+import { ArrowLeft, RotateCcw, Sparkles, Star } from 'lucide-react';
 import { useT } from '../data/translations.js';
 import { getActivityDisplayTitle } from './Categories.jsx';
 
@@ -21,7 +21,7 @@ export function SensoryPlayActivity({ activity, soundOff, onBack, onComplete }) 
   const [bubbles, setBubbles] = useState(sensoryBubbleSeeds);
   const [waves, setWaves] = useState([]);
   const [waveSize, setWaveSize] = useState(190);
-  const [waveDuration, setWaveDuration] = useState(1.2);
+  const [waveDuration, setWaveDuration] = useState(2.4);
   const [waveAmount, setWaveAmount] = useState(1);
   const bubblePopAudioRef = useRef({ context: null, nodes: [] });
   const poppedBubbleIdsRef = useRef(new Set());
@@ -148,7 +148,7 @@ export function SensoryPlayActivity({ activity, soundOff, onBack, onComplete }) 
         color: sensoryWaveColors[Math.floor(Math.random() * sensoryWaveColors.length)]
       };
     });
-    setWaves((current) => [...current.slice(-(22 - waveAmount)), ...newWaves]);
+    setWaves((current) => [...current.slice(-(10 - waveAmount)), ...newWaves]);
   }
 
   function addWave(event) {
@@ -195,11 +195,11 @@ export function SensoryPlayActivity({ activity, soundOff, onBack, onComplete }) 
           </label>
           <label>
             <span>{t('Wave speed')}</span>
-            <input type="range" min="0.65" max="2.2" step="0.05" value={waveDuration} onChange={(event) => setWaveDuration(Number(event.target.value))} />
+            <input type="range" min="1.4" max="3.8" step="0.05" value={waveDuration} onChange={(event) => setWaveDuration(Number(event.target.value))} />
           </label>
           <label>
             <span>{t('Wave amount')}</span>
-            <input type="range" min="1" max="4" step="1" value={waveAmount} onChange={(event) => setWaveAmount(Number(event.target.value))} />
+            <input type="range" min="1" max="2" step="1" value={waveAmount} onChange={(event) => setWaveAmount(Number(event.target.value))} />
           </label>
         </div>
       )}

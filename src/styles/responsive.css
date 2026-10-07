@@ -182,19 +182,19 @@
   }
 
   .sensory-wave-controls {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .sensory-wave-controls label {
-    grid-template-columns: 1fr;
-    gap: 4px;
-    min-height: 48px;
-    padding: 6px;
+    grid-template-columns: minmax(86px, 0.34fr) minmax(0, 1fr);
+    gap: 10px;
+    min-height: 52px;
+    padding: 8px 10px;
   }
 
   .sensory-wave-controls span {
-    font-size: 0.68rem;
+    font-size: 0.78rem;
   }
 
   .topbar {
@@ -409,7 +409,8 @@
     height: 40px;
   }
 
-  .pair-choice-grid {
+  .pair-choice-grid,
+  .picture-word-choice-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

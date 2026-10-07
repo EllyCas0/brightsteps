@@ -115,6 +115,13 @@ function SimpleSpeechBoard({ activity, board, soundOff, onBack, onComplete }) {
   );
 }
 
+function CommunicationCardImage({ card, className }) {
+  if (card.imageSrc) {
+    return <img className={className} src={card.imageSrc} alt="" aria-hidden="true" />;
+  }
+  return <VisualAsset label={card.label} imageKey={card.image} className={className} fallback={false} />;
+}
+
 function CommunicationBoard({ activity, profile, soundOff, onBack, onComplete }) {
   const language = useContext(LanguageContext);
   const t = useT();
@@ -123,7 +130,10 @@ function CommunicationBoard({ activity, profile, soundOff, onBack, onComplete })
     : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const myVoiceSettings = useMemo(() => normalizeMyVoiceSettings(profile?.myVoice), [profile?.myVoice]);
   const configuredQuickCards = useMemo(
-    () => quickCommunicationCards.filter((card) => myVoiceSettings.enabledQuick.includes(card.label)),
+    () => [
+      ...quickCommunicationCards.filter((card) => myVoiceSettings.enabledQuick.includes(card.label)),
+      ...myVoiceSettings.customCards
+    ],
     [myVoiceSettings]
   );
   const fallbackCategories = useMemo(() => {
@@ -240,8 +250,8 @@ function CommunicationBoard({ activity, profile, soundOff, onBack, onComplete })
       {!!configuredQuickCards.length && (
         <div className="quick-communication-bar" aria-label={t('Quick communication')}>
           {configuredQuickCards.map((card) => (
-            <button key={card.label} type="button" onClick={() => chooseCard(card)}>
-              <VisualAsset label={card.label} imageKey={card.image} className="quick-card-image" fallback={false} />
+            <button key={card.id || card.label} type="button" onClick={() => chooseCard(card)}>
+              <CommunicationCardImage card={card} className="quick-card-image" />
               <span>{card.custom ? card.label : t(card.label)}</span>
             </button>
           ))}
@@ -333,7 +343,7 @@ function CommunicationBoard({ activity, profile, soundOff, onBack, onComplete })
                       className={card.prominent ? 'speech-card communication-card prominent' : 'speech-card communication-card'}
                       onClick={() => chooseCard(card)}
                     >
-                      <VisualAsset label={card.label} imageKey={card.image} className="speech-card-image communication-card-image" fallback={false} />
+                      <CommunicationCardImage card={card} className="speech-card-image communication-card-image" />
                       <strong>{card.custom ? card.label : t(card.label)}</strong>
                     </button>
                   ))}

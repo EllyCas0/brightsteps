@@ -312,6 +312,7 @@ export function GuidedActivity({ activity, config, soundOff, onBack, onComplete,
   const language = useContext(LanguageContext);
   const [mediaMode, setMediaMode] = useState('images');
   const [selected, setSelected] = useState(null);
+  const [choiceRoundIndex, setChoiceRoundIndex] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
   const [breaths, setBreaths] = useState(0);
   const [countIndex, setCountIndex] = useState(0);
@@ -340,6 +341,7 @@ export function GuidedActivity({ activity, config, soundOff, onBack, onComplete,
 
   useEffect(() => {
     setSelected(null);
+    setChoiceRoundIndex(0);
     setStepIndex(0);
     setBreaths(0);
     setCountIndex(0);
@@ -389,7 +391,11 @@ export function GuidedActivity({ activity, config, soundOff, onBack, onComplete,
   useEffect(() => () => stopYogaHum(), []);
   useEffect(() => () => stopBreathSound(), []);
 
-  const choicesDone = config.type === 'choices' && selected === config.correct;
+  const choiceRounds = config.type === 'choices' ? (config.rounds || [config]) : [];
+  const currentChoiceRound = choiceRounds[choiceRoundIndex] || choiceRounds[0] || config;
+  const isLastChoiceRound = choiceRoundIndex >= choiceRounds.length - 1;
+  const choiceComplete = config.type === 'choices' && selected === currentChoiceRound.correct;
+  const choicesDone = choiceComplete && isLastChoiceRound;
   const stepsDone = ['steps', 'script', 'turns'].includes(config.type) && stepIndex >= (config.steps || config.lines || config.turns).length;
   const breathDone = config.type === 'breath' && breaths >= 3;
   const countDone = config.type === 'count' && countIndex >= (config.items || []).length;
@@ -677,14 +683,19 @@ export function GuidedActivity({ activity, config, soundOff, onBack, onComplete,
         {config.type === 'choices' && (
           <>
             <div className="target-card">
-              <VisualAsset label={config.visual} className="target-image" />
+              <VisualAsset label={currentChoiceRound.visual} className="target-image" />
             </div>
             <div className="game-choices">
-              {config.choices.map((choice) => (
+              {currentChoiceRound.choices.map((choice) => (
                 <button
                   key={choice}
                   type="button"
-                  className={selected === choice ? 'game-choice selected' : 'game-choice'}
+                  className={[
+                    'game-choice',
+                    selected === choice ? 'selected' : '',
+                    choiceComplete && choice === currentChoiceRound.correct ? 'correct' : ''
+                  ].filter(Boolean).join(' ')}
+                  disabled={choiceComplete}
                   onClick={() => {
                     setSelected(choice);
                     if (shouldSpeakActions) speakText(t(choice));
@@ -692,6 +703,7 @@ export function GuidedActivity({ activity, config, soundOff, onBack, onComplete,
                 >
                   <VisualAsset label={choice} className="choice-image" fallback={false} />
                   {t(choice)}
+                  {choiceComplete && choice === currentChoiceRound.correct && <Check className="choice-state-icon" size={22} aria-label={t('Great job!')} />}
                 </button>
               ))}
             </div>
@@ -779,12 +791,11 @@ export function GuidedActivity({ activity, config, soundOff, onBack, onComplete,
 
         {config.type === 'breath' && (
           <div className="breath-practice guided-breath-practice">
-            <div className="breath-stage" aria-label={t('Breath guide')}>
+            <div className="breath-stage" aria-label={t(currentBreathPhase.label)}>
               <div className="breath-ring" aria-hidden="true">
                 <div className="breath-ring-inner" />
               </div>
               <div className="breath-phase">
-                <span>{t(currentBreathPhase.key)}</span>
                 <strong>{t(currentBreathPhase.label)}</strong>
               </div>
             </div>
@@ -841,9 +852,21 @@ export function GuidedActivity({ activity, config, soundOff, onBack, onComplete,
         )}
 
         {(selected || done) && (
-          <div className={done ? 'game-feedback success' : 'game-feedback'}>
-            <strong>{t(done ? 'Nice work!' : 'Keep trying.')}</strong>
-            <span>{t(done ? 'Activity complete.' : 'Try the matching answer or next step.')}</span>
+          <div className={done || choiceComplete ? 'game-feedback success' : 'game-feedback'}>
+            <strong>{t(done || choiceComplete ? 'Nice work!' : 'Keep trying.')}</strong>
+            <span>{t(done ? 'Activity complete.' : choiceComplete ? 'You found the right answer.' : 'Try the matching answer or next step.')}</span>
+            {choiceComplete && !isLastChoiceRound && (
+              <button
+                className="primary-button"
+                type="button"
+                onClick={() => {
+                  setSelected(null);
+                  setChoiceRoundIndex((index) => Math.min(index + 1, choiceRounds.length - 1));
+                }}
+              >
+                {t('Next round')} <ChevronRight size={18} />
+              </button>
+            )}
           </div>
         )}
 
@@ -851,6 +874,7 @@ export function GuidedActivity({ activity, config, soundOff, onBack, onComplete,
           <GameCompleteActions
             onRepeat={() => {
               setSelected(null);
+              setChoiceRoundIndex(0);
               setStepIndex(0);
               setBreaths(0);
               setCountIndex(0);
@@ -867,6 +891,7 @@ export function GuidedActivity({ activity, config, soundOff, onBack, onComplete,
         <div className="form-actions">
           <button className="secondary-button" type="button" onClick={() => {
             setSelected(null);
+            setChoiceRoundIndex(0);
             setStepIndex(0);
             setBreaths(0);
             setCountIndex(0);
