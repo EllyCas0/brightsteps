@@ -413,8 +413,8 @@ function AvatarPicker({ value, onChange }) {
             aria-pressed={value === option.key}
             onClick={() => onChange(option.key)}
           >
-            <Avatar avatar={option.key} name={option.label} size="large" />
-            <strong>{option.label}</strong>
+            <Avatar avatar={option.key} name={t(option.label)} size="large" />
+            <strong>{t(option.label)}</strong>
           </button>
         ))}
       </div>

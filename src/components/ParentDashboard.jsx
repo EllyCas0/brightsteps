@@ -271,7 +271,7 @@ export function ParentDashboard({ profile, profiles, progress, personalization, 
         <DashboardPanel title="Child Profile" icon={<Baby />}>
           <div className="profile-avatar-row">
             <Avatar avatar={profile?.avatar} name={profile?.name || 'Child'} size="medium" />
-            <strong>{avatarOptions.find((option) => option.key === profile?.avatar)?.label || 'Avatar'}</strong>
+            <strong>{t(avatarOptions.find((option) => option.key === profile?.avatar)?.label || 'Avatar')}</strong>
           </div>
           <InfoRow label="Age" value={profile?.age} />
           <InfoRow label="Support" value={profile?.supportLevel} />
@@ -307,7 +307,7 @@ export function ParentDashboard({ profile, profiles, progress, personalization, 
           <TagList items={progress.todayActivities.length ? progress.todayActivities : ['No activities today']} />
         </DashboardPanel>
         <DashboardPanel title="Mood Log" icon={<Moon />}>
-          <TagList items={progress.moodLog.length ? progress.moodLog.map((item) => `${item.mood} at ${item.time}`) : ['No mood check yet']} />
+          <TagList items={progress.moodLog.length ? progress.moodLog.map((item) => `${t(item.mood)} ${language === 'es' ? 'a las' : 'at'} ${item.time}`) : ['No mood check yet']} />
         </DashboardPanel>
         <DashboardPanel title="Completed Activities" icon={<Check />}>
           <TagList items={progress.completed} />
