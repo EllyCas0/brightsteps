@@ -650,8 +650,7 @@ h2 {
   height: clamp(92px, 15vw, 132px);
   padding: 8px;
   border-radius: 24px;
-  background: #fffdf6;
-  box-shadow: 0 4px 0 rgba(17, 45, 68, 0.12);
+  background: transparent;
   overflow: hidden;
 }
 
