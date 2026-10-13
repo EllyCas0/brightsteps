@@ -83,7 +83,7 @@ export const choiceSets = {
 export const defaultProgress = {
   completed: [],
   practiced: [],
-  counts: { learn: 3, daily: 2, speech: 0, social: 1, play: 4, calm: 2 },
+  counts: { learn: 0, daily: 0, speech: 0, social: 0, play: 0, calm: 0 },
   moodLog: [],
   rewardStars: 2,
   todayDone: false,
