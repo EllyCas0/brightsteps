@@ -17,7 +17,7 @@ export const backgroundTopics = [
   { id: 'dragons', label: 'Dragons', image: dragonsBackground, iconImage: dragonsIcon, tint: 'rgba(242, 240, 255, 0.78)' },
   { id: 'flowers', label: 'Flowers', image: flowersBackground, iconImage: flowersIcon, tint: 'rgba(255, 240, 246, 0.78)' },
   { id: 'rockets', label: 'Rockets', image: rocketsBackground, iconImage: rocketsIcon, tint: 'rgba(234, 246, 254, 0.78)' },
-  { id: 'unicorns', label: 'Unicorns', image: unicornsBackground, iconImage: unicornsIcon, tint: 'rgba(248, 240, 255, 0.78)' }
+  { id: 'unicorns', label: 'Unicorns', image: unicornsBackground, iconImage: unicornsIcon, tint: 'rgba(242, 240, 255, 0.78)' }
 ];
 
 export function getBackgroundTopic(topicId) {

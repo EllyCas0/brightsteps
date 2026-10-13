@@ -3,32 +3,32 @@ export const activityGames = {
     rounds: [
       {
         prompt: 'Pick the color that matches the big card.',
-        target: { label: 'Red', value: '#ef7464' },
+        target: { label: 'Red', value: '#FF6658' },
         choices: [
-          { label: 'Red', value: '#ef7464' },
-          { label: 'Blue', value: '#4f8ecb' },
-          { label: 'Green', value: '#78a85f' },
-          { label: 'Yellow', value: '#f0b84b' }
+          { label: 'Red', value: '#FF6658' },
+          { label: 'Blue', value: '#69B9F4' },
+          { label: 'Green', value: '#69C77B' },
+          { label: 'Yellow', value: '#FFD052' }
         ]
       },
       {
         prompt: 'Pick the color that matches the big card.',
-        target: { label: 'Blue', value: '#4f8ecb' },
+        target: { label: 'Blue', value: '#69B9F4' },
         choices: [
-          { label: 'Yellow', value: '#f0b84b' },
-          { label: 'Green', value: '#78a85f' },
-          { label: 'Blue', value: '#4f8ecb' },
-          { label: 'Red', value: '#ef7464' }
+          { label: 'Yellow', value: '#FFD052' },
+          { label: 'Green', value: '#69C77B' },
+          { label: 'Blue', value: '#69B9F4' },
+          { label: 'Red', value: '#FF6658' }
         ]
       },
       {
         prompt: 'Pick the color that matches the big card.',
-        target: { label: 'Green', value: '#78a85f' },
+        target: { label: 'Green', value: '#69C77B' },
         choices: [
-          { label: 'Green', value: '#78a85f' },
-          { label: 'Red', value: '#ef7464' },
-          { label: 'Yellow', value: '#f0b84b' },
-          { label: 'Blue', value: '#4f8ecb' }
+          { label: 'Green', value: '#69C77B' },
+          { label: 'Red', value: '#FF6658' },
+          { label: 'Yellow', value: '#FFD052' },
+          { label: 'Blue', value: '#69B9F4' }
         ]
       }
     ]

@@ -4,16 +4,16 @@ import { useT } from '../data/translations.js';
 import { getActivityDisplayTitle } from './Categories.jsx';
 
 const sensoryBubbleSeeds = [
-  { id: 1, x: 12, y: 18, size: 74, color: '#84d9ff' },
-  { id: 2, x: 32, y: 34, size: 92, color: '#c9f27c' },
-  { id: 3, x: 58, y: 18, size: 68, color: '#ffcf70' },
-  { id: 4, x: 78, y: 40, size: 104, color: '#f6a6ff' },
-  { id: 5, x: 20, y: 68, size: 98, color: '#8ef0d1' },
-  { id: 6, x: 48, y: 64, size: 78, color: '#9fb9ff' },
-  { id: 7, x: 72, y: 72, size: 86, color: '#ff9aa2' }
+  { id: 1, x: 12, y: 18, size: 74, color: '#69B9F4' },
+  { id: 2, x: 32, y: 34, size: 92, color: '#FFD052' },
+  { id: 3, x: 58, y: 18, size: 68, color: '#FFD052' },
+  { id: 4, x: 78, y: 40, size: 104, color: '#F2F0FF' },
+  { id: 5, x: 20, y: 68, size: 98, color: '#69D3C1' },
+  { id: 6, x: 48, y: 64, size: 78, color: '#A88BE8' },
+  { id: 7, x: 72, y: 72, size: 86, color: '#F786B3' }
 ];
 
-const sensoryWaveColors = ['#74d6ff', '#a7f070', '#ffd166', '#f8a5ff', '#8ef0d1', '#b5a7ff'];
+const sensoryWaveColors = ['#69B9F4', '#69C77B', '#FFD052', '#F2F0FF', '#69D3C1', '#A88BE8'];
 
 export function SensoryPlayActivity({ activity, soundOff, onBack, onComplete }) {
   const t = useT();
