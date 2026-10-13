@@ -1,6 +1,16 @@
 import learnNavigationImage from '../assets/navigation/learn.webp';
 import communicationNavigationImage from '../assets/navigation/communication.webp';
 import gamesNavigationImage from '../assets/navigation/games.webp';
+import musicImage from '../assets/images/communication/music.webp';
+import eatImage from '../assets/images/communication/eat.webp';
+import foodImage from '../assets/images/communication/food.webp';
+import drinkImage from '../assets/images/communication/drink.webp';
+import helpImage from '../assets/images/communication/help.webp';
+import yesImage from '../assets/images/communication/yes.webp';
+import noImage from '../assets/images/communication/no.webp';
+import stopImage from '../assets/images/communication/stop.webp';
+import moreImage from '../assets/images/communication/more.webp';
+import againImage from '../assets/images/communication/again.webp';
 import angryFaceImage from '../assets/images/emotions/angry-face.webp';
 import appleImage from '../assets/images/objects/apple.webp';
 import backpackImage from '../assets/images/objects/backpack.webp';
@@ -168,15 +178,15 @@ export const imageAssets = {
   Excited: excitedFaceImage,
   FEEL: happyFaceImage,
   FLOWER: flowerImage,
-  Food: cupImage,
-  'Fast food': cupImage,
+  Food: foodImage,
+  'Fast food': foodImage,
   Flower: flowerImage,
   Green: flowerImage,
   HAPPY: happyFaceImage,
   Happy: happyFaceImage,
   Heart: heartImage,
-  Help: needsBoardImage,
-  HELP: needsBoardImage,
+  Help: helpImage,
+  HELP: helpImage,
   HI: happyFaceImage,
   House: houseImage,
   house: houseImage,
@@ -184,7 +194,7 @@ export const imageAssets = {
   lion: lionImage,
   Mad: angryFaceImage,
   'Memory Cards': memoryMatchImage,
-  More: needsBoardImage,
+  More: moreImage,
   'Morning Routine': sunImage,
   Moon: calmImage,
   M: heartImage,
@@ -254,18 +264,19 @@ export const imageAssets = {
   'I need': needsBoardImage,
   'I feel': happyFaceImage,
   'Love & Space': loveAndSpaceImage,
-  'More please': needsBoardImage,
+  'More please': moreImage,
   'All done': doneImage,
   'Something Hurts': somethingHurtsImage,
-  Eat: cupImage,
-  Drink: waterImage,
+  Eat: eatImage,
+  Drink: drinkImage,
+  Music: musicImage,
   Play: toysImage,
-  Yes: doneImage,
-  No: angryFaceImage,
+  Yes: yesImage,
+  No: noImage,
   Break: breakImage,
   Toy: toysImage,
-  Again: doneImage,
-  Stop: angryFaceImage,
+  Again: againImage,
+  Stop: stopImage,
   First: sunImage,
   Then: doneImage,
   Please: heartImage,

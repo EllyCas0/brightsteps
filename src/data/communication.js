@@ -20,7 +20,7 @@ export const communicationCategories = [
       { label: 'Water', image: 'Water', sentence: 'I want water.' },
       { label: 'Eat', image: 'Eat', sentence: 'I want to eat.' },
       { label: 'Toy', image: 'Toy', sentence: 'I want a toy.' },
-      { label: 'Music', image: 'Sound + Picture', sentence: 'I want music.' },
+      { label: 'Music', image: 'Music', sentence: 'I want music.' },
       { label: 'Outside', image: 'Sun', sentence: 'I want to go outside.' },
       { label: 'Play', image: 'Play', sentence: 'I want to play.' },
       { label: 'Drink', image: 'Drink', sentence: 'I want a drink.' },
@@ -37,7 +37,7 @@ export const communicationCategories = [
       { label: 'Break', image: 'Break', sentence: 'I need a break.', followUp: 'break' },
       { label: 'Bathroom', image: 'Bathroom', sentence: 'I need the bathroom.' },
       { label: 'Water', image: 'Water', sentence: 'I need water.' },
-      { label: 'Food', image: 'Eat', sentence: 'I need food.' },
+      { label: 'Food', image: 'Food', sentence: 'I need food.' },
       { label: 'Quiet', image: 'Calm Break', sentence: 'I need quiet.' },
       { label: 'Rest', image: 'Sleep', sentence: 'I need rest.' },
       { label: 'Caregiver', image: 'Thank you', sentence: 'I need my caregiver.' }
@@ -92,7 +92,7 @@ export const communicationCategories = [
     cards: [
       { label: 'I Like', image: 'Thank you', sentence: 'I like this.' },
       { label: "I Don't Like", image: 'Stop', sentence: "I don't like this." },
-      { label: 'Music', image: 'Sound + Picture', sentence: 'I like music.' },
+      { label: 'Music', image: 'Music', sentence: 'I like music.' },
       { label: 'Loud Sounds', image: 'Worried', sentence: "I don't like loud sounds." },
       { label: 'This', image: 'Choice Board', sentence: "I don't like this." },
       { label: 'Outside', image: 'Sun', sentence: 'I like outside.' },
@@ -234,7 +234,7 @@ export const communicationCategories = [
     cards: [
       { label: 'I choose this', image: 'Choice Board', sentence: 'I choose this.' },
       { label: 'Blue one', image: 'Water', sentence: 'I choose the blue one.' },
-      { label: 'Music', image: 'Sound + Picture', sentence: 'I choose music.' },
+      { label: 'Music', image: 'Music', sentence: 'I choose music.' },
       { label: 'Outside', image: 'Sun', sentence: 'I choose outside.' },
       { label: 'Toy', image: 'Toy', sentence: 'I choose the toy.' },
       { label: 'Quiet', image: 'Calm Break', sentence: 'I choose quiet.' }
