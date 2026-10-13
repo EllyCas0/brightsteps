@@ -305,7 +305,7 @@ export default function App() {
             <button className="brand-copy" type="button" onClick={() => setScreen('home')} aria-label={translateText('Go home', language)}>
               <strong>BrightSteps</strong>
             </button>
-            <span className="deploy-version" aria-label="Deploy version 0.3.3">Deploy v0.3.3</span>
+            <span className="deploy-version" aria-label={language === 'es' ? 'Versión publicada 0.4' : 'Deploy version 0.4'}>{language === 'es' ? 'Versión 0.4' : 'Deploy v0.4'}</span>
           </div>
           <div className="topbar-actions">
             <LanguageSwitcher value={language} onChange={updateLanguage} />
