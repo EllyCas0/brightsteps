@@ -4,12 +4,12 @@ import dragonsBackground from '../assets/backgrounds-by-topic/dragons.webp';
 import flowersBackground from '../assets/backgrounds-by-topic/flowers.webp';
 import rocketsBackground from '../assets/backgrounds-by-topic/rockets.webp';
 import unicornsBackground from '../assets/backgrounds-by-topic/unicorns.webp';
-import carsIcon from '../assets/cars.png';
-import dinosIcon from '../assets/dinos.png';
-import dragonsIcon from '../assets/dragons.png';
-import flowersIcon from '../assets/flowers.png';
-import rocketsIcon from '../assets/rockets.png';
-import unicornsIcon from '../assets/unicorns.png';
+import carsIcon from '../assets/theme-icons/cars.png';
+import dinosIcon from '../assets/theme-icons/dinos.png';
+import dragonsIcon from '../assets/theme-icons/dragons.png';
+import flowersIcon from '../assets/theme-icons/flowers.png';
+import rocketsIcon from '../assets/theme-icons/rockets.png';
+import unicornsIcon from '../assets/theme-icons/unicorns.png';
 
 export const backgroundTopics = [
   { id: 'cars', label: 'Cars', image: carsBackground, iconImage: carsIcon, tint: 'rgba(234, 246, 254, 0.78)' },

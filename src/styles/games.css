@@ -1679,27 +1679,54 @@
   background: rgba(255, 252, 245, 0.72);
 }
 
+.game-complete-dialog {
+  width: min(540px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: 0 24px 80px rgba(17, 45, 68, 0.25);
+}
+
+.game-complete-dialog::backdrop {
+  background: rgba(17, 45, 68, 0.46);
+}
+
 .game-complete-card {
   display: grid;
   justify-items: center;
-  gap: 14px;
-  padding: clamp(18px, 4vw, 26px);
+  gap: 24px;
+  padding: clamp(24px, 6vw, 44px);
   border: 2px solid rgba(234, 178, 69, 0.42);
-  border-radius: 8px;
+  border-radius: 24px;
   color: var(--ink);
   background: var(--bg-yellow);
   text-align: center;
   box-shadow: 0 12px 28px rgba(40, 48, 58, 0.08);
 }
 
-.game-complete-card strong {
+.game-complete-card h2 {
+  margin: 0;
   font-size: clamp(1.8rem, 5vw, 3rem);
   line-height: 1.05;
 }
 
 .game-complete-card .form-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
   width: min(420px, 100%);
   margin-top: 0;
+}
+
+.game-complete-card .form-actions button {
+  width: 100%;
+  min-height: 60px;
+  justify-content: center;
+  font-size: 1.15rem;
 }
 
 .game-complete-star {

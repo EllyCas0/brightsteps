@@ -3,7 +3,7 @@ import { ArrowLeft, BookOpen, Check, ChevronRight, HeartHandshake, Leaf, Message
 import { useT } from '../data/translations.js';
 import { VisualAsset } from '../components/VisualAsset.jsx';
 import { asArray } from '../lib/collections.js';
-import { activities, categoryLabels, learnedSkillActivityMap, learnSections } from '../data/appData.jsx';
+import { activities, categoryLabels, learnedSkillActivityMap, learnSections } from '../data/catalog.js';
 
 export function getActivityDisplayTitle(activity) {
   return activity?.displayTitle || activity?.title || '';

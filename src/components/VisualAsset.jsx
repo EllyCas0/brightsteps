@@ -1,4 +1,4 @@
-import { getImageAsset } from '../data/appData.jsx';
+import { getImageAsset } from '../data/imageAssets.js';
 import { defaultProfile } from '../data/profileCore.js';
 
 export function VisualAsset({ label, imageKey, className = 'visual-image', fallback = true }) {

@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { useT } from '../data/translations.js';
-import { speechBoards, guidedActivities } from '../data/appData.jsx';
+import { speechBoards } from '../data/speechBoards.js';
+import { guidedActivities } from '../data/guidedActivities.js';
 
 const CalmSoundActivity = lazy(() => import('../components/calm/CalmSounds.jsx').then((module) => ({ default: module.CalmSoundActivity })));
 const SensoryPlayActivity = lazy(() => import('./Calm.jsx').then((module) => ({ default: module.SensoryPlayActivity })));

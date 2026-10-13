@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { BookOpen, Hand, MessageSquare, Puzzle, Star } from 'lucide-react';
+import { Hand, Star } from 'lucide-react';
 import { LanguageContext, useT } from '../data/translations.js';
 import { Avatar, VisualAsset } from '../components/VisualAsset.jsx';
 import { speak } from '../lib/speech.js';
@@ -9,9 +9,9 @@ export function ChildHome({ profile, activeAvatar, progress, isFirstHomeVisit, s
   const language = useContext(LanguageContext);
   const [moodPickerOpen, setMoodPickerOpen] = useState(!progress.moodLog[0]?.mood);
   const cards = [
-    { id: 'learn', label: 'Learn', icon: <BookOpen />, tone: 'mint' },
-    { id: 'speech', label: 'Communication', icon: <MessageSquare />, tone: 'aqua' },
-    { id: 'play', label: 'Games', icon: <Puzzle />, tone: 'sky' }
+    { id: 'learn', label: 'Learn', image: 'Navigation Learn', tone: 'mint' },
+    { id: 'speech', label: 'Communication', image: 'Navigation Communication', tone: 'aqua' },
+    { id: 'play', label: 'Games', image: 'Navigation Games', tone: 'sky' }
   ];
   const moodOptions = [
     { face: ':)', label: 'Happy', image: 'Happy' },
@@ -96,11 +96,14 @@ export function ChildHome({ profile, activeAvatar, progress, isFirstHomeVisit, s
           {cards.map((card) => (
             <button
               key={card.id}
-              className={`big-card ${card.tone}`}
+              type="button"
+              className={`big-card home-choice-card ${card.tone}`}
               onClick={card.id === 'speech' ? onSpeechTable : card.id === 'learn' ? onLearn : () => setScreen(card.id)}
             >
-              {card.icon}
-              <span>{t(card.label)}</span>
+              <span className="home-choice-picture" aria-hidden="true">
+                <VisualAsset imageKey={card.image} className="home-choice-image" fallback={false} />
+              </span>
+              <span>{t(card.label).toLocaleUpperCase(language)}</span>
             </button>
           ))}
         </div>

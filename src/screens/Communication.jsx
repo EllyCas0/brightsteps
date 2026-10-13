@@ -216,7 +216,6 @@ function CommunicationBoard({ activity, profile, soundOff, onBack, onComplete })
             <h1>{t('My Voice')}</h1>
             <span className="communication-title-icon" aria-hidden="true"><MessageSquare size={26} /></span>
           </div>
-          <p>{t('Tap pictures to tell us what you want to say')}</p>
         </div>
         <button className="icon-button communication-finish-button" type="button" disabled={!lastSpoken} onClick={onComplete} aria-label={t('Finish')}>
           <Check />

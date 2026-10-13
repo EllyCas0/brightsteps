@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Check } from 'lucide-react';
 import { useT } from '../data/translations.js';
 import { backgroundTopics, getBackgroundTopic } from '../data/backgroundTopics.jsx';
-import backgroundIcon from '../assets/icon_background.png';
-import defaultBackgroundIcon from '../assets/default.png';
+import backgroundIcon from '../assets/theme-icons/icon_background.png';
+import defaultBackgroundIcon from '../assets/theme-icons/default.png';
 
 export function BackgroundTopicPicker({ value, onChange }) {
   const t = useT();

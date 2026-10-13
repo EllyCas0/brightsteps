@@ -3,7 +3,7 @@ import { ArrowLeft, ChevronRight, HeartHandshake, ListChecks, Pause, Play, Rotat
 import { LanguageContext, useT } from '../data/translations.js';
 import { speak } from '../lib/speech.js';
 import { VisualAsset } from '../components/VisualAsset.jsx';
-import { lessonSteps, shoeLessonIntro } from '../data/appData.jsx';
+import { lessonSteps, shoeLessonIntro } from '../data/lessons.js';
 import { MediaToggle } from './MediaToggle.jsx';
 
 export function ShoeLesson({ onBack, onComplete }) {

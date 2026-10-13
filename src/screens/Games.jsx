@@ -1,3 +1,4 @@
+import { GameCompleteActions } from '../components/GameCompleteDialog.jsx';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Banana, Bed, Bone, Car, Cat as CatIcon, Check, ChevronRight, CupSoda, Delete, Droplets, FileText, Flame, Flower2, HeartHandshake, Info, KeyRound, LockKeyhole, Minus, Pencil, Plus, Puzzle, RotateCcw, Rocket, Smile, Star, Umbrella, Volume2 } from 'lucide-react';
 import { LanguageContext, useT } from '../data/translations.js';
@@ -5,7 +6,8 @@ import { speak } from '../lib/speech.js';
 import { VisualAsset } from '../components/VisualAsset.jsx';
 import { MediaToggle } from './MediaToggle.jsx';
 import { getActivityDisplayTitle } from './Categories.jsx';
-import { activityGames, createMemoryDeck, getImageAsset, shuffleCards } from '../data/appData.jsx';
+import { activityGames, createMemoryDeck, shuffleCards } from '../data/games.js';
+import { getImageAsset } from '../data/imageAssets.js';
 
 const shapeSortColorVariants = ['coral', 'blue', 'gold', 'plum', 'leaf', 'pink', 'orange', 'aqua'];
 
@@ -318,29 +320,6 @@ function getInitialMemoryPairCount(profile) {
   if (getProfileText(profile, 'numbers') === 'Recognizes numbers beyond 10') return 4;
   if (getProfileText(profile, 'numbers') === 'Recognizes numbers 1-10') return 3;
   return 2;
-}
-
-export function GameCompleteActions({ onRepeat, onGames, onNext, backLabel = 'Back to Games', nextLabel = 'Next story' }) {
-  const t = useT();
-  return (
-    <div className="game-complete-card" aria-live="polite">
-      <div className="celebration-star game-complete-star"><Star /></div>
-      <strong>{t('Good job!')}</strong>
-      <div className="form-actions">
-        <button className="secondary-button" type="button" onClick={onRepeat}>
-          <RotateCcw size={18} /> {t('Repeat')}
-        </button>
-        <button className={onNext ? 'secondary-button' : 'primary-button'} type="button" onClick={onGames}>
-          <Puzzle size={18} /> {t(backLabel)}
-        </button>
-        {onNext && (
-          <button className="primary-button" type="button" onClick={onNext}>
-            {t(nextLabel)} <ChevronRight size={18} />
-          </button>
-        )}
-      </div>
-    </div>
-  );
 }
 
 function getGameRounds(activityTitle, activityIcon) {
@@ -1508,4 +1487,3 @@ export function MemoryGame({ activity, profile, soundOff, onBack, onComplete }) 
     </section>
   );
 }
-

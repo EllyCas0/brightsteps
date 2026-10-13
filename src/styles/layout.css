@@ -636,6 +636,33 @@ h2 {
   height: 46px;
 }
 
+.activity-choice-section .home-choice-card {
+  gap: 12px;
+  padding: 18px 12px;
+  border-radius: 20px;
+  color: #fff;
+}
+
+.home-choice-picture {
+  display: grid;
+  place-items: center;
+  width: clamp(92px, 15vw, 132px);
+  height: clamp(92px, 15vw, 132px);
+  padding: 8px;
+  border-radius: 24px;
+  background: #fffdf6;
+  box-shadow: 0 4px 0 rgba(17, 45, 68, 0.12);
+  overflow: hidden;
+}
+
+.home-choice-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
 .big-card span,
 .aac-row button {
   overflow-wrap: anywhere;

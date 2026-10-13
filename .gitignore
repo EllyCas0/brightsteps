@@ -15,3 +15,7 @@ release/
 .codex-*.out
 .codex-*.err
 *.tar.gz
+
+# Local Vite server logs
+vite.stdout.log
+vite.stderr.log

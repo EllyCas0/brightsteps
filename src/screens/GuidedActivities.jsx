@@ -6,7 +6,7 @@ import { speak } from '../lib/speech.js';
 import { VisualAsset } from '../components/VisualAsset.jsx';
 import { MediaToggle } from './MediaToggle.jsx';
 import { getActivityDisplayTitle } from './Categories.jsx';
-import { GameCompleteActions } from './Games.jsx';
+import { GameCompleteActions } from '../components/GameCompleteDialog.jsx';
 
 export function SocialStory({ activity, config, soundOff, onBack, onComplete, onNextStory }) {
   const t = useT();

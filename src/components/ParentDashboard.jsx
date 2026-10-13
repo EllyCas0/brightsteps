@@ -1,7 +1,9 @@
 import { useContext, useState } from 'react';
 import { Baby, Brain, Check, ChevronRight, HeartHandshake, Info, Lock, MessageSquare, Moon, Palette, Plus, RotateCcw, Shield, Sparkles, Star, Trash2 } from 'lucide-react';
 import { LanguageContext, useT } from '../data/translations.js';
-import { avatarOptions, categoryLabels, resources } from '../data/appData.jsx';
+import { avatarOptions } from '../data/profileCore.js';
+import { categoryLabels } from '../data/catalog.js';
+import { resources } from '../data/resources.js';
 import { communicationCategories, normalizeMyVoiceSettings, quickCommunicationCards } from '../data/communication.js';
 import { asArray, asChoiceArray } from '../lib/collections.js';
 import { Avatar } from './VisualAsset.jsx';
