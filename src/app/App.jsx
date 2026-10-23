@@ -78,6 +78,14 @@ export default function App() {
   const hasNextSocialStory = activeSocialIndex >= 0 && activeSocialIndex < socialStoryTitles.length - 1;
 
   useEffect(() => {
+    if (screen !== 'parents') setParentUnlocked(false);
+  }, [screen]);
+
+  useEffect(() => {
+    if (soundOff) window.speechSynthesis?.cancel();
+  }, [soundOff]);
+
+  useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, [screen]);
 
@@ -407,6 +415,7 @@ export default function App() {
         )}
         {screen === 'shoeLesson' && (
           <ShoeLesson
+            soundOff={soundOff}
             onBack={() => setScreen('learn')}
             onComplete={() => {
               completeActivity('Tie Shoes', 'daily');
@@ -428,6 +437,10 @@ export default function App() {
                 setScreen('onboarding');
               }}
               onReset={() => {
+                const resetMessage = language === 'es'
+                  ? '¿Borrar todos los perfiles de niños y su progreso? También se borrarán los mensajes personalizados y las preferencias guardadas. Esta acción no se puede deshacer.'
+                  : 'Delete all child profiles and their progress? Custom messages and saved preferences will also be deleted. This cannot be undone.';
+                if (!window.confirm(resetMessage)) return;
                 localStorage.removeItem(STORAGE_KEY);
                 localStorage.removeItem(PROFILES_KEY);
                 localStorage.removeItem(ACTIVE_PROFILE_KEY);

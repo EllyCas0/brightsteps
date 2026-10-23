@@ -6,7 +6,7 @@ import { VisualAsset } from '../components/VisualAsset.jsx';
 import { lessonSteps, shoeLessonIntro } from '../data/lessons.js';
 import { MediaToggle } from './MediaToggle.jsx';
 
-export function ShoeLesson({ onBack, onComplete }) {
+export function ShoeLesson({ soundOff = false, onBack, onComplete }) {
   const t = useT();
   const language = useContext(LanguageContext);
   const [step, setStep] = useState(0);
@@ -16,6 +16,10 @@ export function ShoeLesson({ onBack, onComplete }) {
   const narrationTimerRef = useRef(null);
   const videoTimerRef = useRef(null);
   const current = lessonSteps[step];
+
+  useEffect(() => {
+    if (soundOff) stopNarration();
+  }, [soundOff]);
 
   useEffect(() => () => {
     narrationRunRef.current += 1;
@@ -55,7 +59,7 @@ export function ShoeLesson({ onBack, onComplete }) {
   }
 
   function speakText(text, options = {}) {
-    return speak(text, language, false, { rate: 0.82, pitch: 1.03, ...options });
+    return speak(text, language, soundOff, { rate: 0.82, pitch: 1.03, ...options });
   }
 
   function speakCurrentStep() {
@@ -64,6 +68,7 @@ export function ShoeLesson({ onBack, onComplete }) {
   }
 
   function speakAllSteps() {
+    if (soundOff) return;
     const runId = narrationRunRef.current + 1;
     narrationRunRef.current = runId;
     window.clearTimeout(narrationTimerRef.current);
@@ -169,10 +174,10 @@ export function ShoeLesson({ onBack, onComplete }) {
             <>
               <p className="lesson-helper">{t('Look at the picture, then try the same movement with real laces.')}</p>
               <div className="lesson-audio-panel">
-                <button className="secondary-button" type="button" onClick={speakCurrentStep}>
+                <button className="secondary-button" type="button" disabled={soundOff} onClick={speakCurrentStep}>
                   <Volume2 size={18} /> {t('Hear this step')}
                 </button>
-                <button className="secondary-button" type="button" onClick={speakAllSteps}>
+                <button className="secondary-button" type="button" disabled={soundOff} onClick={speakAllSteps}>
                   <ListChecks size={18} /> {t('Hear all steps')}
                 </button>
               </div>

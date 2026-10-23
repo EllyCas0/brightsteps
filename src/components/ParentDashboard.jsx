@@ -250,7 +250,7 @@ export function ParentDashboard({ profile, profiles, progress, personalization, 
         <div className="parent-actions">
           <button className="secondary-button" onClick={onAddChild}><Baby size={18} /> {t('Add child')}</button>
           <button className="secondary-button" onClick={onEdit}><RotateCcw size={18} /> {t('Edit profile')}</button>
-          <button className="danger-button" onClick={onReset}>{t('Reset')}</button>
+          <button className="danger-button" onClick={onReset}>{language === 'es' ? 'Borrar todos los perfiles' : 'Delete all profiles'}</button>
         </div>
       </div>
       <div className="profile-switcher" aria-label={t('Child profiles')}>
